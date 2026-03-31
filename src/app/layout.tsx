@@ -1,10 +1,13 @@
 import "~/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Geist } from "next/font/google";
+import { Geist, Figtree } from "next/font/google";
 
 import { FloatingDockHeader } from "~/components/layout/floating-dock-header";
 import { TRPCReactProvider } from "~/trpc/react";
+import { cn } from "~/lib/utils";
+
+const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
 	title: "UI Platform & Frontend Architecture Portfolio",
@@ -22,7 +25,7 @@ export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html className={`${geist.variable}`} lang="en">
+		<html className={cn(geist.variable, "font-sans", figtree.variable)} lang="en">
 			<body className="bg-zinc-950 text-zinc-100 antialiased">
 				<TRPCReactProvider>
 					<FloatingDockHeader />
