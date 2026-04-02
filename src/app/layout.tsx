@@ -25,7 +25,10 @@ export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<html className={cn(geist.variable, "font-sans", figtree.variable)} lang="en">
+		<html
+			className={cn(geist.variable, "scroll-smooth font-sans", figtree.variable)}
+			lang="en"
+		>
 			<body className="bg-zinc-950 text-zinc-100 antialiased">
 				<TRPCReactProvider>
 					<FloatingHeader />
