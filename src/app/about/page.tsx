@@ -1,7 +1,9 @@
-import { SectionShell } from "~/components/ui/section-shell";
+import { AboutSection } from "~/components/features/about-section";
+import { SectionShell } from "~/components/layout/section-panel";
 
-export function AboutSection() {
+export default function AboutPage() {
 	return (
+		<main className="mx-auto flex min-h-screen w-full max-w-6xl px-4 py-10 md:px-8">
 		<SectionShell
 			description="I work at the intersection of design systems and frontend architecture, partnering with design, product, and engineering to build resilient interfaces."
 			eyebrow="Profile"
@@ -14,5 +16,6 @@ export function AboutSection() {
 				accessibility, performance, and operational clarity.
 			</p>
 		</SectionShell>
+		</main>
 	);
 }

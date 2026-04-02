@@ -1,5 +1,5 @@
 import { photographyCategories } from "~/lib/portfolio-data";
-import { SectionShell } from "~/components/ui/section-shell";
+import { SectionShell } from "~/components/layout/section-panel";
 
 export function PhotographySection() {
 	return (

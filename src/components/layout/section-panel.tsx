@@ -1,4 +1,4 @@
-type SectionShellProps = {
+type SectionPanelProps = {
 	id: string;
 	eyebrow: string;
 	title: string;
@@ -12,7 +12,7 @@ export function SectionShell({
 	title,
 	description,
 	children,
-}: SectionShellProps) {
+}: SectionPanelProps) {
 	return (
 		<section
 			className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 md:p-8"

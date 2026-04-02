@@ -3,7 +3,7 @@ import "~/styles/globals.css";
 import type { Metadata } from "next";
 import { Geist, Figtree } from "next/font/google";
 
-import { FloatingDockHeader } from "~/components/layout/floating-dock-header";
+import { FloatingHeader } from "~/components/layout/floating-header";
 import { TRPCReactProvider } from "~/trpc/react";
 import { cn } from "~/lib/utils";
 
@@ -28,7 +28,7 @@ export default function RootLayout({
 		<html className={cn(geist.variable, "font-sans", figtree.variable)} lang="en">
 			<body className="bg-zinc-950 text-zinc-100 antialiased">
 				<TRPCReactProvider>
-					<FloatingDockHeader />
+					<FloatingHeader />
 					<div className="pt-24">{children}</div>
 				</TRPCReactProvider>
 			</body>

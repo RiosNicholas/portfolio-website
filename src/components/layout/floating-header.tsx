@@ -2,17 +2,16 @@ import Link from "next/link";
 
 const navItems = [
 	{ href: "/", label: "Home" },
-	{ href: "#work", label: "Work" },
-	{ href: "#photography", label: "Photography" },
-	{ href: "#about", label: "About" },
-	{ href: "#contact", label: "Contact" },
+	{ href: "/work", label: "Work" },
+	{ href: "/photography", label: "Photography" },
+	{ href: "/about", label: "About" },
 ];
 
-export function FloatingDockHeader() {
+export function FloatingHeader() {
 	return (
 		<header className="fixed inset-x-0 top-4 z-50 flex justify-center px-4">
-			<div className="flex w-full max-w-4xl items-center justify-between rounded-full border border-zinc-800/80 bg-zinc-900/75 px-4 py-2 backdrop-blur">
-				<nav className="flex items-center gap-2 sm:gap-3">
+			<div className="flex max-w-4xl items-center justify-center rounded-full border border-zinc-800/80 bg-zinc-900/75 p-2 backdrop-blur">
+				<nav className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
 					{navItems.map((item) => (
 						<Link
 							className="rounded-full px-3 py-1.5 text-sm text-zinc-300 transition hover:bg-zinc-800 hover:text-white"
