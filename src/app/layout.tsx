@@ -32,7 +32,7 @@ export default function RootLayout({
 			<body className="bg-zinc-950 text-zinc-100 antialiased">
 				<TRPCReactProvider>
 					<FloatingHeader />
-					<div className="pt-24">{children}</div>
+					<div>{children}</div>
 				</TRPCReactProvider>
 			</body>
 		</html>
