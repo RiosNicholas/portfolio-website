@@ -9,11 +9,11 @@ export interface BentoGridItem {
 
 export default function BentoGrid({ items }: { items: BentoGridItem[] }) {   
   return (
-    <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {items.map((item) => (
         <Card className="p-4" key={item.label}>
           <CardHeader>
-            <CardTitle className="flex gap-2 items-center justify-start">
+            <CardTitle className="font-semibold flex gap-2 items-center justify-start">
               {item.icon} {item.label}
             </CardTitle>
           </CardHeader>
@@ -21,6 +21,6 @@ export default function BentoGrid({ items }: { items: BentoGridItem[] }) {
           {item.content && <CardContent>{item.content}</CardContent>}
         </Card>
       ))}
-    </section>
+    </div>
   )
 }

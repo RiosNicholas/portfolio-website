@@ -1,28 +1,43 @@
-import Link from "next/link";
-
 import { HeroSection } from "~/components/features/hero-section";
+import BentoGrid from "~/components/features/bento-grid";
+import { Globe, LANDING_GLOBE_CONFIG } from "~/components/ui/globe";
+import { DrawingPinIcon, LightningBoltIcon, MagicWandIcon } from "@radix-ui/react-icons";
+import { SectionHeader } from "~/components/layout/section-header";
 
 export default function HomePage() {
 	return (
-		<main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-4 py-10 md:px-8">
+		<main className="w-full">
 			<HeroSection />
-			<section className="grid gap-3 md:grid-cols-3">
-				{[
-					{ href: "/role", label: "Role Overview" },
-					{ href: "/work", label: "UI Platform Work" },
-					{ href: "/architecture", label: "Frontend Architecture" },
-					{ href: "/photography", label: "Photography" },
-					{ href: "/about", label: "About" },
-					{ href: "/connect", label: "Connect" },
-				].map((item) => (
-					<Link
-						className="rounded-xl border border-zinc-800 bg-zinc-900 px-5 py-4 text-zinc-200 transition hover:bg-zinc-800"
-						href={item.href}
-						key={item.href}
-					>
-						{item.label}
-					</Link>
-				))}
+
+			<section
+				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
+				id="overview"
+			>
+				<SectionHeader 
+				  description="Role, work samples, architecture notes, photography, and how to connect."
+				  title="At a Glance"
+				/>
+				<BentoGrid
+					items={[
+						{
+							icon: <LightningBoltIcon />,
+							label: "Industry Experience",
+						},
+						{
+							icon: <DrawingPinIcon />,
+							label: "New York, New York",
+							// content: (
+								// <div className="relative mt-2 h-56 w-full overflow-hidden rounded-lg border border-zinc-800/80 bg-zinc-950">
+									// {/* <Globe config={LANDING_GLOBE_CONFIG} /> */}
+								// {/* </div> */}
+							// ),
+						},
+						{ 
+							icon: <MagicWandIcon />,
+							label: "Skills"
+						},
+					]}
+				/>
 			</section>
 		</main>
 	);
