@@ -39,6 +39,36 @@ export default function HomePage() {
 					]}
 				/>
 			</section>
+
+			<section
+				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
+				id="photography-preview"
+			>
+				<SectionHeader 
+					description="Outside of engineering, I'm passionate about photography and use it as a creative medium"
+					title="Photography"
+				/>
+				{/* TODO:
+				  - add a few randomized pictures from photography 
+					- motion animated cards from scrolling in 
+					- button to see selected works
+				 **/}
+				
+			</section>
+
+			<section
+				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
+				id="endorsements"
+			>
+				<SectionHeader 
+					description="Something should probably go here"
+					title="Endorsements"
+				/>
+				{/* TODO: 
+				  - api call to linkedin for recommendations and endorsements on key skills
+					- use magic ui marquee component
+				 **/}
+			</section>
 		</main>
 	);
 }
