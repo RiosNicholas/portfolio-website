@@ -1,38 +1,53 @@
 import "~/styles/globals.css";
 
 import type { Metadata } from "next";
-import { Geist, Figtree } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 
 import { FloatingHeader } from "~/components/layout/floating-header";
-import { TRPCReactProvider } from "~/trpc/react";
+import { CustomCursor } from "~/components/ui/custom-cursor";
+import { RevealObserver } from "~/components/ui/reveal-observer";
 import { cn } from "~/lib/utils";
+import { TRPCReactProvider } from "~/trpc/react";
 
-const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({
+	subsets: ["latin"],
+	variable: "--font-inter",
+	display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+	subsets: ["latin"],
+	variable: "--font-jetbrains-mono",
+	display: "swap",
+});
 
 export const metadata: Metadata = {
-	title: "UI Platform & Frontend Architecture Portfolio",
+	title: "Nicholas Rios — Software Engineer",
 	description:
-		"Portfolio website for a UI developer focused on platform systems, frontend architecture, and photography.",
+		"Nicholas Rios — Front-End Software Engineer, UI Architecture & Platform Development. Based in Jersey City, NJ.",
 	icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
-
-const geist = Geist({
-	subsets: ["latin"],
-	variable: "--font-geist-sans",
-});
 
 export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html
-			className={cn(geist.variable, "scroll-smooth font-sans", figtree.variable)}
+			className={cn(inter.variable, jetbrainsMono.variable)}
 			lang="en"
+			suppressHydrationWarning
 		>
-			<body className="bg-zinc-950 text-zinc-100 antialiased">
+			<body
+				className="antialiased"
+				style={{ background: "#000000", color: "#ffffff" }}
+			>
+				<div aria-hidden className="paper-bg" />
+				<div aria-hidden className="grain" />
+				<CustomCursor />
 				<TRPCReactProvider>
 					<FloatingHeader />
-					<div>{children}</div>
+					<RevealObserver />
+					<div className="relative z-10">{children}</div>
 				</TRPCReactProvider>
 			</body>
 		</html>
