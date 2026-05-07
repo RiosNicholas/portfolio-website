@@ -1,0 +1,13 @@
+{
+  "github.copilot.chat.commitMessageGeneration.instructions": [
+    {
+      "text": "Always start with one of these prefixes: feat, fix, refactor, docs, test, chore. The subject line must be all lowercase, start with a verb, clearly state WHAT changed and WHY it matters, and end with a relevant emoji. Follow with bullet points in the body explaining the how and any important context. Each bullet starts with a lowercase verb. Max 72 chars on the subject line."
+    },
+    {
+      "text": "Subject line format: 'type: verb + what + why + emoji'. Examples: 'feat: add OAuth login so users can sign in with Google 🚀', 'fix: resolve cart rounding to stop overcharging users 🐛', 'refactor: flatten auth middleware to reduce request latency ♻️', 'docs: clarify env setup so onboarding does not break 📝', 'test: add edge cases for empty cart to prevent regressions 🧪', 'chore: upgrade eslint to v9 to unblock new lint rules 🔧'"
+    },
+    {
+      "text": "After the subject line, add a blank line then 2-4 bullet points starting with '-'. Each bullet starts with a lowercase verb and covers: what specifically changed, why it was necessary, and any side effects or context worth noting."
+    }
+  ]
+}
