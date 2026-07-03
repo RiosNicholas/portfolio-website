@@ -1,74 +1,71 @@
-import { HeroSection } from "~/components/features/hero-section";
 import BentoGrid from "~/components/features/bento-grid";
-import { Globe, LANDING_GLOBE_CONFIG } from "~/components/ui/globe";
-import { DrawingPinIcon, LightningBoltIcon, MagicWandIcon } from "@radix-ui/react-icons";
+import { ContactStrip } from "~/components/features/contact-strip";
+import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
+import { HeroSection } from "~/components/features/hero-section";
+import { WorkTeaser } from "~/components/features/work-teaser";
 import { SectionHeader } from "~/components/layout/section-header";
 
 export default function HomePage() {
 	return (
-		<main className="w-full">
+		<main className="shell">
+			{/* Hero */}
 			<HeroSection />
 
-			<section
-				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
-				id="overview"
-			>
-				<SectionHeader 
-				  description="Role, work samples, architecture notes, photography, and how to connect."
-				  title="At a Glance"
-				/>
-				<BentoGrid
-					items={[
-						{
-							icon: <LightningBoltIcon />,
-							label: "Industry Experience",
-						},
-						{
-							icon: <DrawingPinIcon />,
-							label: "New York, New York",
-							// content: (
-								// <div className="relative mt-2 h-56 w-full overflow-hidden rounded-lg border border-zinc-800/80 bg-zinc-950">
-									// {/* <Globe config={LANDING_GLOBE_CONFIG} /> */}
-								// {/* </div> */}
-							// ),
-						},
-						{ 
-							icon: <MagicWandIcon />,
-							label: "Skills"
-						},
-					]}
-				/>
+			{/* Bento */}
+			<section aria-label="Quick facts">
+				<BentoGrid />
 			</section>
 
+			{/* Work teaser */}
 			<section
-				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
-				id="photography-preview"
+				aria-label="Selected work"
+				style={{ padding: "clamp(56px, 8vw, 112px) 0" }}
 			>
-				<SectionHeader 
-					description="Outside of engineering, I'm passionate about photography and use it as a creative medium"
-					title="Photography"
+				<SectionHeader
+					meta={
+						<a
+							href="/work"
+							style={{
+								color: "var(--accent-text)",
+								textDecoration: "none",
+							}}
+						>
+							View all →
+						</a>
+					}
+					num="01 — Selected"
+					title={
+						<>
+							Recent <em className="mark">work</em>
+						</>
+					}
 				/>
-				{/* TODO:
-				  - add a few randomized pictures from photography 
-					- motion animated cards from scrolling in 
-					- button to see selected works
-				 **/}
-				
+				<div className="reveal">
+					<WorkTeaser />
+				</div>
 			</section>
 
+			{/* Endorsements */}
 			<section
-				className="mx-auto flex w-full max-w-6xl flex-col gap-10 px-4 py-16 md:px-8"
-				id="endorsements"
+				aria-label="Endorsements"
+				style={{ padding: "clamp(56px, 8vw, 112px) 0" }}
 			>
-				<SectionHeader 
-					description="Something should probably go here"
-					title="Endorsements"
-				/>
-				{/* TODO: 
-				  - api call to linkedin for recommendations and endorsements on key skills
-					- use magic ui marquee component
-				 **/}
+				<div className="reveal">
+					<SectionHeader
+						meta="12 endorsements · cont."
+						num="02 — Kind words"
+						title={
+							<>
+								People I&apos;ve <em className="mark">worked with</em>
+							</>
+						}
+					/>
+				</div>
+				<EndorsementMarquee />
 			</section>
+
+			{/* Contact */}
+			<ContactStrip />
 		</main>
 	);
 }
