@@ -1,246 +1,330 @@
-# Design System Inspired by Framer
+# DESIGN.md — Nicholas Rios · Portfolio
 
-## 1. Visual Theme & Atmosphere
+A handover spec for the portfolio site. Covers aesthetic, tokens, structure,
+components, and the rules the site plays by.
 
-Framer's website is a cinematic, tool-obsessed dark canvas that radiates the confidence of a design tool built by designers who worship craft. The entire experience is drenched in pure black — not a warm charcoal or a cozy dark gray, but an absolute void (`#000000`) that makes every element, every screenshot, every typographic flourish feel like it's floating in deep space. This is a website that treats its own product UI as the hero art, embedding full-fidelity screenshots and interactive demos directly into the narrative flow.
+---
 
-The typography is the signature move: GT Walsheim with aggressively tight letter-spacing (as extreme as -5.5px on 110px display text) creates headlines that feel compressed, kinetic, almost spring-loaded — like words under pressure that might expand at any moment. The transition to Inter for body text is seamless, with extensive OpenType feature usage (`cv01`, `cv05`, `cv09`, `cv11`, `ss03`, `ss07`) that gives even small text a refined, custom feel. Framer Blue (`#0099ff`) is deployed sparingly but decisively — as link color, border accents, and subtle ring shadows — creating a cold, electric throughline against the warm-less black.
+## 1. Direction
 
-The overall effect is a nightclub for web designers: dark, precise, seductive, and unapologetically product-forward. Every section exists to showcase what the tool can do, with the website itself serving as proof of concept.
+**Streamtime-inspired warm paper with bold accent pops.** Soft warm cream
+paper (light) or warm espresso (dark) with a low-contrast graph-paper grid
+running edge to edge. Confident display type (Schibsted Grotesk), hot-pink
+accent by default with swappable cobalt/lime/grape variants, geometric shapes
+(rings, triangles, dots) floating in whitespace, marker-highlight emphasis on
+one word per headline, yellow CTA buttons.
 
-**Key Characteristics:**
-- Pure black (`#000000`) void canvas — absolute dark, not warm or gray-tinted
-- GT Walsheim display font with extreme negative letter-spacing (-5.5px at 110px)
-- Framer Blue (`#0099ff`) as the sole accent color — cold, electric, precise
-- Pill-shaped buttons (40px–100px radius) — no sharp corners on interactive elements
-- Product screenshots as hero art — the tool IS the marketing
-- Frosted glass button variants using `rgba(255, 255, 255, 0.1)` on dark surfaces
-- Extensive OpenType feature usage across Inter for refined micro-typography
+Primary goal: sell technical skills in UI + platform engineering. Clean,
+minimal, no filler. Voice: confident, plain-spoken, dry wit allowed.
 
-## 2. Color Palette & Roles
+---
 
-### Primary
-- **Pure Black** (`#000000`): Primary background, the void canvas that defines Framer's dark-first identity
-- **Pure White** (`#ffffff`): Primary text color on dark surfaces, button text on accent backgrounds
-- **Framer Blue** (`#0099ff`): Primary accent color — links, borders, ring shadows, interactive highlights
+## 2. File map
 
-### Secondary & Accent
-- **Muted Silver** (`#a6a6a6`): Secondary text, subdued labels, dimmed descriptions on dark surfaces
-- **Near Black** (`#090909`): Elevated dark surface, shadow ring color for subtle depth separation
+```
+index.html           · Home (hero · bento · work teaser · marquee · contact)
+work.html            · Full case studies (04 projects)
+about.html           · Bio + CV
 
-### Surface & Background
-- **Void Black** (`#000000`): Page background, primary canvas
-- **Frosted White** (`rgba(255, 255, 255, 0.1)`): Translucent button backgrounds, glass-effect surfaces on dark
-- **Subtle White** (`rgba(255, 255, 255, 0.5)`): Slightly more opaque frosted elements for hover states
+styles/
+  tokens.css         · Colors, type, radii, shadows, theme + accent variants, motion flag
+  base.css           · Reset, shell, cursor, grid ambience, grain, reveals, geo shapes
+  components.css     · Everything else (nav, bento, cards, marquee, tweaks, etc.)
 
-### Neutrals & Text
-- **Pure White** (`#ffffff`): Heading text, high-emphasis body text
-- **Muted Silver** (`#a6a6a6`): Body text, descriptions, secondary information
-- **Ghost White** (`rgba(255, 255, 255, 0.6)`): Tertiary text, placeholders on dark surfaces
+scripts/
+  cursor.js          · Dot + ring custom cursor (hover states: link, text)
+  paper.js           · Cursor-reactive warm highlight over grid
+  reveal.js          · IntersectionObserver for .reveal; years counter; smooth anchors
+  tweaks.js          · Theme / accent / grid / motion toggles + localStorage + auto light/dark
+```
 
-### Semantic & Accent
-- **Framer Blue** (`#0099ff`): Links, interactive borders, focus rings
-- **Blue Glow** (`rgba(0, 153, 255, 0.15)`): Focus ring shadow, subtle blue halo around interactive elements
-- **Default Link Blue** (`#0000ee`): Standard browser link color (used sparingly in content areas)
+Shared chrome (top nav, tweaks panel) is duplicated across the three HTML
+pages on purpose — no build step, easy to edit.
 
-### Gradient System
-- No prominent gradient usage — Framer relies on pure flat black surfaces with occasional blue-tinted glows for depth
-- Subtle radial glow effects behind product screenshots using Framer Blue at very low opacity
+---
 
-## 3. Typography Rules
+## 3. Tokens (`styles/tokens.css`)
 
-### Font Family
-- **Display**: `GT Walsheim Framer Medium` / `GT Walsheim Medium` — custom geometric sans-serif, weight 500. Fallbacks: `GT Walsheim Framer Medium Placeholder`, system sans-serif
-- **Body/UI**: `Inter Variable` / `Inter` — variable sans-serif with extensive OpenType features. Fallbacks: `Inter Placeholder`, `-apple-system`, `system-ui`
-- **Accent**: `Mona Sans` — GitHub's open-source font, used for select elements at ultra-light weight (100)
-- **Monospace**: `Azeret Mono` — companion mono for code and technical labels
-- **Rounded**: `Open Runde` — small rounded companion font for micro-labels
+### Color — light (warm cream paper)
+| Token              | Value                       | Use                              |
+|--------------------|-----------------------------|-----------------------------------|
+| `--paper`          | `#efe7d8`                   | Page background                   |
+| `--paper-2`        | `#fbf7ef`                   | Cards, cells, endorsements        |
+| `--paper-3`        | `#e6dac6`                   | Raised surfaces                   |
+| `--ink`            | `#2a2520`                   | Primary text (charcoal)           |
+| `--ink-2`          | `#4a433b`                   | Secondary text                    |
+| `--ink-3`          | `#847b6e`                   | Tertiary / meta                   |
+| `--ink-4`          | `#aa9f8d`                   | Disabled / footer                 |
+| `--border`         | `rgba(42,37,32,0.13)`       | Hairlines                         |
+| `--border-2`       | `rgba(42,37,32,0.22)`       | Stronger hairlines                |
 
-### Hierarchy
+### Color — dark (warm espresso)
+`--paper: #1a1714`, `--paper-2: #241f1a`, `--paper-3: #2e2820`. Ink inverts
+to warm off-white `#f3ece0`. Grain uses `screen` blend mode. Borders lighten
+to maintain contrast. **Never cold black** — always warm espresso.
 
-| Role | Font | Size | Weight | Line Height | Letter Spacing | Notes |
-|------|------|------|--------|-------------|----------------|-------|
-| Display Hero | GT Walsheim Framer Medium | 110px | 500 | 0.85 | -5.5px | Extreme negative tracking, compressed impact |
-| Section Display | GT Walsheim Medium | 85px | 500 | 0.95 | -4.25px | OpenType: ss02, tnum |
-| Section Heading | GT Walsheim Medium | 62px | 500 | 1.00 | -3.1px | OpenType: ss02 |
-| Feature Heading | GT Walsheim Medium | 32px | 500 | 1.13 | -1px | Tightest of the smaller headings |
-| Accent Display | Mona Sans | 61.5px | 100 | 1.00 | -3.1px | Ultra-light weight, ethereal |
-| Card Title | Inter Variable | 24px | 400 | 1.30 | -0.01px | OpenType: cv01, cv05, cv09, cv11, ss03, ss07 |
-| Feature Title | Inter | 22px | 700 | 1.20 | -0.8px | OpenType: cv05 |
-| Sub-heading | Inter | 20px | 600 | 1.20 | -0.8px | OpenType: cv01, cv09 |
-| Body Large | Inter Variable | 18px | 400 | 1.30 | -0.01px | OpenType: cv01, cv05, cv09, cv11, ss03, ss07 |
-| Body | Inter Variable | 15px | 400 | 1.30 | -0.01px | OpenType: cv11 |
-| Nav/UI | Inter Variable | 15px | 400 | 1.00 | -0.15px | OpenType: cv06, cv11, dlig, ss03 |
-| Body Readable | Inter Framer Regular | 14px | 400 | 1.60 | normal | Long-form body text |
-| Caption | Inter Variable | 14px | 400 | 1.40 | normal | OpenType: cv01, cv06, cv09, cv11, ss03, ss07 |
-| Label | Inter | 13px | 500 | 1.60 | normal | OpenType: cv06, cv11, ss03 |
-| Small Caption | Inter Variable | 12px | 400 | 1.40 | normal | OpenType: cv01, cv06, cv09, cv11, ss03, ss07 |
-| Micro Code | Azeret Mono | 10.4px | 400 | 1.60 | normal | OpenType: cv06, cv11, ss03 |
-| Badge | Open Runde | 9px | 600 | 1.11 | normal | OpenType: cv01, cv09 |
-| Micro Uppercase | Inter Variable | 7px | 400 | 1.00 | 0.21px | uppercase transform |
+### Accent (default = pink, swappable)
+| Token              | Default (pink)    | Use                              |
+|--------------------|--------------------|-----------------------------------|
+| `--accent`         | `#ff4dd5`          | Fills, markers, shapes           |
+| `--accent-text`    | `#b81e94` (light)  | Readable text color on accent    |
+|                    | `#ff8ae0` (dark)   | …on dark theme                   |
+| `--accent-glow`    | `rgba(255,77,213,0.20)` | Soft halo behind shapes          |
+| `--accent-glow-2`  | `rgba(255,77,213,0.34)` | Stronger glow (hover)            |
+| `--marker-ink`     | `#2a0a22`          | Text sitting on marker block     |
+| `--cta-bg`         | `#ffde3b`          | Yellow CTA button fill           |
+| `--cta-bg-hover`   | `#f2ce1f`          | CTA hover                        |
+| `--cta-ink`        | `#1a1206`          | CTA text (dark)                  |
 
-### Principles
-- **Compression as personality**: GT Walsheim's extreme negative letter-spacing (-5.5px at 110px) is the defining typographic gesture — headlines feel spring-loaded, urgent, almost breathless
-- **OpenType maximalism**: Inter is deployed with 6+ OpenType features simultaneously (`cv01`, `cv05`, `cv09`, `cv11`, `ss03`, `ss07`), creating a subtly custom feel even at body sizes
-- **Weight restraint on display**: All GT Walsheim usage is weight 500 (medium) — never bold, never regular. This creates a confident-but-not-aggressive display tone
-- **Ultra-tight line heights**: Display text at 0.85 line-height means letters nearly overlap vertically — intentional density that rewards reading at arm's length
+### Secondary palette (geometric accents)
+| Token       | Value     | Use                                    |
+|-------------|-----------|----------------------------------------|
+| `--c-pink`  | `#ff4dd5` | Default accent (also in geo shapes)    |
+| `--c-lime`  | `#c1f32b` | Status dots, geo shapes                |
+| `--c-cobalt`| `#6483ff` | Geo shapes, rings                      |
+| `--c-grape` | `#7a3dff` | Geo shapes, dotted squares             |
+| `--c-yellow`| `#ffde3b` | CTA buttons, geo shapes                |
+| `--c-clay`  | `#d2691e` | Warm accent alternative (unused)       |
 
-## 4. Component Stylings
+### Accent swaps (via `data-accent` on `<html>`)
+- `pink`    — `#ff4dd5` *(default, streamtime signature)*
+- `cobalt`  — `#6483ff`
+- `lime`    — `#c1f32b`
+- `grape`   — `#7a3dff`
 
-### Buttons
-- **Frosted Pill**: `rgba(255, 255, 255, 0.1)` background, black text (`#000000`), pill shape (40px radius). The glass-effect button that lives on dark surfaces — translucent, ambient, subtle
-- **Solid White Pill**: `rgb(255, 255, 255)` background, black text (`#000000`), full pill shape (100px radius), padding `10px 15px`. The primary CTA — clean, high-contrast on dark, unmissable
-- **Ghost**: No visible background, white text, relies on text styling alone. Hover reveals subtle frosted background
-- **Transition**: Scale-based animations (matrix transform with 0.85 scale factor), opacity transitions for reveal effects
+Each swap includes a readable text variant (deeper on light, lighter on
+dark) and a glow that coordinates with the fill.
 
-### Cards & Containers
-- **Dark Surface Card**: Black or near-black (`#090909`) background, `rgba(0, 153, 255, 0.15) 0px 0px 0px 1px` blue ring shadow border, rounded corners (10px–15px radius)
-- **Elevated Card**: Multi-layer shadow — `rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px` (subtle top highlight) + `rgba(0, 0, 0, 0.25) 0px 10px 30px` (deep ambient shadow)
-- **Product Screenshots**: Full-width or padded within dark containers, 8px–12px border-radius for software UI previews
-- **Hover**: Subtle glow increase on Framer Blue ring shadow, or brightness shift on frosted surfaces
+### Type
+- **Display** — `Schibsted Grotesk`, weight 600, letter-spacing **−0.04em**.
+  Used for hero, section titles, bento values, case titles. `<em>` becomes
+  a tilted marker block: `background: var(--accent); color: var(--marker-ink);
+  padding: 0.01em 0.16em; border-radius: 6px; transform: rotate(-1.4deg)`.
+- **Body** — `Hanken Grotesk`, 400/500, tracking **−0.005em**. Readable on
+  warm backgrounds. Use for body copy, nav, UI labels, endorsements.
+- **Mono** — `JetBrains Mono` for meta/labels/CV years. 11–13px. No uppercase
+  tracking.
 
-### Inputs & Forms
-- Minimal form presence on the marketing site
-- Input fields follow dark theme: dark background, subtle border, white text
-- Focus state: Framer Blue (`#0099ff`) ring border, `1px solid #0099ff`
-- Placeholder text in `rgba(255, 255, 255, 0.4)`
+### Radii
+`--r-sm 4 / --r-md 6 / --r-lg 10 / --r-xl 16 / --r-pill 999`. Cards use
+`--r-lg`, buttons/chips use `--r-pill`.
 
-### Navigation
-- **Dark floating nav bar**: Black background with frosted glass effect, white text links
-- **Nav links**: Inter at 15px, weight 400, white text with subtle hover opacity change
-- **CTA button**: Pill-shaped, white or frosted, positioned at right end of nav
-- **Mobile**: Collapses to hamburger menu, maintains dark theme
-- **Sticky behavior**: Nav remains fixed at top on scroll
+### Shadows (warm drop shadows, no neon rings)
+- `--shadow-card`  — subtle card lift
+- `--shadow-pop`   — hover elevation (1–4px)
+- `--shadow-hard`  — strong depth (case studies, modals)
+- `--shadow-float` — frosted panels (nav, tweaks)
 
-### Image Treatment
-- **Product screenshots as hero art**: Full-width embedded UI screenshots with rounded corners (8px–12px)
-- **Dark-on-dark composition**: Screenshots placed on black backgrounds with subtle shadow for depth separation
-- **16:9 and custom aspect ratios**: Product demos fill their containers
-- **No decorative imagery**: All images are functional — showing the tool, the output, or the workflow
+### Motion
+`data-motion="low"` on `<html>` collapses all animation durations to ~0 and
+hides `.no-low` nodes. Respect `prefers-reduced-motion: reduce`.
 
-### Trust & Social Proof
-- Customer logos and testimonials in muted gray on dark surfaces
-- Minimal ornamentation — the product screenshots serve as the trust signal
+### Grid (paper background)
+`.paper-bg` is a **two-layer graph-paper grid** that tiles the entire viewport
+(no mask — the grid runs edge to edge, like a real notebook):
 
-## 5. Layout Principles
+- **Minor lines** every `28px` at `--grid-minor` opacity
+- **Major lines** every `140px` (5×28) at `--grid-major` opacity
 
-### Spacing System
-- **Base unit**: 8px
-- **Scale**: 1px, 2px, 3px, 4px, 5px, 6px, 8px, 10px, 12px, 15px, 20px, 30px, 35px
-- **Section padding**: Large vertical spacing (80px–120px between sections)
-- **Card padding**: 15px–30px internal padding
-- **Component gaps**: 8px–20px between related elements
+Light theme uses charcoal lines (`rgba(42,37,32,0.055)` minor,
+`rgba(42,37,32,0.10)` major). Dark theme uses warm-white lines. Behind the
+hero on every page, `.paper-bg::after` paints a single soft accent halo so
+the grid feels lit from above.
 
-### Grid & Container
-- **Max width**: ~1200px container, centered
-- **Column patterns**: Full-width hero, 2-column feature sections, single-column product showcases
-- **Asymmetric layouts**: Feature sections often pair text (40%) with screenshot (60%)
+`data-grid` = `on` / `subtle` / `off` toggles `.paper-bg` opacity (`1` /
+`0.5` / `0`). Defaults to `subtle`.
 
-### Whitespace Philosophy
-- **Breathe through darkness**: Generous vertical spacing between sections — the black background means whitespace manifests as void, creating dramatic pauses between content blocks
-- **Dense within, spacious between**: Individual components are tightly composed (tight line-heights, compressed text) but float in generous surrounding space
-- **Product-first density**: Screenshot areas are allowed to be dense and information-rich, contrasting with the sparse marketing text
+### Theme (light/dark auto-detect)
+On first load, `theme` defaults to the OS preference (`prefers-color-scheme`).
+User can toggle via the sun/moon button in the top nav; choice persists in
+`localStorage`. The tweaks panel also exposes `theme: "auto" | "light" | "dark"`.
 
-### Border Radius Scale
-- **1px**: Micro-elements, nearly squared precision edges
-- **5px–7px**: Small UI elements, image thumbnails — subtly softened
-- **8px**: Standard component radius — code blocks, buttons, interactive elements
-- **10px–12px**: Cards, product screenshots — comfortably rounded
-- **15px–20px**: Large containers, feature cards — generously rounded
-- **30px–40px**: Navigation pills, pagination — noticeably rounded
-- **100px**: Full pill shape — primary CTAs, tag elements
+---
 
-## 6. Depth & Elevation
+## 4. Page structure
 
-| Level | Treatment | Use |
-|-------|-----------|-----|
-| Level 0 (Flat) | No shadow, pure black surface | Page background, empty areas |
-| Level 1 (Ring) | `rgba(0, 153, 255, 0.15) 0px 0px 0px 1px` | Card borders, interactive element outlines — Framer Blue glow ring |
-| Level 2 (Contained) | `rgb(9, 9, 9) 0px 0px 0px 2px` | Near-black ring for subtle containment on dark surfaces |
-| Level 3 (Floating) | `rgba(255, 255, 255, 0.1) 0px 0.5px 0px 0.5px, rgba(0, 0, 0, 0.25) 0px 10px 30px` | Elevated cards, floating elements — subtle white top-edge highlight + deep ambient shadow |
+Each page is:
 
-### Shadow Philosophy
-Framer's elevation system is inverted from traditional light-theme designs. Instead of darker shadows on light backgrounds, Framer uses:
-- **Blue-tinted ring shadows** at very low opacity (0.15) for containment — a signature move that subtly brands every bordered element
-- **White edge highlights** (0.5px) on the top edge of elevated elements — simulating light hitting the top surface
-- **Deep ambient shadows** for true floating elements — `rgba(0, 0, 0, 0.25)` at large spread (30px)
+```
+<body>
+  <div class="paper-bg"></div>     · ambient grid + accent halo
+  <div class="grain"></div>         · subtle noise overlay
+  <nav class="nav">…</nav>          · top bar: brand (left) + nav menu (center)
+                                     + tweaks/theme toggle (right)
+  <main class="shell">
+    <section class="hero-min">…     · page hero (shorter on sub-pages)
+    …page sections…
+    <section class="contact-strip">…· shared close-out
+  </main>
+  <aside class="tweaks">…</aside>   · floating panel, hidden by default
+</body>
+```
 
-### Decorative Depth
-- **Blue glow auras**: Subtle Framer Blue (`#0099ff`) radial gradients behind key interactive areas
-- **No background blur/glassmorphism**: Despite the frosted button effect, there's no heavy glass blur usage — the translucency is achieved through simple rgba opacity
+`main.shell` is `max-width: 1280px` with fluid side padding
+`clamp(24px, 4vw, 64px)`.
 
-## 7. Do's and Don'ts
+---
 
-### Do
-- Use pure black (`#000000`) as the primary background — not dark gray, not charcoal
-- Apply extreme negative letter-spacing on GT Walsheim display text (-3px to -5.5px)
-- Keep all buttons pill-shaped (40px+ radius) — never use squared or slightly-rounded buttons
-- Use Framer Blue (`#0099ff`) exclusively for interactive accents — links, borders, focus states
-- Deploy `rgba(255, 255, 255, 0.1)` for frosted glass surfaces on dark backgrounds
-- Maintain GT Walsheim at weight 500 only — the medium weight IS the brand
-- Use extensive OpenType features on Inter text (cv01, cv05, cv09, cv11, ss03, ss07)
-- Let product screenshots be the visual centerpiece — the tool markets itself
-- Apply blue ring shadows (`rgba(0, 153, 255, 0.15) 0px 0px 0px 1px`) for card containment
+## 5. Top nav (`.nav`)
 
-### Don't
-- Use warm dark backgrounds (no `#1a1a1a`, `#2d2d2d`, or brownish blacks)
-- Apply bold (700+) weight to GT Walsheim display text — medium 500 only
-- Introduce additional accent colors beyond Framer Blue — this is a one-accent-color system
-- Use large border-radius on non-interactive elements (cards use 10px–15px, only buttons get 40px+)
-- Add decorative imagery, illustrations, or icons — the product IS the illustration
-- Use positive letter-spacing on headlines — everything is compressed, negative tracking
-- Create heavy drop shadows — depth is communicated through subtle rings and minimal ambients
-- Place light/white backgrounds behind content sections — the void is sacred
-- Use serif or display-weight fonts — the system is geometric sans-serif only
+Horizontal bar, edge-to-edge, frosted backdrop. Layout:
+- **Left**: `.mark` = brand glyph (rotating square, accent color) + name
+- **Center**: `.nav-menu` = links (Home / Work / About / Contact)
+- **Right**: `.nav-tools` = tweaks toggle (`✱`) + theme toggle (sun/moon SVG)
 
-## 8. Responsive Behavior
+Active link gets a filled pill background (charcoal on light, off-white on
+dark) with a leading accent dot. On narrow screens (≤640px) the brand name
+collapses to just the glyph.
 
-### Breakpoints
-| Name | Width | Key Changes |
-|------|-------|-------------|
-| Mobile | <809px | Single column, stacked feature sections, reduced hero text (62px→40px), hamburger nav |
-| Tablet | 809px–1199px | 2-column features begin, nav links partially visible, screenshots scale down |
-| Desktop | >1199px | Full layout, expanded nav with all links + CTA, 110px display hero, side-by-side features |
+---
 
-### Touch Targets
-- Pill buttons: minimum 40px height with 10px vertical padding — exceeds 44px WCAG minimum
-- Nav links: 15px text with generous padding for touch accessibility
-- Mobile CTA buttons: Full-width pills on mobile for easy thumb reach
+## 6. Signature components
 
-### Collapsing Strategy
-- **Navigation**: Full horizontal nav → hamburger menu at mobile breakpoint
-- **Hero text**: 110px display → 85px → 62px → ~40px across breakpoints, maintaining extreme negative tracking proportionally
-- **Feature sections**: Side-by-side (text + screenshot) → stacked vertically on mobile
-- **Product screenshots**: Scale responsively within containers, maintaining aspect ratios
-- **Section spacing**: Reduces proportionally — 120px desktop → 60px mobile
+### Bento (`.bento > .cell`)
+6-column grid, `168px` auto rows, `12px` gap. Cells span with
+`c-1-2` / `c-1-3` / `c-1-4` / `c-1-6` and rows with `r-1-2`. Anatomy:
 
-### Image Behavior
-- Product screenshots are responsive, scaling within their container boundaries
-- No art direction changes — same crops across breakpoints
-- Dark background ensures screenshots maintain visual impact at any size
-- Screenshots lazy-load as user scrolls into view
+```
+.cell
+  .label        (tiny caps, accent color, dot prefix)
+  .v            (big display number / word)
+  .sub          (mono micro line)
+```
 
-## 9. Agent Prompt Guide
+Specialized variants:
+- `.cell-location` — grid background + animated accent pin + ripple
+- `.cell-years` — oversized number, `data-count` + `data-sup="yrs"` triggers
+  counter on scroll
+- `.cell-status` — pulsing lime dot + availability line
+- `.cell-skills` — vertical marquee, 24-row reel; duplicate `innerHTML` at
+  runtime for seamless loop
+- `.cell-stack` — chip cloud of tools (frosted pills)
+- `.cell-now` — current projects (strong words use `<strong>`)
 
-### Quick Color Reference
-- Primary Background: Void Black (`#000000`)
-- Primary Text: Pure White (`#ffffff`)
-- Accent/CTA: Framer Blue (`#0099ff`)
-- Secondary Text: Muted Silver (`#a6a6a6`)
-- Frosted Surface: Translucent White (`rgba(255, 255, 255, 0.1)`)
-- Elevation Ring: Blue Glow (`rgba(0, 153, 255, 0.15)`)
+### Work list (`.case-row`)
+Grid of `60px 1fr auto 24px`. Title, role label, year, arrow. On hover,
+title color shifts to accent and the arrow slides 8px right. Used on home
+for a teaser (3 rows + "view all" CTA).
 
-### Example Component Prompts
-- "Create a hero section on pure black background with 110px GT Walsheim heading in white, letter-spacing -5.5px, line-height 0.85, and a pill-shaped white CTA button (100px radius) with black text"
-- "Design a feature card on black background with a 1px Framer Blue ring shadow border (rgba(0,153,255,0.15)), 12px border-radius, white heading in Inter at 22px weight 700, and muted silver (a6a6a6) body text"
-- "Build a navigation bar with black background, white Inter text links at 15px, and a frosted pill button (rgba(255,255,255,0.1) background, 40px radius) as the CTA"
-- "Create a product showcase section with a full-width screenshot embedded on black, 10px border-radius, subtle multi-layer shadow (white 0.5px top highlight + rgba(0,0,0,0.25) 30px ambient)"
-- "Design a pricing card using pure black surface, Framer Blue (#0099ff) accent for the selected plan border, white text hierarchy (24px Inter bold heading, 14px regular body), and a solid white pill CTA button"
+### Case full (`.case-full`)
+Two-column (1 : 2) block per project: left rail (num, title, meta), right
+(paragraph, tag chips, 3-up stats). Hairlines separate entries. Use on
+`work.html`.
 
-### Iteration Guide
-When refining existing screens generated with this design system:
-1. Focus on ONE component at a time — the dark canvas makes each element precious
-2. Always verify letter-spacing on GT Walsheim headings — the extreme negative tracking is non-negotiable
-3. Check that Framer Blue appears ONLY on interactive elements — never as decorative background or text color for non-links
-4. Ensure all buttons are pill-shaped — any squared corner immediately breaks the Framer aesthetic
-5. Test frosted glass surfaces by checking they have exactly `rgba(255, 255, 255, 0.1)` — too opaque looks like a bug, too transparent disappears
+### Endorsement marquee (`.marquee-wrap > .marquee`)
+Two rows, one forward (80s) one reverse (70s). JS duplicates `innerHTML`
+once for a seamless loop. Pause on hover. Cards (`.endorse`) are frosted
+with subtle shadows; quote + 1-line attribution with small avatar disc.
+
+### Contact strip (`.contact-strip`)
+Oversized display headline with one tilted accent marker, email as a big
+linked word (underlined in accent), social pill links on the right, footer
+beneath. Shared across all pages.
+
+**Social pills** — `.socials a` is a frosted pill with an inline SVG icon
+(16px, `currentColor`) and a label. Icons live inline in the markup (not
+in a sprite) and are sized by the `.ic` wrapper. On hover the pill border
+and icon both swap to accent. Icon set: LinkedIn, GitHub, Instagram,
+Read.cv, Are.na, X/Twitter, Dribbble, Email.
+
+### Tweaks panel (`.tweaks`)
+Floating panel, top-right above the main content. Toggled from the nav's `✱`
+button or from the host edit-mode toggle. Lives behind
+`/*EDITMODE-BEGIN*/{…}/*EDITMODE-END*/` in markup so changes persist on save.
+Exposed keys: `theme` (auto/light/dark), `accent` (pink/cobalt/lime/grape),
+`motion` (high/low), `grid` (on/subtle/off).
+
+### Geometric shapes (`.geo`)
+Decorative elements scattered in whitespace: circles (`.geo-circle`), rings
+(`.geo-ring`), triangles (`.geo-tri`), squares (`.geo-square`), and dotted
+grids (`.geo-dotsq`). Animated with `.float` (gentle vertical bob) or `.spin`
+(360° rotation). Use `color:` to colorize (inherits from `--c-*` tokens).
+Always set `pointer-events: none` and `aria-hidden="true"`. Optional
+`--geo-rot` CSS var for initial tilt.
+
+---
+
+## 7. Interaction rules
+
+- **Custom cursor** is subtle but present. Dot + ring + occasional trail.
+  States: `hover-link` (enlarged ring), `hover-text` (I-beam). Fall back to
+  system cursor on touch devices.
+- **Reveals** — use `class="reveal"` on any section block. IntersectionObserver
+  adds `.in` at 12% visibility; optional `data-delay="120"` staggers.
+- **Years counter** — `data-count="10" data-sup="yrs"` on any element with a
+  child `.v` counts up on first intersection.
+- **Active nav link** — matches current page filename; for in-page anchors
+  (`#contact`) the scroll observer flips the class.
+- **Hover ≠ tap.** On `pointer:coarse` devices the custom cursor and hover
+  states are bypassed; keep label text in markup, not just on hover.
+
+---
+
+## 8. Copy rules
+
+- Always one `<em>` per headline — never two, never zero. The marker
+  highlight should land on a 1-word concept ("interface", "platform",
+  "craft").
+- Numbers: show them when real (years, subscribers, completion rate). Leave
+  placeholders as-is until you have real metrics; don't invent.
+- Endorsements are placeholder quotes. Replace with real ones (LinkedIn,
+  friends, former managers) before going live.
+- No gerunds as nouns ("Building", "Shipping") as sentence starters. Lead
+  with a verb or a statement.
+- Avoid clichés: "passionate", "drives results", "craft at scale".
+
+---
+
+## 9. Known placeholders / pre-launch TODOs
+
+1. **Real projects** — `work.html` currently has placeholder projects. Swap
+   for your actual case studies (role, year, description, 3-4 stats per
+   project, tags).
+2. **Real endorsements** — update quote blocks in `index.html` (marquee
+   section). Name, role, one-line quote; avatar is two initials or a
+   monogram.
+3. **Metrics** — bento cells and case stats have plausible numbers. Confirm
+   or replace per project and role.
+4. **CV download** — the "Download full CV" CTA on `about.html` is a stub.
+   Link a PDF or a real document.
+5. **Email** — `hello@nicholasrios.co` is a placeholder. Swap for the real
+   address.
+6. **Social links** — all `<a href="#">` in footers and social sections need
+   real URLs (LinkedIn, GitHub, Read.cv, etc.).
+7. **OG / favicon** — not yet wired. Add `/favicon.svg` and update the `<meta>`
+   tags if deploying.
+8. **Location** — "Jersey City" is hardcoded across nav, hero bento, and
+   footer. Update if you relocate.
+
+---
+
+## 10. Tweakable keys (edit mode)
+
+```json
+{
+  "theme":  "auto" | "light" | "dark",
+  "accent": "pink" | "cobalt" | "lime" | "grape",
+  "motion": "high" | "low",
+  "grid":   "on" | "subtle" | "off"
+}
+```
+
+These read on boot from `window.__TWEAKS__`, then fall back to
+`localStorage`, and persist via the tweaks script. The `theme: "auto"` mode
+follows the OS preference.
+
+---
+
+## 11. Don'ts
+
+- Don't add a profile photo of yourself. Site stays about the work.
+- Don't introduce gradients except the one accent halo on the hero.
+- Don't paint UI surfaces in the secondary colors. They're for accents on
+  labels, dots, tag chips, and geo shapes — not buttons, borders,
+  backgrounds, or large fills (except geo shapes and markers).
+- Don't add more than ~24 skills to the reel. If it scrolls too fast it
+  becomes decoration, not communication.
+- Don't bump font sizes to fill space. If a block looks empty, cut it.
+- Don't emoji. The accent color is the only loud thing on the page.
+- Don't tilt or rotate text except the marker `<em>` highlight (which rotates
+  −1.4°) and geo shapes. Readability first.
