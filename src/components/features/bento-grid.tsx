@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
-	"relative flex flex-col justify-between overflow-hidden rounded-(--r-lg) border border-border bg-(--paper-2) p-5.5 shadow-(--shadow-card) transition-[transform,box-shadow,border-color] duration-400 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-1 hover:border-(--border-2) hover:shadow-(--shadow-pop)";
+	"relative flex flex-col justify-between overflow-hidden rounded-(--r-lg) border border-border bg-(--paper-2) p-5.5 shadow-(--shadow-card) transition-[box-shadow,border-color] duration-400 ease-[cubic-bezier(.2,.7,.2,1)] hover:border-(--border-2) hover:shadow-(--shadow-pop)";
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (

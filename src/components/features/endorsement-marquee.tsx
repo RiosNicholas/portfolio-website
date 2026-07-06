@@ -11,7 +11,7 @@ import {
 function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
 		<a
-			className="flex w-[clamp(280px,28vw,392px)] shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-[transform,box-shadow] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-1 hover:shadow-(--shadow-pop)"
+			className="flex w-[clamp(280px,28vw,392px)] shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:shadow-(--shadow-pop)"
 			href={e.linkedinUrl}
 			rel="noopener noreferrer"
 			target="_blank"
