@@ -5,6 +5,9 @@
 @custom-variant dark (&:is([data-theme="dark"] *));
 
 @theme {
+	--animate-marquee: marquee var(--duration, 40s) linear infinite;
+	--animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
+		infinite;
 	--font-display:
 		var(--font-schibsted), "Schibsted Grotesk", ui-sans-serif, system-ui,
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
@@ -563,21 +566,21 @@ em {
 	}
 }
 
-@keyframes marquee-left {
+@keyframes marquee {
 	from {
 		transform: translateX(0);
 	}
 	to {
-		transform: translateX(-50%);
+		transform: translateX(calc(-100% - var(--gap)));
 	}
 }
 
-@keyframes marquee-right {
+@keyframes marquee-vertical {
 	from {
-		transform: translateX(-50%);
+		transform: translateY(0);
 	}
 	to {
-		transform: translateX(0);
+		transform: translateY(calc(-100% - var(--gap)));
 	}
 }
 
