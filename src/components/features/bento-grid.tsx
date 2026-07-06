@@ -5,12 +5,12 @@ import { useEffect, useRef } from "react";
 import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
-	"relative flex flex-col justify-between overflow-hidden rounded-(--r-lg) border border-border bg-(--paper-2) p-5.5 shadow-(--shadow-card) transition-[box-shadow,border-color] duration-400 ease-[cubic-bezier(.2,.7,.2,1)] hover:border-(--border-2) hover:shadow-(--shadow-pop)";
+	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:border-(--border-2) hover:shadow-(--shadow-pop)";
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex items-center gap-2 font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
-			<span className="h-1.75 w-1.75 shrink-0 rounded-sm bg-(--accent)" />
+		<div className="flex items-center gap-2 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
+			<span className="size-2 shrink-0 rounded-sm bg-(--accent)" />
 			{children}
 		</div>
 	);
@@ -18,7 +18,7 @@ function CellLabel({ children }: { children: React.ReactNode }) {
 
 function CellSub({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="font-mono text-(--ink-3) text-[11px] tracking-normal">
+		<div className="font-mono text-(--ink-3) text-xs tracking-normal">
 			{children}
 		</div>
 	);
@@ -83,7 +83,7 @@ function YearsCell() {
 		<div className={cn(CELL_CLASS, "col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
-				<div className="font-display font-semibold text-[clamp(72px,9vw,124px)] text-foreground leading-[0.95] tracking-[-0.06em]">
+				<div className="font-display font-semibold text-[clamp(72px,9vw,124px)] text-foreground leading-none tracking-tighter">
 					<span ref={numRef}>0</span>
 				</div>
 			</div>
@@ -103,15 +103,15 @@ function SkillsCell() {
 
 	return (
 		<div className={cn(CELL_CLASS, "col-span-4 row-span-2 p-0")}>
-			<div className="flex items-baseline justify-between px-5.5 pt-5.5 pb-2">
+			<div className="flex items-baseline justify-between px-6 pt-6 pb-2">
 				<CellLabel>Skills</CellLabel>
-				<span className="font-mono text-(--ink-3) text-[11px]">24 / ∞</span>
+				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
 			</div>
 			<div className="mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] relative flex-1 overflow-hidden">
 				<div className="skills-reel-track" ref={trackRef}>
 					{skills.map((skill, i) => (
 						<div
-							className="flex items-center gap-2.5 whitespace-nowrap px-5.5 py-1 font-display font-semibold text-[clamp(24px,2.4vw,34px)] text-foreground leading-[1.18] tracking-[-0.035em]"
+							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-[clamp(24px,2.4vw,34px)] text-foreground leading-tight tracking-tight"
 							key={i}
 						>
 							<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
@@ -136,12 +136,12 @@ export default function BentoGrid() {
 			>
 				<CellLabel>Based</CellLabel>
 				<div>
-					<div className="font-display font-semibold text-[clamp(28px,3vw,44px)] text-foreground leading-[0.96] tracking-[-0.035em]">
+					<div className="font-display font-semibold text-[clamp(28px,3vw,44px)] text-foreground leading-none tracking-tight">
 						Jersey
 						<br />
 						<em className="text-(--accent-text) not-italic">City</em>
 					</div>
-					<div className="mt-2 font-mono text-(--ink-3) text-[11px]">
+					<div className="mt-2 font-mono text-(--ink-3) text-xs">
 						40.7178° N · 74.0431° W
 					</div>
 				</div>
@@ -161,7 +161,7 @@ export default function BentoGrid() {
 					<div className="relative h-2.5 w-2.5 rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]">
 						<div className="absolute -inset-1.25 animate-[ripple_1.8s_ease-out_infinite] rounded-full border border-(--c-lime)" />
 					</div>
-					<div className="font-display font-semibold text-[clamp(18px,1.5vw,22px)] text-foreground leading-tight tracking-[-0.02em]">
+					<div className="font-display font-semibold text-[clamp(18px,1.5vw,22px)] text-foreground leading-tight tracking-tight">
 						Open to{" "}
 						<em className="no-underline! text-(--accent-text) not-italic">
 							consulting
@@ -179,10 +179,10 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Favourite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{["Zed", "Ghostty", "Linear", "Figma", "Raycast", "tmux"].map(
+					{["Claude Code", "Ghostty", "Linear", "Figma", "Raycast", "tmux"].map(
 						(tool) => (
 							<span
-								className="rounded-(--r-pill) border border-(--border-2) bg-(--frosted) px-2.75 py-1.25 font-medium font-sans text-(--ink-2) text-xs"
+								className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
 								key={tool}
 							>
 								{tool}
@@ -196,20 +196,12 @@ export default function BentoGrid() {
 			{/* Now */}
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Currently</CellLabel>
-				<div className="font-normal font-sans text-(--ink-2) text-[15px] leading-normal tracking-[-0.005em]">
-					Leading UI for an{" "}
+				<div className="font-normal font-sans text-(--ink-2) text-sm leading-normal tracking-normal">
+					Building an{" "}
 					<strong className="font-semibold text-(--accent-text)">
-						agents platform
+						AI tooling platform
 					</strong>{" "}
-					in credit risk. Freelancing on{" "}
-					<strong className="font-semibold text-(--accent-text)">
-						Evangeliu Coffee
-					</strong>{" "}
-					&amp; co-maintaining{" "}
-					<strong className="font-semibold text-(--accent-text)">
-						gslsamp
-					</strong>
-					.
+					for Software Engineers and Credit Risk Officers.
 				</div>
 			</div>
 		</div>
