@@ -8,7 +8,7 @@ export function HeroSection() {
 			{/* Geometric decorations */}
 			<div
 				aria-hidden
-				className="geo geo-ring float no-low top-[13%] right-[5%] h-[118px] w-[118px] text-(--c-cobalt) opacity-65 [--geo-rot:-8deg]"
+				className="geo geo-ring float no-low top-[13%] right-[5%] h-29.5 w-29.5 text-(--c-cobalt) opacity-65 [--geo-rot:-8deg]"
 			/>
 			<div
 				aria-hidden
@@ -16,18 +16,18 @@ export function HeroSection() {
 			/>
 			<div
 				aria-hidden
-				className="geo geo-dotsq spin no-low right-[9%] bottom-[15%] h-[92px] w-[92px] text-(--c-grape) opacity-45"
+				className="geo geo-dotsq spin no-low right-[9%] bottom-[15%] h-23 w-23 text-(--c-grape) opacity-45"
 			/>
 			<div
 				aria-hidden
 				className="geo geo-circle fill float no-low bottom-[32%] left-[43%] h-4 w-4 text-(--c-yellow) opacity-90"
 			/>
 
-			<div className="relative z-[1]">
+			<div className="relative z-10">
 				{/* Eyebrow */}
-				<div className="reveal mb-7.5 inline-flex w-max items-center gap-2.5 rounded-(--r-pill) border border-(--border-2) bg-(--paper-2) px-[15px] py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
+				<div className="reveal mb-8 inline-flex w-max items-center gap-2.5 rounded-full border border-(--border-2) bg-card px-4 py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
 					<span className="h-2 w-2 shrink-0 animate-[breathe_2.4s_ease-in-out_infinite] rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]" />
-					Available · Freelance + Consulting
+					Available · Open to new opportunities
 				</div>
 
 				{/* Headline */}
@@ -44,17 +44,17 @@ export function HeroSection() {
 
 				{/* Lead */}
 				<p className="reveal mt-[clamp(28px,4vw,40px)] max-w-[54ch] font-normal font-sans text-(--ink-2) text-[clamp(17px,1.4vw,21px)] leading-normal tracking-[-0.005em]">
-					I&apos;m Nick — I build the{" "}
+					I&apos;m Nick — a frontend engineer building{" "}
 					<em className="no-underline! font-semibold text-foreground not-italic">
-						UI layer
+						shared UI infrastructure
 					</em>{" "}
-					and the platform it stands on. Currently leading interface work for a
-					credit-risk agents suite in NYC.
+					and developer tooling in risk tech at JPMorganChase, from platform
+					components to specialized AI agents.
 				</p>
 
 				{/* Footer row */}
 				<div className="reveal mt-[clamp(48px,7vw,78px)] grid grid-cols-[1fr_auto] items-end gap-6 border-border border-t pt-6">
-					<div className="flex flex-wrap gap-7 font-mono text-(--ink-3) text-xs tracking-normal">
+					<div className="flex flex-wrap gap-7 font-mono text-muted-foreground text-xs tracking-normal">
 						<div>
 							<span className="text-foreground">Jersey City, NJ</span> — 40.72°
 							N
