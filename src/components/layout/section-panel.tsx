@@ -18,7 +18,7 @@ export function SectionShell({
 			className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 md:p-8"
 			id={id}
 		>
-			<p className="mb-2 text-xs uppercase tracking-[0.18em] text-zinc-400">
+			<p className="mb-2 text-xs text-zinc-400 uppercase tracking-[0.18em]">
 				{eyebrow}
 			</p>
 			<h2 className="font-semibold text-2xl md:text-3xl">{title}</h2>

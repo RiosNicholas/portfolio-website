@@ -1,4 +1,8 @@
-import { FileTextIcon, GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
+import {
+	FileTextIcon,
+	GitHubLogoIcon,
+	LinkedInLogoIcon,
+} from "@radix-ui/react-icons";
 
 import { profileLinks } from "~/lib/site-links";
 
@@ -16,7 +20,7 @@ const socials: { href: string; label: string; icon: React.ReactNode }[] = [
 		icon: <GitHubLogoIcon aria-hidden="true" className={iconCls} />,
 	},
 	{
-    href: profileLinks.resume,
+		href: profileLinks.resume,
 		label: "Resume",
 		icon: <FileTextIcon aria-hidden="true" className={iconCls} />,
 	},
@@ -66,14 +70,16 @@ export function ContactStrip() {
 				</div>
 			</div>
 
-      {/* TODO: Move footer to core layout */}
+			{/* TODO: Move footer to core layout */}
 			{/* Footer */}
 			<div className="mt-16 grid grid-cols-[1fr_auto_1fr] items-center border-border border-t pt-10 pb-24 font-mono text-(--ink-4) text-[11px] tracking-normal">
 				<div>© 2026 Nicholas Rios</div>
 				<div className="font-medium text-(--accent-text)">
 					✱ New York City Metropolitan Area
 				</div>
-				<div className="text-right">UI Development· Platform Engineering · Agentic Development</div>
+				<div className="text-right">
+					UI Development· Platform Engineering · Agentic Development
+				</div>
 			</div>
 		</section>
 	);

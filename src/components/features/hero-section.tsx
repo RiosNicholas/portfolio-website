@@ -1,69 +1,80 @@
-import Link from "next/link";
+"use client";
 
-import { HeroSocialIcons } from "~/components/features/hero-social-icons";
+import Link from "next/link";
 
 export function HeroSection() {
 	return (
-		<section
-			className="relative flex min-h-[calc(100dvh-6rem)] flex-col justify-center border-zinc-800/80 border-b px-4 py-16 md:px-8"
-			id="hero"
-		>
-			<div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(120,119,198,0.18),transparent)]" />
+		<section className="hero-min relative flex min-h-[84vh] flex-col justify-center pt-[clamp(118px,16vh,168px)] pb-[clamp(48px,7vw,96px)]">
+			{/* Geometric decorations */}
+			<div
+				aria-hidden
+				className="geo geo-ring float no-low top-[13%] right-[5%] h-[118px] w-[118px] text-(--c-cobalt) opacity-65 [--geo-rot:-8deg]"
+			/>
+			<div
+				aria-hidden
+				className="geo geo-tri float no-low top-[33%] right-[20%] text-(--c-lime) text-[62px] opacity-85 [--geo-rot:10deg]"
+			/>
+			<div
+				aria-hidden
+				className="geo geo-dotsq spin no-low right-[9%] bottom-[15%] h-[92px] w-[92px] text-(--c-grape) opacity-45"
+			/>
+			<div
+				aria-hidden
+				className="geo geo-circle fill float no-low bottom-[32%] left-[43%] h-4 w-4 text-(--c-yellow) opacity-90"
+			/>
 
-			<div className="relative mx-auto flex w-full max-w-4xl flex-col gap-8">
-				<div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
-					<div className="space-y-1">
-						<p className="text-xs text-zinc-400 uppercase tracking-[0.18em]">
-							Software Engineer · UI Architecture & Platform Engineering · Street Photography
-						</p>
-						<h1 className="font-semibold text-4xl text-white tracking-tight md:text-6xl md:leading-[1.08]">
-							Hey, I&apos;m{" "}
-							<span className="bg-linear-to-r from-zinc-100 to-zinc-400 bg-clip-text text-transparent">
-								Nicholas Rios
-							</span>
-							.
-						</h1>
+			<div className="relative z-[1]">
+				{/* Eyebrow */}
+				<div className="reveal mb-7.5 inline-flex w-max items-center gap-2.5 rounded-(--r-pill) border border-(--border-2) bg-(--paper-2) px-[15px] py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
+					<span className="h-2 w-2 shrink-0 animate-[breathe_2.4s_ease-in-out_infinite] rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]" />
+					Available · Freelance + Consulting
+				</div>
+
+				{/* Headline */}
+				<h1 className="reveal m-0 font-display font-semibold text-[clamp(50px,10.5vw,142px)] text-foreground leading-[0.92] tracking-[-0.04em]">
+					Software
+					<br />
+					engineer &amp;
+					<br />
+					<em className="no-underline! inline-block -rotate-[1.4deg] rounded-lg bg-(--accent) box-decoration-clone px-[0.16em] py-[0.01em] text-(--marker-ink) not-italic">
+						interface
+					</em>{" "}
+					craftsman.
+				</h1>
+
+				{/* Lead */}
+				<p className="reveal mt-[clamp(28px,4vw,40px)] max-w-[54ch] font-normal font-sans text-(--ink-2) text-[clamp(17px,1.4vw,21px)] leading-normal tracking-[-0.005em]">
+					I&apos;m Nick — I build the{" "}
+					<em className="no-underline! font-semibold text-foreground not-italic">
+						UI layer
+					</em>{" "}
+					and the platform it stands on. Currently leading interface work for a
+					credit-risk agents suite in NYC.
+				</p>
+
+				{/* Footer row */}
+				<div className="reveal mt-[clamp(48px,7vw,78px)] grid grid-cols-[1fr_auto] items-end gap-6 border-border border-t pt-6">
+					<div className="flex flex-wrap gap-7 font-mono text-(--ink-3) text-xs tracking-normal">
+						<div>
+							<span className="text-foreground">Jersey City, NJ</span> — 40.72°
+							N
+						</div>
+						<div>
+							<span className="text-foreground">EST · UTC−5</span>
+						</div>
+						<div>
+							<span className="text-foreground">2026</span> · vol. vii
+						</div>
 					</div>
-					<HeroSocialIcons />
-				</div>
 
-				<div className="max-w-2xl space-y-4">
-					<p className="text-lg text-zinc-300 leading-relaxed md:text-xl">
-						I help teams ship resilient product UI: design systems, shared
-						platform primitives, and frontend architecture that scales across
-						squads—without sacrificing velocity, accessibility, or DX.
-					</p>
-				</div>
-
-				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
 					<Link
-						className="inline-flex items-center justify-center rounded-full border border-zinc-500 bg-zinc-100 px-6 py-3 font-medium text-sm text-zinc-900 shadow-sm transition hover:bg-white"
+						className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-[-0.015em] no-underline shadow-(--shadow-pop) transition-[transform,background] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 						href="/work"
 					>
-						See how I&apos;ve built UI platforms &amp; scaled frontends
-					</Link>
-					<Link
-						className="inline-flex items-center justify-center rounded-full border border-zinc-700 px-6 py-3 text-sm text-zinc-200 transition hover:bg-zinc-800"
-						href="#more"
-					>
-						Scroll for overview
+						<span>See selected work</span>
+						<span>↗</span>
 					</Link>
 				</div>
-			</div>
-
-			<div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 flex-col items-center gap-1 text-zinc-500">
-				<span className="text-xs uppercase tracking-widest">More</span>
-				<svg
-					aria-hidden="true"
-					className="size-5 animate-bounce"
-					fill="none"
-					focusable="false"
-					stroke="currentColor"
-					strokeWidth="2"
-					viewBox="0 0 24 24"
-				>
-					<path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-				</svg>
 			</div>
 		</section>
 	);
