@@ -32,7 +32,7 @@ export function HeroSection() {
 
 				{/* Headline */}
 				<h1 className="reveal m-0 font-display font-semibold text-[clamp(50px,10.5vw,142px)] text-foreground leading-[0.92] tracking-[-0.04em]">
-					Software
+					Platform 
 					<br />
 					engineer &amp;
 					<br />
@@ -44,12 +44,16 @@ export function HeroSection() {
 
 				{/* Lead */}
 				<p className="reveal mt-[clamp(28px,4vw,40px)] max-w-[54ch] font-normal font-sans text-(--ink-2) text-[clamp(17px,1.4vw,21px)] leading-normal tracking-[-0.005em]">
-					I&apos;m Nick — a frontend engineer building{" "}
+					I&apos;m Nicholas — a Frontend Software Engineer building {" "} 
 					<em className="no-underline! font-semibold text-foreground not-italic">
-						shared UI infrastructure
+          UI platform infrastructure {" "}
+          </em>
+          and {" "}
+					<em className="no-underline! font-semibold text-foreground not-italic">
+						agentic AI systems
 					</em>{" "}
-					and developer tooling in risk tech at JPMorganChase, from platform
-					components to specialized AI agents.
+					in Risk Tech at JPMorganChase, from shared components to production
+					agents.
 				</p>
 
 				{/* Footer row */}

@@ -194,11 +194,11 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Currently</CellLabel>
 				<div className="font-normal font-sans text-(--ink-2) text-sm leading-normal tracking-normal">
-					Building an{" "}
+					Building{" "}
 					<strong className="font-semibold text-(--accent-text)">
-						AI tooling platform
+						UI platform infra
 					</strong>{" "}
-					for Software Engineers and Credit Risk Officers.
+					and agentic AI systems at JPMorganChase.
 				</div>
 			</div>
 		</div>
