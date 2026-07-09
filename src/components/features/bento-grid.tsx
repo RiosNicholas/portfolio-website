@@ -87,7 +87,7 @@ function YearsCell() {
 					<span ref={numRef}>0</span>
 				</div>
 			</div>
-			<CellSub>Building for the web since &apos;16</CellSub>
+			<CellSub>Building for the web since &apos;21</CellSub>
 		</div>
 	);
 }
@@ -142,7 +142,7 @@ export default function BentoGrid() {
 						<em className="text-(--accent-text) not-italic">City</em>
 					</div>
 					<div className="mt-2 font-mono text-(--ink-3) text-xs">
-						40.7178° N · 74.0431° W
+						40.7248° N · -74.0347° W
 					</div>
 				</div>
 				{/* Animated pin */}
@@ -158,15 +158,12 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Status</CellLabel>
 				<div className="flex flex-col gap-3">
-					<div className="relative h-2.5 w-2.5 rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]">
-						<div className="absolute -inset-1.25 animate-[ripple_1.8s_ease-out_infinite] rounded-full border border-(--c-lime)" />
-					</div>
 					<div className="font-display font-semibold text-[clamp(18px,1.5vw,22px)] text-foreground leading-tight tracking-tight">
 						Open to{" "}
-						<em className="no-underline! text-(--accent-text) not-italic">
-							consulting
-						</em>{" "}
-						+ freelance
+            <strong className="font-semibold text-(--accent-text)">
+              consulting
+            </strong>
+						+ full-time opportunities
 					</div>
 				</div>
 				<CellSub>Reply within 48 hours</CellSub>
@@ -179,7 +176,7 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Favourite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{["Claude Code", "Ghostty", "Linear", "Figma", "Raycast", "tmux"].map(
+					{["Claude Code", "Copilot", "Emacs Org Mode", "Figma", "Raycast", "tmux"].map(
 						(tool) => (
 							<span
 								className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
@@ -190,7 +187,7 @@ export default function BentoGrid() {
 						),
 					)}
 				</div>
-				<CellSub>updated mar 2026</CellSub>
+				<CellSub>Updated July 2026</CellSub>
 			</div>
 
 			{/* Now */}
