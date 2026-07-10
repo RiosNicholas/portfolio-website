@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Reveal } from "~/components/ui/reveal";
 import { type CvEntry, education, experience } from "~/lib/about-data";
 
 function CvRow({ years, title, titleAccent, where }: CvEntry) {
@@ -26,14 +27,17 @@ function CvRow({ years, title, titleAccent, where }: CvEntry) {
 export function AboutBio() {
 	return (
 		<>
-			<p className="reveal max-w-[22ch] font-display font-semibold text-[clamp(32px,4vw,54px)] text-foreground leading-[1.06]">
+			<Reveal
+				as="p"
+				className="max-w-[22ch] font-display font-semibold text-[clamp(32px,4vw,54px)] text-foreground leading-[1.06]"
+			>
 				I&apos;m Nick — a full-stack engineer focused on{" "}
 				<em className="mark">UI and platform</em>. Based in Jersey City.
-			</p>
+			</Reveal>
 
 			<div className="grid grid-cols-1 gap-[clamp(32px,5vw,76px)] md:grid-cols-[1.4fr_1fr]">
 				{/* Gist */}
-				<div className="reveal">
+				<Reveal>
 					<h3 className="font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
 						The gist
 					</h3>
@@ -52,10 +56,10 @@ export function AboutBio() {
 						that earns its keep — not a fan of gradient soup or software that
 						shouts. Also a co-founder of ColorStack&apos;s Rutgers chapter.
 					</p>
-				</div>
+				</Reveal>
 
 				{/* CV */}
-				<div className="reveal">
+				<Reveal>
 					<h3 className="font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
 						Experience
 					</h3>
@@ -84,7 +88,7 @@ export function AboutBio() {
 							<span>↗</span>
 						</Link>
 					</div>
-				</div>
+				</Reveal>
 			</div>
 		</>
 	);

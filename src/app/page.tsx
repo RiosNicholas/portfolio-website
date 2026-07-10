@@ -4,6 +4,7 @@ import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
 import { HeroSection } from "~/components/features/hero-section";
 import { WorkTeaser } from "~/components/features/work-teaser";
 import { SectionHeader } from "~/components/layout/section-header";
+import { Reveal } from "~/components/ui/reveal";
 
 export default function HomePage() {
 	return (
@@ -40,9 +41,9 @@ export default function HomePage() {
 						</>
 					}
 				/>
-				<div className="reveal">
+				<Reveal>
 					<WorkTeaser />
-				</div>
+				</Reveal>
 			</section>
 
 			{/* Endorsements */}
@@ -50,7 +51,7 @@ export default function HomePage() {
 				aria-label="Endorsements"
 				style={{ padding: "clamp(56px, 8vw, 112px) 0" }}
 			>
-				<div className="reveal">
+				<Reveal>
 					<SectionHeader
 						meta="12 endorsements · cont."
 						num="02 — Kind words"
@@ -60,7 +61,7 @@ export default function HomePage() {
 							</>
 						}
 					/>
-				</div>
+				</Reveal>
 				<EndorsementMarquee />
 			</section>
 

@@ -8,7 +8,7 @@ import {
 } from "next/font/google";
 import { SiteNav } from "~/components/layout/site-nav";
 import { CustomCursor } from "~/components/ui/custom-cursor";
-import { RevealObserver } from "~/components/ui/reveal-observer";
+import { MotionProvider } from "~/components/ui/motion-provider";
 import { cn } from "~/lib/utils";
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -64,12 +64,13 @@ export default function RootLayout({
 				<script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
 				<div aria-hidden className="paper-bg" />
 				<div aria-hidden className="grain" />
-				<CustomCursor />
-				<TRPCReactProvider>
-					<SiteNav />
-					<RevealObserver />
-					{children}
-				</TRPCReactProvider>
+				<MotionProvider>
+					<CustomCursor />
+					<TRPCReactProvider>
+						<SiteNav />
+						{children}
+					</TRPCReactProvider>
+				</MotionProvider>
 			</body>
 		</html>
 	);

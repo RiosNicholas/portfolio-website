@@ -1,6 +1,7 @@
 "use client";
 
 import { Marquee } from "~/components/ui/marquee";
+import { Reveal } from "~/components/ui/reveal";
 import {
 	type Endorsement,
 	endorsements,
@@ -49,7 +50,7 @@ export function EndorsementMarquee() {
 	const rowB = endorsements.slice(mid);
 
 	return (
-		<div className="reveal mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] relative my-[clamp(48px,7vw,88px)] flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5">
+		<Reveal className="mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] relative my-[clamp(48px,7vw,88px)] flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5">
 			<Marquee
 				className="p-0 [--duration:80s] [--gap:14px]"
 				pauseOnHover
@@ -69,6 +70,6 @@ export function EndorsementMarquee() {
 					<EndorsementCard e={e} key={e.name} />
 				))}
 			</Marquee>
-		</div>
+		</Reveal>
 	);
 }

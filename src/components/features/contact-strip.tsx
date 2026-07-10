@@ -4,6 +4,7 @@ import {
 	LinkedInLogoIcon,
 } from "@radix-ui/react-icons";
 
+import { Reveal } from "~/components/ui/reveal";
 import { profileLinks } from "~/lib/site-links";
 
 const iconCls = "size-4 shrink-0";
@@ -32,11 +33,17 @@ export function ContactStrip() {
 			className="relative mt-[clamp(48px,7vw,88px)] border-border border-t pt-[clamp(72px,12vw,136px)] pb-6"
 			id="contact"
 		>
-			<p className="reveal mb-5 font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
+			<Reveal
+				as="p"
+				className="mb-5 font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]"
+			>
 				03 — Let&apos;s talk
-			</p>
+			</Reveal>
 
-			<h2 className="reveal m-0 font-display font-semibold text-(--ink) text-[clamp(50px,9.5vw,132px)] leading-[0.9] tracking-[-0.04em]">
+			<Reveal
+				as="h2"
+				className="m-0 font-display font-semibold text-(--ink) text-[clamp(50px,9.5vw,132px)] leading-[0.9] tracking-[-0.04em]"
+			>
 				Let&apos;s build
 				<br />
 				something{" "}
@@ -44,9 +51,9 @@ export function ContactStrip() {
 					good
 				</em>
 				.
-			</h2>
+			</Reveal>
 
-			<div className="reveal mt-12 grid grid-cols-[1fr_auto] items-end gap-6">
+			<Reveal className="mt-12 grid grid-cols-[1fr_auto] items-end gap-6">
 				<a
 					className="border-(--accent) border-b-[3px] pb-0.5 font-display font-semibold text-(--ink) text-[clamp(22px,2vw,32px)] tracking-[-0.03em] no-underline transition-colors duration-200 hover:text-(--accent-text)"
 					href="mailto:rios.nicholas@protonmail.com"
@@ -68,7 +75,7 @@ export function ContactStrip() {
 						</a>
 					))}
 				</div>
-			</div>
+			</Reveal>
 
 			{/* TODO: Move footer to core layout */}
 			{/* Footer */}

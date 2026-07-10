@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
+import { Reveal } from "~/components/ui/reveal";
 import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
@@ -126,7 +127,7 @@ function SkillsCell() {
 
 export default function BentoGrid() {
 	return (
-		<div className="reveal my-[clamp(40px,7vw,84px)] grid auto-rows-[168px] grid-cols-6 gap-3">
+		<Reveal className="my-[clamp(40px,7vw,84px)] grid auto-rows-[168px] grid-cols-6 gap-3">
 			{/* Location */}
 			<div
 				className={cn(
@@ -160,9 +161,9 @@ export default function BentoGrid() {
 				<div className="flex flex-col gap-3">
 					<div className="font-display font-semibold text-[clamp(18px,1.5vw,22px)] text-foreground leading-tight tracking-tight">
 						Open to{" "}
-            <strong className="font-semibold text-(--accent-text)">
-              consulting
-            </strong>
+						<strong className="font-semibold text-(--accent-text)">
+							consulting
+						</strong>
 						+ full-time opportunities
 					</div>
 				</div>
@@ -176,16 +177,21 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Favourite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{["Claude Code", "Copilot", "Emacs Org Mode", "Figma", "Raycast", "tmux"].map(
-						(tool) => (
-							<span
-								className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
-								key={tool}
-							>
-								{tool}
-							</span>
-						),
-					)}
+					{[
+						"Claude Code",
+						"Copilot",
+						"Emacs Org Mode",
+						"Figma",
+						"Raycast",
+						"tmux",
+					].map((tool) => (
+						<span
+							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
+							key={tool}
+						>
+							{tool}
+						</span>
+					))}
 				</div>
 				<CellSub>Updated July 2026</CellSub>
 			</div>
@@ -201,6 +207,6 @@ export default function BentoGrid() {
 					and agentic AI systems at JPMorganChase.
 				</div>
 			</div>
-		</div>
+		</Reveal>
 	);
 }
