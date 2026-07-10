@@ -52,7 +52,7 @@ function YearsCell() {
 	useEffect(() => {
 		const el = numRef.current;
 		if (!el) return;
-		const target = 10;
+		const target = 4;
 		const io = new IntersectionObserver(
 			(entries) => {
 				for (const entry of entries) {
