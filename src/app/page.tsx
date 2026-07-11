@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import BentoGrid from "~/components/features/bento-grid";
 import { ContactStrip } from "~/components/features/contact-strip";
 import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
@@ -18,21 +20,12 @@ export default function HomePage() {
 			</section>
 
 			{/* Work teaser */}
-			<section
-				aria-label="Selected work"
-				style={{ padding: "clamp(56px, 8vw, 112px) 0" }}
-			>
+			<section aria-label="Selected work" className="py-14 sm:py-20 lg:py-28">
 				<SectionHeader
 					meta={
-						<a
-							href="/work"
-							style={{
-								color: "var(--accent-text)",
-								textDecoration: "none",
-							}}
-						>
+						<Link className="text-(--accent-text)" href="/work">
 							View all →
-						</a>
+						</Link>
 					}
 					num="01 — Selected"
 					title={
@@ -47,10 +40,7 @@ export default function HomePage() {
 			</section>
 
 			{/* Endorsements */}
-			<section
-				aria-label="Endorsements"
-				style={{ padding: "clamp(56px, 8vw, 112px) 0" }}
-			>
+			<section aria-label="Endorsements" className="py-14 sm:py-20 lg:py-28">
 				<Reveal>
 					<SectionHeader
 						meta="12 endorsements · cont."

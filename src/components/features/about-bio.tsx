@@ -32,7 +32,8 @@ export function AboutBio() {
 				className="max-w-[22ch] font-display font-semibold text-[clamp(32px,4vw,54px)] text-foreground leading-[1.06]"
 			>
 				I&apos;m Nick — a full-stack engineer focused on{" "}
-				<em className="mark">UI and platform</em>. Based in Jersey City.
+				<em className="mark">UI</em> and <em className="mark">platform</em>.
+				Based in Jersey City.
 			</Reveal>
 
 			<div className="grid grid-cols-1 gap-[clamp(32px,5vw,76px)] md:grid-cols-[1.4fr_1fr]">

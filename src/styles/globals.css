@@ -406,21 +406,6 @@ em {
 	text-underline-offset: 3px;
 }
 
-/* ─── Photo card reveal ─────────────────────────────────────────────────────── */
-
-.photo-card {
-	transform: translateY(40px) scale(0.97);
-	opacity: 0;
-	transition:
-		transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1),
-		opacity 700ms ease,
-		box-shadow 400ms;
-}
-.photo-card.in {
-	transform: translateY(0) scale(1);
-	opacity: 1;
-}
-
 /* ─── Skills reel ────────────────────────────────────────────────────────────── */
 
 .skills-reel-track {
@@ -454,11 +439,5 @@ em {
 	}
 	to {
 		transform: translateY(-50%);
-	}
-}
-
-@keyframes dot-breathe {
-	50% {
-		opacity: 0.45;
 	}
 }
