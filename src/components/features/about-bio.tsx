@@ -31,8 +31,8 @@ export function AboutBio() {
 				as="p"
 				className="max-w-[22ch] font-display font-semibold text-[clamp(32px,4vw,54px)] text-foreground leading-[1.06]"
 			>
-				I&apos;m Nick — a full-stack engineer focused on{" "}
-				<em className="mark">UI</em> and <em className="mark">platform</em>.
+				I&apos;m Nick — a Platform Software Engineer focused on{" "}
+				<em className="mark">UI</em> and <em className="mark">Agentic AI</em>.
 				Based in Jersey City.
 			</Reveal>
 
@@ -40,22 +40,16 @@ export function AboutBio() {
 				{/* Gist */}
 				<Reveal>
 					<h3 className="font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
-						The gist
+						Summary
 					</h3>
 					<p className="mt-4 font-normal font-sans text-(--ink-2) text-[clamp(16px,1.3vw,18px)] leading-relaxed tracking-[-0.005em]">
-						About 4 years of shipping software. Currently at JPMorgan in Risk
-						Tech, building agentic tooling — observability, RAG, and shared UI
-						platform components used across the org.
+						At about 3 years of building software, I specialize in UI platform engineering — design systems, developer tooling, and scalable frontend architecture. I enjoy building systems that improve developer experience and enable teams to move faster. 
 					</p>
 					<p className="mt-4 font-normal font-sans text-(--ink-2) text-[clamp(16px,1.3vw,18px)] leading-relaxed tracking-[-0.005em]">
-						Before that: a fintech frontend internship at Fiserv, and a stint
-						leading web development for a Rutgers research program while
-						finishing my degree.
+				    I'm currently in risk technology at JPMorganChase, where I build platform infrastructure on two fronts: the shared UI foundation — component libraries, architecture, and tooling — that product teams build on, and the agentic AI platform that's making AI a core part of how we ship. 
 					</p>
 					<p className="mt-4 font-normal font-sans text-(--ink-2) text-[clamp(16px,1.3vw,18px)] leading-relaxed tracking-[-0.005em]">
-						I care about legibility, ergonomics, documentation, and animation
-						that earns its keep — not a fan of gradient soup or software that
-						shouts. Also a co-founder of ColorStack&apos;s Rutgers chapter.
+					  Outside of engineering, I enjoy street photography and occasionally publish my work. 
 					</p>
 				</Reveal>
 
