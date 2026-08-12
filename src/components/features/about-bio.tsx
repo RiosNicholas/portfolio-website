@@ -10,8 +10,8 @@ import {
 
 function CvRow({ years, title, titleAccent, where }: CvEntry) {
 	return (
-		<div className="flex gap-4 border-(--border) border-b py-3.5">
-			<div className="w-36 shrink-0 font-mono text-(--ink-3) text-xs">
+		<div className="flex flex-col gap-1 border-border border-b py-3.5 sm:flex-row sm:gap-4">
+			<div className="shrink-0 font-mono text-(--ink-3) text-xs sm:w-36">
 				{years}
 			</div>
 			<div className="grow">
@@ -36,7 +36,7 @@ export function AboutBio() {
 		<>
 			<Reveal
 				as="p"
-				className="max-w-2xl font-display font-semibold text-5xl text-foreground leading-none"
+				className="max-w-2xl font-display font-semibold text-3xl text-foreground leading-none md:text-5xl"
 			>
 				I&apos;m Nick — a Platform Software Engineer focused on{" "}
 				<em className="mark">UI</em> and <em className="mark">Agentic AI</em>.

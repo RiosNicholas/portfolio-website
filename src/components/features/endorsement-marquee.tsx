@@ -12,15 +12,15 @@ import {
 function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
 		<a
-			className="flex w-[clamp(280px,28vw,392px)] shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:shadow-(--shadow-pop)"
+			className="flex w-70 shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-out hover:shadow-(--shadow-pop) md:w-80 lg:w-96"
 			href={e.linkedinUrl}
 			rel="noopener noreferrer"
 			target="_blank"
 		>
-			<p className="m-0 font-normal font-sans text-[15px] text-foreground leading-[1.5] tracking-[-0.01em]">
+			<p className="m-0 font-normal font-sans text-foreground text-sm leading-normal tracking-normal">
 				&ldquo;{e.quote}&rdquo;
 			</p>
-			<div className="flex items-center gap-2.5 border-border border-t pt-2.5 font-sans text-xs tracking-[-0.01em]">
+			<div className="flex items-center gap-2.5 border-border border-t pt-2.5 font-sans text-xs tracking-normal">
 				{e.avatarUrl ? (
 					// biome-ignore lint/performance/noImgElement: avatarUrl is an arbitrary external host (e.g. LinkedIn CDN), not configured in next.config image domains
 					<img
@@ -31,7 +31,7 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 					/>
 				) : (
 					<span
-						className="grid h-7 w-7 shrink-0 place-items-center rounded-full font-mono text-[11px] text-white"
+						className="grid h-7 w-7 shrink-0 place-items-center rounded-full font-mono text-white text-xs"
 						style={{ backgroundColor: getAvatarColor(e.name) }}
 					>
 						{getInitials(e.name)}
@@ -50,7 +50,7 @@ export function EndorsementMarquee() {
 	const rowB = endorsements.slice(mid);
 
 	return (
-		<Reveal className="mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] relative my-[clamp(48px,7vw,88px)] flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5">
+		<Reveal className="mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] relative my-12 flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5 md:my-16 lg:my-20">
 			<Marquee
 				className="p-0 [--duration:80s] [--gap:14px]"
 				pauseOnHover

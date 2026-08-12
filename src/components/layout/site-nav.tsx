@@ -49,7 +49,7 @@ function ThemeToggle() {
 
 function navItemCls(active: boolean) {
 	return cn(
-		"inline-flex cursor-none items-center gap-1.5 rounded-full px-4 py-2 font-medium text-sm tracking-[-0.01em] no-underline transition-colors",
+		"inline-flex cursor-none items-center gap-1.5 rounded-full px-4 py-2 font-medium text-sm tracking-normal no-underline transition-colors",
 		"focus-visible:outline-none focus-visible:ring-(--accent) focus-visible:ring-2",
 		active
 			? "bg-(--ink) text-(--paper) hover:bg-(--ink) hover:text-(--paper)"
@@ -63,14 +63,14 @@ export function SiteNav() {
 	return (
 		<nav
 			aria-label="Primary"
-			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_80%,transparent)] px-[clamp(20px,3vw,40px)] py-4 font-medium font-sans text-(--ink-3) text-sm tracking-[-0.01em] backdrop-blur-md [-webkit-backdrop-filter:blur(12px)]"
+			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_80%,transparent)] px-5 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-md md:px-8 lg:px-10"
 		>
 			{/* Logo */}
 			<Link
-				className="group flex items-center gap-3 font-display font-semibold text-(--ink) text-base tracking-[-0.02em] no-underline"
+				className="group flex items-center gap-3 font-display font-semibold text-(--ink) text-base tracking-tight no-underline"
 				href="/"
 			>
-				<span className="h-5 w-5 shrink-0 rounded bg-(--accent) transition-transform duration-400 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:rotate-45" />
+				<span className="h-5 w-5 shrink-0 rounded bg-(--accent) transition-transform duration-300 ease-out group-hover:rotate-45" />
 				<span>Nicholas&nbsp;Rios</span>
 			</Link>
 

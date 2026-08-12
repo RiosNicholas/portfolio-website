@@ -7,7 +7,7 @@ import { Reveal } from "~/components/ui/reveal";
 
 export function HeroSection() {
 	return (
-		<section className="hero-min relative flex min-h-[84vh] flex-col justify-center pt-[clamp(118px,16vh,168px)] pb-[clamp(48px,7vw,96px)]">
+		<section className="hero-min relative flex min-h-screen flex-col justify-center pt-28 pb-12 md:pt-32 md:pb-16 lg:pt-36 lg:pb-20">
 			{/* Geometric decorations */}
 			<GeoDecoration
 				className="geo geo-ring no-low top-[13%] right-[5%] h-29.5 w-29.5 text-(--c-cobalt) opacity-65"
@@ -15,7 +15,7 @@ export function HeroSection() {
 				variant="float"
 			/>
 			<GeoDecoration
-				className="geo geo-tri no-low top-[33%] right-[20%] text-(--c-lime) text-[62px] opacity-85"
+				className="geo geo-tri no-low top-1/3 right-[20%] text-(--c-lime) text-6xl opacity-85"
 				rot={10}
 				variant="float"
 			/>
@@ -31,20 +31,20 @@ export function HeroSection() {
 			<div className="relative z-10">
 				{/* Eyebrow */}
 				<Reveal className="mb-8 inline-flex w-max items-center gap-2.5 rounded-full border border-(--border-2) bg-card px-4 py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
-					<span className="h-2 w-2 shrink-0 animate-[breathe_2.4s_ease-in-out_infinite] rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]" />
+					<span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]" />
 					Available · Open to new opportunities
 				</Reveal>
 
 				{/* Headline */}
 				<Reveal
 					as="h1"
-					className="m-0 font-display font-semibold text-[clamp(50px,10.5vw,142px)] text-foreground leading-[0.92] tracking-[-0.04em]"
+					className="m-0 font-display font-semibold text-5xl text-foreground leading-none tracking-tighter md:text-7xl lg:text-9xl"
 				>
 					Platform
 					<br />
 					engineer &amp;
 					<br />
-					<em className="no-underline! inline-block -rotate-[1.4deg] rounded-lg bg-(--accent) box-decoration-clone px-[0.16em] py-[0.01em] text-(--marker-ink) not-italic">
+					<em className="no-underline! inline-block -rotate-1 rounded-lg bg-(--accent) box-decoration-clone px-2 py-px text-(--marker-ink) not-italic md:px-3 lg:px-4">
 						interface
 					</em>{" "}
 					craftsman.
@@ -53,7 +53,7 @@ export function HeroSection() {
 				{/* Lead */}
 				<Reveal
 					as="p"
-					className="mt-[clamp(28px,4vw,40px)] max-w-[54ch] font-normal font-sans text-(--ink-2) text-[clamp(17px,1.4vw,21px)] leading-normal tracking-[-0.005em]"
+					className="mt-6 max-w-xl font-normal font-sans text-(--ink-2) text-base leading-normal tracking-normal md:mt-8 md:text-lg"
 				>
 					I&apos;m Nicholas — a Software Engineer building{" "}
 					<em className="no-underline! font-semibold text-foreground not-italic">
@@ -68,7 +68,7 @@ export function HeroSection() {
 				</Reveal>
 
 				{/* Footer row */}
-				<Reveal className="mt-[clamp(48px,7vw,78px)] grid grid-cols-[1fr_auto] items-end gap-6 border-border border-t pt-6">
+				<Reveal className="mt-10 flex flex-wrap items-end justify-between gap-6 border-border border-t pt-6 md:mt-12 lg:mt-16">
 					<div className="flex flex-wrap gap-7 font-mono text-muted-foreground text-xs tracking-normal">
 						<div>
 							<span className="text-foreground">Jersey City, NJ</span> — 40.72°
@@ -83,7 +83,7 @@ export function HeroSection() {
 					</div>
 
 					<Link
-						className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-[-0.015em] no-underline shadow-(--shadow-pop) transition-[transform,background] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+						className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 						href="/work"
 					>
 						<span>See selected work</span>

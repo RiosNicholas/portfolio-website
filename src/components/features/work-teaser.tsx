@@ -33,22 +33,26 @@ const cases = [
 function CaseRow({ c }: { c: (typeof cases)[0] }) {
 	return (
 		<Link
-			className="group relative grid cursor-none grid-cols-[60px_1fr_auto_24px] items-center gap-5 border-border border-t py-7 text-foreground no-underline transition-[padding] duration-300 hover:pl-2.5"
+			className="group relative flex cursor-none items-center gap-5 border-border border-t py-7 text-foreground no-underline transition-[padding] duration-300 hover:pl-2.5"
 			href={c.href}
 		>
-			<span className="font-mono text-(--ink-4) text-xs">{c.num}</span>
-			<div className="flex flex-col gap-1.5">
-				<span className="font-medium font-mono text-(--accent-text) text-[11px] uppercase tracking-[0.04em]">
+			<span className="w-15 shrink-0 font-mono text-(--ink-4) text-xs">
+				{c.num}
+			</span>
+			<div className="flex flex-1 flex-col gap-1.5">
+				<span className="font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
 					{c.role}
 				</span>
-				<h3 className="m-0 font-display font-semibold text-[clamp(28px,3.4vw,46px)] text-foreground leading-none tracking-[-0.04em] transition-colors duration-300 group-hover:text-(--accent-text)">
+				<h3 className="m-0 font-display font-semibold text-2xl text-foreground leading-none tracking-tighter transition-colors duration-300 group-hover:text-(--accent-text) sm:text-3xl md:text-4xl">
 					{c.title}
 					<em className="text-(--accent-text) not-italic">{c.titleEm}</em>
 					{c.titleSuffix}
 				</h3>
 			</div>
-			<span className="font-mono text-(--ink-3) text-[13px]">{c.year}</span>
-			<span className="justify-self-end font-mono text-(--ink-3) text-lg transition-[transform,color] duration-400 ease-[cubic-bezier(.2,.7,.2,1)] group-hover:translate-x-2 group-hover:text-(--accent-text)">
+			<span className="shrink-0 font-mono text-(--ink-3) text-sm">
+				{c.year}
+			</span>
+			<span className="shrink-0 font-mono text-(--ink-3) text-lg transition duration-300 ease-out group-hover:translate-x-2 group-hover:text-(--accent-text)">
 				→
 			</span>
 		</Link>
@@ -64,7 +68,7 @@ export function WorkTeaser() {
 			<div className="border-border border-t" />
 			<div className="flex justify-center py-10">
 				<Link
-					className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-[-0.015em] no-underline shadow-(--shadow-pop) transition-[transform,background] duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+					className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 					href="/work"
 				>
 					<span>Selected works &middot; 04 projects</span>

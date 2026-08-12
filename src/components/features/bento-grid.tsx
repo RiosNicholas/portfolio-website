@@ -6,7 +6,7 @@ import { Reveal } from "~/components/ui/reveal";
 import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
-	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-[cubic-bezier(.2,.7,.2,1)] hover:border-(--border-2) hover:shadow-(--shadow-pop)";
+	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-out hover:border-(--border-2) hover:shadow-(--shadow-pop)";
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (
@@ -67,7 +67,7 @@ function YearsCell() {
 							el.textContent = String(Math.round(target * eased));
 							if (k < 1) requestAnimationFrame(tick);
 							else
-								el.innerHTML = `${target}<sup class="align-super font-medium font-mono text-(--accent-text) text-[0.28em] tracking-normal">yrs</sup>`;
+								el.innerHTML = `${target}<sup class="align-super font-medium font-mono text-(--accent-text) text-lg tracking-normal md:text-2xl">yrs</sup>`;
 						};
 						requestAnimationFrame(tick);
 						io.disconnect();
@@ -84,7 +84,7 @@ function YearsCell() {
 		<div className={cn(CELL_CLASS, "col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
-				<div className="font-display font-semibold text-[clamp(72px,9vw,124px)] text-foreground leading-none tracking-tighter">
+				<div className="font-display font-semibold text-6xl text-foreground leading-none tracking-tighter md:text-8xl">
 					<span ref={numRef}>0</span>
 				</div>
 			</div>
@@ -103,7 +103,9 @@ function SkillsCell() {
 	}, []);
 
 	return (
-		<div className={cn(CELL_CLASS, "col-span-4 row-span-2 p-0")}>
+		<div
+			className={cn(CELL_CLASS, "col-span-2 p-0 md:col-span-4 md:row-span-2")}
+		>
 			<div className="flex items-baseline justify-between px-6 pt-6 pb-2">
 				<CellLabel>Skills</CellLabel>
 				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
@@ -112,7 +114,7 @@ function SkillsCell() {
 				<div className="skills-reel-track" ref={trackRef}>
 					{skills.map((skill, i) => (
 						<div
-							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-[clamp(24px,2.4vw,34px)] text-foreground leading-tight tracking-tight"
+							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
 							key={i}
 						>
 							<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
@@ -127,17 +129,17 @@ function SkillsCell() {
 
 export default function BentoGrid() {
 	return (
-		<Reveal className="my-[clamp(40px,7vw,84px)] grid auto-rows-[168px] grid-cols-6 gap-3">
+		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
 			{/* Location */}
 			<div
 				className={cn(
 					CELL_CLASS,
-					"col-span-2 bg-[image:linear-gradient(to_right,var(--grid-minor)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-minor)_1px,transparent_1px)] bg-[length:22px_22px]",
+					"col-span-2 bg-[linear-gradient(to_right,var(--grid-minor)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-minor)_1px,transparent_1px)] bg-size-[22px_22px]",
 				)}
 			>
 				<CellLabel>Based</CellLabel>
 				<div>
-					<div className="font-display font-semibold text-[clamp(28px,3vw,44px)] text-foreground leading-none tracking-tight">
+					<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
 						Jersey
 						<br />
 						<em className="text-(--accent-text) not-italic">City</em>
@@ -148,7 +150,7 @@ export default function BentoGrid() {
 				</div>
 				{/* Animated pin */}
 				<div className="absolute top-[38%] left-[58%] h-3 w-3 rounded-full bg-(--accent) shadow-[0_0_0_4px_var(--accent-glow)]">
-					<div className="absolute -inset-4 animate-[ripple_2.4s_ease-out_infinite] rounded-full border border-(--accent) opacity-50" />
+					<div className="absolute -inset-4 animate-ping rounded-full border border-(--accent) opacity-50" />
 				</div>
 			</div>
 
@@ -159,7 +161,7 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Status</CellLabel>
 				<div className="flex flex-col gap-3">
-					<div className="font-display font-semibold text-[clamp(18px,1.5vw,22px)] text-foreground leading-tight tracking-tight">
+					<div className="font-display font-semibold text-foreground text-lg leading-tight tracking-tight md:text-xl">
 						Open to{" "}
 						<strong className="font-semibold text-(--accent-text)">
 							consulting

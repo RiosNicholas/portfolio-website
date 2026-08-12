@@ -179,7 +179,7 @@ export function CustomCursor() {
 			>
 				<m.div
 					animate={{ ...ringTarget, opacity: visible ? 1 : 0 }}
-					className="-translate-x-1/2 -translate-y-1/2 border-[1.5px] border-solid"
+					className="-translate-x-1/2 -translate-y-1/2 border-2 border-solid"
 					transition={RING_TRANSITION}
 				/>
 			</m.div>
