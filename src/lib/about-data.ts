@@ -1,8 +1,6 @@
-/** Static CV content for the About page. Overlapping Fiserv/Rutgers `'23` dates are
- * intentional (correct per resume) — do not reconcile them. */
 export type CvEntry = {
-	/** Mono display years, e.g. "'25 — Now", "'23 — '24", "'23". Empty string is valid
-	 * (no invented dates for entries without a clear range). */
+	/** Mono display range with month precision, e.g. "Feb '25 — Now", "Jun '24 — Aug '24".
+	 * Empty string is valid (no invented dates for entries without a clear range). */
 	years: string;
 	title: string;
 	/** Optional word rendered as a subtle accent-text `<em>` within the title. */
@@ -13,22 +11,22 @@ export type CvEntry = {
 
 export const experience: CvEntry[] = [
 	{
-		years: "'25 — Now",
+		years: "Feb '25 — Now",
 		title: "Software Engineer",
 		where: "JPMorgan Chase & Co. · Jersey City, NJ",
 	},
 	{
-		years: "'24",
+		years: "Jun '24 — Aug '24",
 		title: "Software Engineer Intern",
 		where: "JPMorgan Chase & Co. · Jersey City, NJ",
 	},
 	{
-		years: "'23 — '24",
+		years: "Feb '23 — May '24",
 		title: "Lead Web Developer",
 		where: "Rutgers University–Newark GS-LSAMP · Newark, NJ",
 	},
 	{
-		years: "'23",
+		years: "Jun '23 — Aug '23",
 		title: "Software Engineer Intern",
 		where: "Fiserv · Berkeley Heights, NJ",
 	},
@@ -36,18 +34,37 @@ export const experience: CvEntry[] = [
 
 export const education: CvEntry[] = [
 	{
-		years: "'21 — '24",
-		title: "B.A. Computer Science",
-		where: "Rutgers–Newark · Magna Cum Laude · Data Science minor",
+		years: "Sep '21 — Dec '24",
+		title: "Bachelor of Arts in Computer Science with a Data Science Minor",
+		titleAccent: "Data Science Minor",
+		where: "Rutgers University · Magna Cum Laude",
 	},
 	{
-		years: "",
+		years: "Feb '23 — Nov '23",
+		title: "Certificate in Web Development",
+		where: "CodePath",
+	},
+];
+
+export const activities: CvEntry[] = [
+	{
+		years: "Apr '23 — Now",
 		title: "Co-Founder & President",
-		where: "ColorStack @ Rutgers",
+		where: "ColorStack Chapter @ Rutgers University–Newark",
 	},
 	{
-		years: "",
+		years: "Oct '24 — Dec '24",
+		title: "Chapter Ambassador",
+		where: "ColorStack",
+	},
+	{
+		years: "Oct '24 — Dec '24",
 		title: "Fellow",
 		where: "Braven",
+	},
+	{
+		years: "Oct '23",
+		title: "Apprentice",
+		where: "#ChangeMakers Summit · Wells Fargo",
 	},
 ];

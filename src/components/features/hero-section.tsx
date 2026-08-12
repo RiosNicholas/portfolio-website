@@ -55,7 +55,7 @@ export function HeroSection() {
 					as="p"
 					className="mt-[clamp(28px,4vw,40px)] max-w-[54ch] font-normal font-sans text-(--ink-2) text-[clamp(17px,1.4vw,21px)] leading-normal tracking-[-0.005em]"
 				>
-					I&apos;m Nicholas — a Frontend Software Engineer building{" "}
+					I&apos;m Nicholas — a Software Engineer building{" "}
 					<em className="no-underline! font-semibold text-foreground not-italic">
 						UI platform infrastructure{" "}
 					</em>
