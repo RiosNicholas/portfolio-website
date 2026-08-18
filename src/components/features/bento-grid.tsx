@@ -94,13 +94,12 @@ function YearsCell() {
 }
 
 function SkillsCell() {
-	const trackRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		const track = trackRef.current;
-		if (!track) return;
-		track.innerHTML = track.innerHTML + track.innerHTML;
-	}, []);
+	// Rendered twice in markup (not via `innerHTML` duplication in an effect)
+	// so the loop is seamless without re-parsing the subtree on every mount
+	// or hiding the duplicate nodes from React. The `skills-reel-track` CSS
+	// keyframe translates `-50%`, so two copies keep the scroll gapless; the
+	// second copy is `aria-hidden` so screen readers don't announce it twice.
+	const doubledSkills = [...skills, ...skills];
 
 	return (
 		<div
@@ -111,9 +110,10 @@ function SkillsCell() {
 				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
 			</div>
 			<div className="mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] relative flex-1 overflow-hidden">
-				<div className="skills-reel-track" ref={trackRef}>
-					{skills.map((skill, i) => (
+				<div className="skills-reel-track">
+					{doubledSkills.map((skill, i) => (
 						<div
+							aria-hidden={i >= skills.length}
 							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
 							key={i}
 						>
@@ -181,11 +181,12 @@ export default function BentoGrid() {
 				<div className="flex flex-wrap gap-1.5">
 					{[
 						"Claude Code",
-						"Copilot",
-						"Emacs Org Mode",
-						"Figma",
+						"GitHub Copilot",
+						"Vim",
 						"Raycast",
-						"tmux",
+            "Ghosty",
+						"Figma",
+            "Fish Shell"
 					].map((tool) => (
 						<span
 							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"

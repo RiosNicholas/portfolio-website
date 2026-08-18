@@ -63,7 +63,7 @@ export function SiteNav() {
 	return (
 		<nav
 			aria-label="Primary"
-			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_80%,transparent)] px-5 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-md md:px-8 lg:px-10"
+			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] px-5 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-sm md:px-8 lg:px-10"
 		>
 			{/* Logo */}
 			<Link

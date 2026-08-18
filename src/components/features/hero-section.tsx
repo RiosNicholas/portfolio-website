@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 import { GeoDecoration } from "~/components/ui/geo-decoration";
