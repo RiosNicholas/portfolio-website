@@ -303,10 +303,10 @@
 	background: radial-gradient(
 		ellipse at center,
 		var(--accent-glow) 0%,
-		transparent 64%
+		var(--accent-glow) 30%,
+		transparent 78%
 	);
 	pointer-events: none;
-	filter: blur(50px);
 	opacity: 0.85;
 }
 :root[data-theme="dark"] .paper-bg::after {
@@ -320,16 +320,27 @@
 	inset: 0;
 	z-index: 1;
 	pointer-events: none;
-	opacity: 0.05;
-	mix-blend-mode: multiply;
+	opacity: 0.035;
 	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 :root[data-theme="dark"] .grain {
-	mix-blend-mode: screen;
-	opacity: 0.04;
+	opacity: 0.03;
 }
 
 @media (hover: none), (pointer: coarse) {
+	body {
+		cursor: auto;
+	}
+}
+
+/* Reduced motion / low-motion mode disables the JS-driven custom cursor
+   (see custom-cursor.tsx) — restore the native cursor here so the toggle
+   isn't cosmetic. */
+:root[data-motion="low"] body {
+	cursor: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
 	body {
 		cursor: auto;
 	}

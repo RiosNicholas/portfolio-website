@@ -1,7 +1,7 @@
 "use client";
 
 import { m, useInView } from "motion/react";
-import { useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 
@@ -33,9 +33,15 @@ const variants = {
  * (including client-side route transitions), unlike the old observer which
  * only ever scanned the DOM once at root layout mount.
  *
- * `initial={false}` plus seeding `useAnimationsEnabled()` to `true` keeps
- * the server-rendered markup and the first client render byte-identical
- * (both render "hidden"), avoiding hydration mismatches.
+ * Renders the `show` variant by default so prerendered/server HTML never
+ * ships `opacity:0` — content is readable immediately and with JS disabled.
+ * A layout effect checks, once per mount, whether the element started
+ * off-screen (`getBoundingClientRect().top > innerHeight`); only then does
+ * it "arm" the reveal, snapping to `hidden` (duration 0 — this happens
+ * before the browser's first paint of that state, and only ever for
+ * elements that are off-screen to begin with, so it's never visible) and
+ * letting `useInView` animate it back to `show` once scrolled into view.
+ * Above-the-fold elements never arm and simply stay visible.
  */
 export function Reveal({
 	as = "div",
@@ -44,6 +50,7 @@ export function Reveal({
 	delay = 0,
 }: RevealProps) {
 	const ref = useRef(null);
+	const [hasArmed, setHasArmed] = useState(false);
 	const inView = useInView(ref, {
 		once: true,
 		amount: 0.12,
@@ -51,18 +58,35 @@ export function Reveal({
 	});
 	const enabled = useAnimationsEnabled();
 
+	// Runs once per mount, synchronously before paint. Only elements that
+	// start below the fold get armed — above-the-fold content never enters
+	// the hidden state at all.
+	useLayoutEffect(() => {
+		const el = ref.current as HTMLElement | null;
+		if (!el) return;
+		const startsOffscreen = el.getBoundingClientRect().top > window.innerHeight;
+		if (startsOffscreen) setHasArmed(true);
+	}, []);
+
+	const armed = enabled && hasArmed;
+	const target = armed ? (inView ? "show" : "hidden") : "show";
+	// Only the hidden -> show transition (the actual scroll reveal) animates;
+	// arming into "hidden" and the disabled/above-the-fold "show" case both
+	// snap instantly so nothing ever visibly fades out.
+	const isRevealing = armed && target === "show";
+
 	const Component = TAGS[as];
 
 	return (
 		<Component
-			animate={enabled ? (inView ? "show" : "hidden") : "show"}
+			animate={target}
 			className={className}
 			initial={false}
 			ref={ref}
 			transition={{
-				duration: enabled ? 0.8 : 0,
+				duration: isRevealing ? 0.8 : 0,
 				ease: [0.2, 0.7, 0.2, 1],
-				delay: enabled ? delay : 0,
+				delay: isRevealing ? delay : 0,
 			}}
 			variants={variants}
 		>

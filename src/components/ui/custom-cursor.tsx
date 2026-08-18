@@ -1,17 +1,11 @@
 "use client";
 
-import { AnimatePresence, m, useMotionValue, useSpring } from "motion/react";
+import { m, useMotionValue, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 
 type CursorVariant = "default" | "link" | "text" | "photo";
-
-type TrailParticle = {
-	id: number;
-	x: number;
-	y: number;
-};
 
 const RING_TARGET: Record<
 	CursorVariant,
@@ -21,7 +15,6 @@ const RING_TARGET: Record<
 		borderRadius: string;
 		borderColor: string;
 		backgroundColor: string;
-		mixBlendMode: "difference" | "normal";
 	}
 > = {
 	default: {
@@ -30,7 +23,6 @@ const RING_TARGET: Record<
 		borderRadius: "9999px",
 		borderColor: "var(--ink-3)",
 		backgroundColor: "transparent",
-		mixBlendMode: "difference",
 	},
 	link: {
 		width: 46,
@@ -38,7 +30,6 @@ const RING_TARGET: Record<
 		borderRadius: "9999px",
 		borderColor: "var(--accent)",
 		backgroundColor: "var(--accent-glow)",
-		mixBlendMode: "normal",
 	},
 	text: {
 		width: 2,
@@ -46,7 +37,6 @@ const RING_TARGET: Record<
 		borderRadius: "1px",
 		borderColor: "var(--accent)",
 		backgroundColor: "var(--accent)",
-		mixBlendMode: "normal",
 	},
 	// `[data-cursor=photo]` isn't styled differently today (see custom-cursor
 	// implementation notes in the handoff doc) — kept as its own variant slot
@@ -58,7 +48,6 @@ const RING_TARGET: Record<
 		borderRadius: "9999px",
 		borderColor: "var(--ink-3)",
 		backgroundColor: "transparent",
-		mixBlendMode: "difference",
 	},
 };
 
@@ -70,13 +59,26 @@ const RING_TRANSITION = {
 	opacity: { duration: 0.2 },
 } as const;
 
-let nextTrailId = 0;
+// Single combined selector so hit-testing is one tree walk instead of three
+// — classify the returned element afterwards by inspecting it.
+const HIT_TARGET_SELECTOR =
+	"a, button, [role=button], [data-cursor=photo], p, h1, h2, h3, h4, h5, h6";
+
+function classifyHitTarget(hit: Element | null): CursorVariant {
+	if (!hit) return "default";
+	if ((hit as HTMLElement).dataset.cursor === "photo") return "photo";
+
+	const tag = hit.tagName;
+	const isLink =
+		tag === "A" || tag === "BUTTON" || hit.getAttribute("role") === "button";
+
+	return isLink ? "link" : "text";
+}
 
 export function CustomCursor() {
 	const [supportsHover, setSupportsHover] = useState(true);
 	const [variant, setVariant] = useState<CursorVariant>("default");
 	const [visible, setVisible] = useState(true);
-	const [trails, setTrails] = useState<TrailParticle[]>([]);
 	const variantRef = useRef<CursorVariant>("default");
 	const enabled = useAnimationsEnabled();
 
@@ -98,42 +100,37 @@ export function CustomCursor() {
 	}, []);
 
 	useEffect(() => {
-		if (!supportsHover) return;
+		// Skip attaching listeners entirely when the cursor won't render —
+		// no point tracking pointer position for a treatment that's disabled.
+		if (!supportsHover || !enabled) return;
 
-		let lastTrail = 0;
+		const pendingTargetRef: { current: Element | null } = { current: null };
+		let rafId: number | null = null;
 
-		const onMove = (e: MouseEvent) => {
-			mouseX.set(e.clientX);
-			mouseY.set(e.clientY);
-
-			const target = e.target as Element;
-			const isLink = target.closest("a, button, [role=button]");
-			const isPhoto = target.closest("[data-cursor=photo]");
-			const isText = target.closest("p, h1, h2, h3, h4, h5, h6");
-
-			const nextVariant: CursorVariant = isPhoto
-				? "photo"
-				: isLink
-					? "link"
-					: isText
-						? "text"
-						: "default";
+		const runHitTest = () => {
+			rafId = null;
+			const target = pendingTargetRef.current;
+			const nextVariant = classifyHitTarget(
+				target?.closest(HIT_TARGET_SELECTOR) ?? null,
+			);
 
 			if (variantRef.current !== nextVariant) {
 				variantRef.current = nextVariant;
 				setVariant(nextVariant);
 			}
+		};
 
-			if (!enabled) return;
+		const onMove = (e: MouseEvent) => {
+			// Motion values are cheap and must stay responsive — set them
+			// directly on every event.
+			mouseX.set(e.clientX);
+			mouseY.set(e.clientY);
 
-			const now = performance.now();
-			if (now - lastTrail > 60 && Math.random() < 0.35) {
-				lastTrail = now;
-				const id = nextTrailId++;
-				setTrails((prev) => [...prev, { id, x: e.clientX, y: e.clientY }]);
-				setTimeout(() => {
-					setTrails((prev) => prev.filter((t) => t.id !== id));
-				}, 700);
+			// Hit-testing (DOM traversal) is coalesced to at most once per
+			// frame: stash the latest target, queue a single rAF.
+			pendingTargetRef.current = e.target as Element;
+			if (rafId === null) {
+				rafId = requestAnimationFrame(runHitTest);
 			}
 		};
 
@@ -148,10 +145,13 @@ export function CustomCursor() {
 			document.removeEventListener("mousemove", onMove);
 			document.removeEventListener("mouseleave", onLeave);
 			document.removeEventListener("mouseenter", onEnter);
+			if (rafId !== null) cancelAnimationFrame(rafId);
 		};
 	}, [supportsHover, enabled, mouseX, mouseY]);
 
-	if (!supportsHover) return null;
+	// Reduced motion / low-motion mode: skip the custom cursor entirely and
+	// let the native cursor take over (see globals.css `cursor: auto` rules).
+	if (!supportsHover || !enabled) return null;
 
 	const ringTarget = RING_TARGET[variant];
 
@@ -169,13 +169,10 @@ export function CustomCursor() {
 				/>
 			</m.div>
 
-			{/* Ring — soft-follows via spring (or raw, when motion is disabled) */}
+			{/* Ring — soft-follows via spring */}
 			<m.div
 				className="pointer-events-none fixed top-0 left-0 z-9999"
-				style={{
-					x: enabled ? ringSpringX : mouseX,
-					y: enabled ? ringSpringY : mouseY,
-				}}
+				style={{ x: ringSpringX, y: ringSpringY }}
 			>
 				<m.div
 					animate={{ ...ringTarget, opacity: visible ? 1 : 0 }}
@@ -183,21 +180,6 @@ export function CustomCursor() {
 					transition={RING_TRANSITION}
 				/>
 			</m.div>
-
-			{enabled && (
-				<AnimatePresence>
-					{trails.map((t) => (
-						<m.div
-							animate={{ opacity: 0, scale: 3 }}
-							className="pointer-events-none fixed top-0 left-0 z-9999 size-1.25 rounded-full bg-(--accent)"
-							initial={{ opacity: 0.4, scale: 1 }}
-							key={t.id}
-							style={{ translateX: "-50%", translateY: "-50%", x: t.x, y: t.y }}
-							transition={{ duration: 0.5 }}
-						/>
-					))}
-				</AnimatePresence>
-			)}
 		</>
 	);
 }

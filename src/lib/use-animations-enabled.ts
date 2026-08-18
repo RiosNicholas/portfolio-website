@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+
+import { AnimationsEnabledContext } from "~/components/ui/motion-provider";
 
 /**
  * Single source of truth for "should rich motion play."
@@ -11,37 +13,16 @@ import { useEffect, useState } from "react";
  * throttle does not affect it — every migrated animation must route through
  * this hook instead.
  *
- * Hydration-safe: seeds `true` (matching the server's "assume motion is on"
- * render) and only corrects the value in an effect, never during render.
- * Stays reactive to live changes to either signal.
+ * Reads from `AnimationsEnabledContext`, provided once by `MotionProvider`
+ * (which already wraps the whole tree) — this used to create its own
+ * `matchMedia` listener and `MutationObserver` per call site (20+ per page);
+ * now there's a single shared subscription.
+ *
+ * Hydration-safe: the context is seeded `true` (matching the server's
+ * "assume motion is on" render) and only corrected in an effect, never
+ * during render. Name, signature, and the `true` seed are unchanged — don't
+ * touch either, call sites depend on this exact contract.
  */
 export function useAnimationsEnabled(): boolean {
-	const [enabled, setEnabled] = useState(true);
-
-	useEffect(() => {
-		const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-		const evaluate = () => {
-			const reduced = media.matches;
-			const low = document.documentElement.dataset.motion === "low";
-			setEnabled(!reduced && !low);
-		};
-
-		evaluate();
-
-		media.addEventListener("change", evaluate);
-
-		const observer = new MutationObserver(evaluate);
-		observer.observe(document.documentElement, {
-			attributes: true,
-			attributeFilter: ["data-motion"],
-		});
-
-		return () => {
-			media.removeEventListener("change", evaluate);
-			observer.disconnect();
-		};
-	}, []);
-
-	return enabled;
+	return useContext(AnimationsEnabledContext);
 }
