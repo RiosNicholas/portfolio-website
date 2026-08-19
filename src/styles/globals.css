@@ -31,6 +31,8 @@
 	--color-input: var(--input);
 	--color-border: var(--border);
 	--color-destructive: var(--destructive);
+	--color-destructive-foreground: var(--destructive-foreground);
+	--color-accent: var(--accent);
 	--color-accent-foreground: var(--accent-foreground);
 	--color-muted-foreground: var(--muted-foreground);
 	--color-muted: var(--muted);
@@ -63,9 +65,13 @@
 	--ink: var(--color-stone-900);
 	--ink-2: var(--color-stone-700);
 	--ink-3: var(--color-stone-600);
-	--ink-4: var(--color-stone-500);
+	--ink-4: color-mix(
+		in oklab,
+		var(--color-stone-500) 55%,
+		var(--color-stone-600) 45%
+	);
 	--border: color-mix(in oklab, var(--color-stone-900) 13%, transparent);
-	--border-2: color-mix(in oklab, var(--color-stone-900) 22%, transparent);
+	--border-2: color-mix(in oklab, var(--color-stone-900) 45%, transparent);
 	--frosted: color-mix(in oklab, var(--color-stone-900) 5%, transparent);
 	--frosted-2: color-mix(in oklab, var(--color-stone-900) 9%, transparent);
 
@@ -81,7 +87,6 @@
 	--accent: var(--color-blue-600);
 	--accent-text: var(--color-blue-700);
 	--accent-glow: color-mix(in oklab, var(--color-blue-400) 22%, transparent);
-	--accent-glow-2: color-mix(in oklab, var(--color-blue-400) 34%, transparent);
 	--marker-ink: var(--color-white);
 
 	/* CTA — always yellow */
@@ -95,7 +100,7 @@
 	--r-lg: 10px;
 	--r-xl: 16px;
 	--r-pill: 999px;
-	--radius: 6px;
+	--radius: var(--r-md);
 
 	/* Shadows */
 	--shadow-card: color-mix(in oklab, var(--color-stone-900) 5%, transparent) 0
@@ -130,6 +135,7 @@
 	--muted-foreground: var(--ink-3);
 	--accent-foreground: var(--paper);
 	--destructive: var(--color-red-600);
+	--destructive-foreground: var(--color-white);
 	--input: var(--frosted);
 	--ring: var(--accent);
 
@@ -155,7 +161,7 @@
 	--ink-3: var(--color-stone-300);
 	--ink-4: var(--color-stone-400);
 	--border: color-mix(in oklab, var(--color-amber-50) 12%, transparent);
-	--border-2: color-mix(in oklab, var(--color-amber-50) 20%, transparent);
+	--border-2: color-mix(in oklab, var(--color-amber-50) 35%, transparent);
 	--frosted: color-mix(in oklab, var(--color-amber-50) 7%, transparent);
 	--frosted-2: color-mix(in oklab, var(--color-amber-50) 13%, transparent);
 
