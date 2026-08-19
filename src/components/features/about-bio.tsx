@@ -8,6 +8,35 @@ import {
 	experience,
 } from "~/lib/about-data";
 
+function AccentedTitle({
+	title,
+	accents,
+}: {
+	title: string;
+	accents: string[];
+}) {
+	const pattern = new RegExp(
+		`(${accents.map((accent) => accent.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
+	);
+	return (
+		<>
+			{title.split(pattern).map((part, index) =>
+				accents.includes(part) ? (
+					<em
+						className="text-(--accent-text) not-italic"
+						// biome-ignore lint/suspicious/noArrayIndexKey: parts are derived from a static string, order never changes
+						key={index}
+					>
+						{part}
+					</em>
+				) : (
+					part
+				),
+			)}
+		</>
+	);
+}
+
 function CvRow({ years, title, titleAccent, where }: CvEntry) {
 	return (
 		<div className="flex flex-col gap-1 border-border border-b py-3.5 sm:flex-row sm:gap-4">
@@ -16,11 +45,8 @@ function CvRow({ years, title, titleAccent, where }: CvEntry) {
 			</div>
 			<div className="grow">
 				<div className="font-display font-semibold text-foreground text-xl">
-					{titleAccent ? (
-						<>
-							{title.replace(titleAccent, "").trimEnd()}{" "}
-							<em className="text-(--accent-text) not-italic">{titleAccent}</em>
-						</>
+					{titleAccent?.length ? (
+						<AccentedTitle accents={titleAccent} title={title} />
 					) : (
 						title
 					)}
@@ -33,12 +59,12 @@ function CvRow({ years, title, titleAccent, where }: CvEntry) {
 
 export function AboutBio() {
 	return (
-		<>
+		<section className="relative flex flex-col gap-8">
 			<Reveal
 				as="p"
 				className="max-w-2xl font-display font-semibold text-3xl text-foreground leading-none md:text-5xl"
 			>
-				I&apos;m Nick — a Platform Software Engineer focused on{" "}
+				I&apos;m Nicholas — a Platform Software Engineer focused on{" "}
 				<em className="mark">UI</em> and <em className="mark">Agentic AI</em>.
 				Based in Jersey City.
 			</Reveal>
@@ -58,10 +84,10 @@ export function AboutBio() {
 					</p>
 					<p className="mt-4 font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
 						I'm currently in risk technology at JPMorganChase, where I build
-						platform infrastructure on two fronts: the shared UI foundation —
-						component libraries, architecture, and tooling — that product teams
-						build on, and the agentic AI platform that's making AI a core part
-						of how we ship.
+						platform infrastructure on two fronts: the shared UI foundation
+						(component libraries, design systems, architecture, and tooling)
+						that product teams build on, and the agentic AI platform that's
+						making AI a core part of how we ship.
 					</p>
 					<p className="mt-4 font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
 						Outside of engineering, I enjoy street photography and occasionally
@@ -110,6 +136,6 @@ export function AboutBio() {
 					</div>
 				</Reveal>
 			</div>
-		</>
+		</section>
 	);
 }

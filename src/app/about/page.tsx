@@ -6,11 +6,7 @@ export default function AboutPage() {
 	return (
 		<main className="shell">
 			<AboutHero />
-
-			<section>
-				<AboutBio />
-			</section>
-
+			<AboutBio />
 			<ContactStrip />
 		</main>
 	);

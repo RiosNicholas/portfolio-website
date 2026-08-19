@@ -3,8 +3,8 @@ export type CvEntry = {
 	 * Empty string is valid (no invented dates for entries without a clear range). */
 	years: string;
 	title: string;
-	/** Optional word rendered as a subtle accent-text `<em>` within the title. */
-	titleAccent?: string;
+	/** Optional word(s) rendered as a subtle accent-text `<em>` within the title. */
+	titleAccent?: string[];
 	/** "Employer · City, ST" meta line. */
 	where: string;
 };
@@ -36,7 +36,7 @@ export const education: CvEntry[] = [
 	{
 		years: "Sep '21 — Dec '24",
 		title: "Bachelor of Arts in Computer Science with a Data Science Minor",
-		titleAccent: "Data Science Minor",
+		titleAccent: ["Computer Science", "Data Science Minor"],
 		where: "Rutgers University · Magna Cum Laude",
 	},
 	{

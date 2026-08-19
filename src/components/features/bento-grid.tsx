@@ -88,7 +88,7 @@ function YearsCell() {
 					<span ref={numRef}>0</span>
 				</div>
 			</div>
-			<CellSub>Building for the web since &apos;21</CellSub>
+			<CellSub>Building for the web since &apos;22</CellSub>
 		</div>
 	);
 }
@@ -184,9 +184,9 @@ export default function BentoGrid() {
 						"GitHub Copilot",
 						"Vim",
 						"Raycast",
-            "Ghosty",
+						"Ghosty",
 						"Figma",
-            "Fish Shell"
+						"Fish Shell",
 					].map((tool) => (
 						<span
 							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
@@ -196,7 +196,7 @@ export default function BentoGrid() {
 						</span>
 					))}
 				</div>
-				<CellSub>Updated July 2026</CellSub>
+				<CellSub>Updated August 2026</CellSub>
 			</div>
 
 			{/* Now */}
