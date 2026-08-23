@@ -64,7 +64,7 @@ export function ContactStrip() {
 				<div className="flex flex-wrap gap-2 font-medium font-sans text-sm tracking-normal">
 					{socials.map(({ href, label, icon }) => (
 						<a
-							className="inline-flex cursor-none items-center gap-2 rounded-full border border-(--border-2) bg-(--paper-2) py-2 pr-4 pl-3 text-(--ink-2) no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-(--accent) hover:bg-(--paper) hover:text-(--accent-text)"
+							className="inline-flex items-center gap-2 rounded-full border border-(--border-2) bg-(--paper-2) py-2 pr-4 pl-3 text-(--ink-2) no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-(--accent) hover:bg-(--paper) hover:text-(--accent-text)"
 							href={href}
 							key={href}
 							rel="noopener noreferrer"

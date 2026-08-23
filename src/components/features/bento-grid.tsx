@@ -1,8 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { m } from "motion/react";
 
+import { Marquee } from "~/components/ui/marquee";
+import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
+import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
@@ -47,60 +50,23 @@ const skills = [
 ];
 
 function YearsCell() {
-	const numRef = useRef<HTMLSpanElement>(null);
-	const observed = useRef(false);
-
-	useEffect(() => {
-		const el = numRef.current;
-		if (!el) return;
-		const target = 4;
-		const io = new IntersectionObserver(
-			(entries) => {
-				for (const entry of entries) {
-					if (entry.isIntersecting && !observed.current) {
-						observed.current = true;
-						const start = performance.now();
-						const dur = 900;
-						const tick = (t: number) => {
-							const k = Math.min(1, (t - start) / dur);
-							const eased = 1 - (1 - k) ** 3;
-							el.textContent = String(Math.round(target * eased));
-							if (k < 1) requestAnimationFrame(tick);
-							else
-								el.innerHTML = `${target}<sup class="align-super font-medium font-mono text-(--accent-text) text-lg tracking-normal md:text-2xl">yrs</sup>`;
-						};
-						requestAnimationFrame(tick);
-						io.disconnect();
-					}
-				}
-			},
-			{ threshold: 0.5 },
-		);
-		io.observe(el);
-		return () => io.disconnect();
-	}, []);
-
 	return (
 		<div className={cn(CELL_CLASS, "col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
 				<div className="font-display font-semibold text-6xl text-foreground leading-none tracking-tighter md:text-8xl">
-					<span ref={numRef}>0</span>
+					<NumberTicker value={3} />
+					<sup className="align-super font-medium font-mono text-(--accent-text) text-lg tracking-normal md:text-2xl">
+						yrs
+					</sup>
 				</div>
 			</div>
-			<CellSub>Building for the web since &apos;22</CellSub>
+			<CellSub>Building for the web since &apos;23</CellSub>
 		</div>
 	);
 }
 
 function SkillsCell() {
-	// Rendered twice in markup (not via `innerHTML` duplication in an effect)
-	// so the loop is seamless without re-parsing the subtree on every mount
-	// or hiding the duplicate nodes from React. The `skills-reel-track` CSS
-	// keyframe translates `-50%`, so two copies keep the scroll gapless; the
-	// second copy is `aria-hidden` so screen readers don't announce it twice.
-	const doubledSkills = [...skills, ...skills];
-
 	return (
 		<div
 			className={cn(CELL_CLASS, "col-span-2 p-0 md:col-span-4 md:row-span-2")}
@@ -109,21 +75,53 @@ function SkillsCell() {
 				<CellLabel>Skills</CellLabel>
 				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
 			</div>
-			<div className="mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] relative flex-1 overflow-hidden">
-				<div className="skills-reel-track">
-					{doubledSkills.map((skill, i) => (
-						<div
-							aria-hidden={i >= skills.length}
-							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
-							key={i}
-						>
-							<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
-							{skill}
-						</div>
-					))}
-				</div>
-			</div>
+			<Marquee
+				ariaHideDuplicates
+				className="mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] relative flex-1 p-0 [--duration:28s] [--gap:0px]"
+				pauseOnHover
+				repeat={2}
+				vertical
+			>
+				{skills.map((skill, i) => (
+					<div
+						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
+						key={i}
+					>
+						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
+						{skill}
+					</div>
+				))}
+			</Marquee>
 		</div>
+	);
+}
+
+/**
+ * Location cell's radar-style ping ring. Same shape as `StatusDot` —
+ * `useAnimationsEnabled()` gate, `m.div` when enabled — translating
+ * Tailwind's `animate-ping` exactly (including its final-25% hold).
+ * File-local: it has exactly one call site.
+ */
+function PingRing() {
+	const enabled = useAnimationsEnabled();
+
+	if (!enabled) {
+		return (
+			<m.div className="absolute -inset-4 rounded-full border border-(--accent) opacity-50" />
+		);
+	}
+
+	return (
+		<m.div
+			animate={{ scale: [1, 2, 2], opacity: [0.5, 0, 0] }}
+			className="absolute -inset-4 rounded-full border border-(--accent) opacity-50"
+			transition={{
+				duration: 1,
+				times: [0, 0.75, 1],
+				ease: [0, 0, 0.2, 1],
+				repeat: Infinity,
+			}}
+		/>
 	);
 }
 
@@ -150,7 +148,7 @@ export default function BentoGrid() {
 				</div>
 				{/* Animated pin */}
 				<div className="absolute top-[38%] left-[58%] h-3 w-3 rounded-full bg-(--accent) shadow-[0_0_0_4px_var(--accent-glow)]">
-					<div className="absolute -inset-4 animate-ping rounded-full border border-(--accent) opacity-50" />
+					<PingRing />
 				</div>
 			</div>
 

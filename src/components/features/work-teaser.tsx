@@ -31,7 +31,7 @@ const cases = [
 function CaseRow({ c }: { c: (typeof cases)[0] }) {
 	return (
 		<Link
-			className="group relative flex cursor-none items-center gap-5 border-border border-t py-7 text-foreground no-underline transition-[padding] duration-300 hover:pl-2.5"
+			className="group relative flex items-center gap-5 border-border border-t py-7 text-foreground no-underline transition-[padding] duration-300 hover:pl-2.5"
 			href={c.href}
 		>
 			<span className="w-15 shrink-0 font-mono text-(--ink-4) text-xs">
@@ -66,7 +66,7 @@ export function WorkTeaser() {
 			<div className="border-border border-t" />
 			<div className="flex justify-center py-10">
 				<Link
-					className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+					className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 					href="/work"
 				>
 					<span>Selected works &middot; 04 projects</span>

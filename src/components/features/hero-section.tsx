@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { GeoDecoration } from "~/components/ui/geo-decoration";
 import { Reveal } from "~/components/ui/reveal";
+import { StatusDot } from "~/components/ui/status-dot";
 
 export function HeroSection() {
 	return (
@@ -29,7 +30,7 @@ export function HeroSection() {
 			<div className="relative z-10">
 				{/* Eyebrow */}
 				<Reveal className="mb-8 inline-flex w-max items-center gap-2.5 rounded-full border border-(--border-2) bg-card px-4 py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
-					<span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]" />
+					<StatusDot />
 					Available · Open to new opportunities
 				</Reveal>
 
@@ -81,7 +82,7 @@ export function HeroSection() {
 					</div>
 
 					<Link
-						className="inline-flex cursor-none items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+						className="inline-flex items-center gap-2.5 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5.5 py-3.25 font-display font-semibold text-(--cta-ink) text-base tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 						href="/work"
 					>
 						<span>See selected work</span>
