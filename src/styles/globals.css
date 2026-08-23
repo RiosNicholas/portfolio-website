@@ -267,6 +267,16 @@
 	a {
 		color: inherit;
 		text-decoration: none;
+		/* Chrome's UA stylesheet sets `a:-webkit-any-link { cursor: pointer }`,
+		   which beats plain inheritance. Defeat it here so `body`'s cursor
+		   policy (none / auto per state) is the single source of truth instead
+		   of scattered per-element `cursor-none` utilities. */
+		cursor: inherit;
+	}
+
+	button,
+	[role="button"] {
+		cursor: inherit;
 	}
 
 	::selection {
@@ -345,18 +355,11 @@
 	body {
 		cursor: auto;
 	}
-}
 
-/* Reduced motion / low-motion mode disables the JS-driven custom cursor
-   (see custom-cursor.tsx) — restore the native cursor here so the toggle
-   isn't cosmetic. */
-:root[data-motion="low"] body {
-	cursor: auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-	body {
-		cursor: auto;
+	a,
+	button,
+	[role="button"] {
+		cursor: pointer;
 	}
 }
 
@@ -429,40 +432,4 @@ em {
 	text-decoration-color: var(--accent);
 	text-decoration-thickness: 2px;
 	text-underline-offset: 3px;
-}
-
-/* ─── Skills reel ────────────────────────────────────────────────────────────── */
-
-.skills-reel-track {
-	display: flex;
-	flex-direction: column;
-	animation: skills-scroll 28s linear infinite;
-}
-
-/* ─── Keyframes ─────────────────────────────────────────────────────────────── */
-
-@keyframes breathe {
-	50% {
-		opacity: 0.45;
-	}
-}
-
-@keyframes ripple {
-	from {
-		transform: scale(0.5);
-		opacity: 0.8;
-	}
-	to {
-		transform: scale(1.8);
-		opacity: 0;
-	}
-}
-
-@keyframes skills-scroll {
-	from {
-		transform: translateY(0);
-	}
-	to {
-		transform: translateY(-50%);
-	}
 }
