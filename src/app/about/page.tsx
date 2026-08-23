@@ -1,6 +1,23 @@
+import type { Metadata } from "next";
+
 import { AboutBio } from "~/components/features/about-bio";
 import { AboutHero } from "~/components/features/about-hero";
 import { ContactStrip } from "~/components/features/contact-strip";
+
+const description =
+	"About Nicholas Rios — 3 years building software, focused on frontend platform engineering, design systems, and agentic AI. Based in Jersey City.";
+
+export const metadata: Metadata = {
+	title: "About",
+	description,
+	alternates: { canonical: "/about" },
+	openGraph: {
+		type: "profile",
+		url: "/about",
+		title: "About — Nicholas Rios",
+		description,
+	},
+};
 
 export default function AboutPage() {
 	return (

@@ -1,7 +1,24 @@
+import type { Metadata } from "next";
+
 import { CaseStudy } from "~/components/features/case-study";
 import { ContactStrip } from "~/components/features/contact-strip";
 import { WorkHero } from "~/components/features/work-hero";
 import { cases } from "~/lib/work-data";
+
+const description =
+	"Selected case studies from Nicholas Rios — platform engineering, design systems, and product work across risk technology, freelance, and side projects.";
+
+export const metadata: Metadata = {
+	title: "Work",
+	description,
+	alternates: { canonical: "/work" },
+	openGraph: {
+		type: "website",
+		url: "/work",
+		title: "Work — Nicholas Rios",
+		description,
+	},
+};
 
 export default function WorkPage() {
 	return (
