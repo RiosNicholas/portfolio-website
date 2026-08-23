@@ -22,7 +22,7 @@ const RING_TARGET: Record<
 		height: 28,
 		borderRadius: "9999px",
 		borderColor: "var(--ink-3)",
-		backgroundColor: "transparent",
+		backgroundColor: "rgba(0, 0, 0, 0)",
 	},
 	link: {
 		width: 46,
@@ -38,16 +38,12 @@ const RING_TARGET: Record<
 		borderColor: "var(--accent)",
 		backgroundColor: "var(--accent)",
 	},
-	// `[data-cursor=photo]` isn't styled differently today (see custom-cursor
-	// implementation notes in the handoff doc) — kept as its own variant slot
-	// so a future photo-hover treatment has somewhere to live without
-	// reworking the hit-testing logic.
 	photo: {
 		width: 28,
 		height: 28,
 		borderRadius: "9999px",
 		borderColor: "var(--ink-3)",
-		backgroundColor: "transparent",
+		backgroundColor: "rgba(0, 0, 0, 0)",
 	},
 };
 
@@ -58,6 +54,12 @@ const RING_TRANSITION = {
 	backgroundColor: { duration: 0.22 },
 	opacity: { duration: 0.2 },
 } as const;
+
+// Reduced-motion / low-motion variants: same shape, zero duration so state
+// changes are discrete swaps instead of tweens.
+const RING_TRANSITION_REDUCED = { duration: 0 } as const;
+const DOT_TRANSITION = { opacity: { duration: 0.2 } } as const;
+const DOT_TRANSITION_REDUCED = { opacity: { duration: 0 } } as const;
 
 // Single combined selector so hit-testing is one tree walk instead of three
 // — classify the returned element afterwards by inspecting it.
@@ -100,9 +102,12 @@ export function CustomCursor() {
 	}, []);
 
 	useEffect(() => {
-		// Skip attaching listeners entirely when the cursor won't render —
-		// no point tracking pointer position for a treatment that's disabled.
-		if (!supportsHover || !enabled) return;
+		// Skip attaching listeners entirely on devices without a real pointer —
+		// there's nothing to track. `enabled` (motion preference) does NOT gate
+		// this: the cursor still exists under reduced motion, it just degrades
+		// how it moves (see the render below), so listeners must stay attached
+		// and must not tear down/re-attach when the preference flips.
+		if (!supportsHover) return;
 
 		const pendingTargetRef: { current: Element | null } = { current: null };
 		let rafId: number | null = null;
@@ -147,11 +152,13 @@ export function CustomCursor() {
 			document.removeEventListener("mouseenter", onEnter);
 			if (rafId !== null) cancelAnimationFrame(rafId);
 		};
-	}, [supportsHover, enabled, mouseX, mouseY]);
+	}, [supportsHover, mouseX, mouseY]);
 
-	// Reduced motion / low-motion mode: skip the custom cursor entirely and
-	// let the native cursor take over (see globals.css `cursor: auto` rules).
-	if (!supportsHover || !enabled) return null;
+	// Only devices without a real pointer (touch/coarse) skip the custom
+	// cursor entirely (see globals.css `cursor: auto` fallback for that case).
+	// Reduced/low motion still renders the cursor — `enabled` only controls
+	// spring-vs-raw ring position and animated-vs-instant transitions below.
+	if (!supportsHover) return null;
 
 	const ringTarget = RING_TARGET[variant];
 
@@ -165,19 +172,23 @@ export function CustomCursor() {
 				<m.div
 					animate={{ opacity: visible ? 1 : 0 }}
 					className="size-1.75 -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--accent)"
-					transition={{ opacity: { duration: 0.2 } }}
+					transition={enabled ? DOT_TRANSITION : DOT_TRANSITION_REDUCED}
 				/>
 			</m.div>
 
-			{/* Ring — soft-follows via spring */}
+			{/* Ring — soft-follows via spring when motion is enabled; tracks the
+			    raw pointer position with no lag under reduced/low motion. */}
 			<m.div
 				className="pointer-events-none fixed top-0 left-0 z-9999"
-				style={{ x: ringSpringX, y: ringSpringY }}
+				style={{
+					x: enabled ? ringSpringX : mouseX,
+					y: enabled ? ringSpringY : mouseY,
+				}}
 			>
 				<m.div
 					animate={{ ...ringTarget, opacity: visible ? 1 : 0 }}
 					className="-translate-x-1/2 -translate-y-1/2 border-2 border-solid"
-					transition={RING_TRANSITION}
+					transition={enabled ? RING_TRANSITION : RING_TRANSITION_REDUCED}
 				/>
 			</m.div>
 		</>
