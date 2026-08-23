@@ -1,6 +1,6 @@
-/** Update these to your real URLs. Place `resume.pdf` in `/public` for the resume link. */
 export const profileLinks = {
 	github: "https://github.com/RiosNicholas",
 	linkedin: "https://www.linkedin.com/in/nicholas-rios/",
-	resume: "/resume.pdf",
+	resume:
+		"https://drive.google.com/file/d/1Ev17k23REU0jirDuQRYNnxMCiXLzan31/view?usp=sharing",
 } as const;
