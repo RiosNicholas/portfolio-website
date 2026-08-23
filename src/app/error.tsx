@@ -30,14 +30,14 @@ export default function RouteError({
 			</p>
 			<div className="flex flex-wrap items-center justify-center gap-3">
 				<button
-					className="inline-flex cursor-none items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+					className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 					onClick={() => reset()}
 					type="button"
 				>
 					Try again
 				</button>
 				<Link
-					className="inline-flex cursor-none items-center gap-2 whitespace-nowrap rounded-(--r-md) border border-(--border-2) px-5 py-3 font-display font-semibold text-foreground text-sm tracking-tight no-underline transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--frosted)"
+					className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) border border-(--border-2) px-5 py-3 font-display font-semibold text-foreground text-sm tracking-tight no-underline transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--frosted)"
 					href="/"
 				>
 					Go home

@@ -16,7 +16,7 @@ export default function NotFound() {
 				The page you're looking for doesn't exist or has moved.
 			</p>
 			<Link
-				className="inline-flex cursor-none items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+				className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
 				href="/"
 			>
 				<span>Back to home</span>
