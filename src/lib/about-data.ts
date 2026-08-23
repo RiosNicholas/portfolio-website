@@ -35,9 +35,9 @@ export const experience: CvEntry[] = [
 export const education: CvEntry[] = [
 	{
 		years: "Sep '21 — Dec '24",
-		title: "B.A. Computer Science",
+		title: "B.A. Computer Science, Minor in Data Science",
 		titleAccent: ["Computer Science"],
-		where: "Rutgers University · Data Science Minor · Magna Cum Laude",
+		where: "Rutgers University · Magna Cum Laude",
 	},
 	{
 		years: "Feb '23 — Nov '23",
