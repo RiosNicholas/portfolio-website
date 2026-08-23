@@ -10,7 +10,6 @@ import { SiteNav } from "~/components/layout/site-nav";
 import { CustomCursor } from "~/components/ui/custom-cursor";
 import { MotionProvider } from "~/components/ui/motion-provider";
 import { cn } from "~/lib/utils";
-import { TRPCReactProvider } from "~/trpc/react";
 
 const schibstedGrotesk = Schibsted_Grotesk({
 	subsets: ["latin"],
@@ -66,10 +65,8 @@ export default function RootLayout({
 				<div aria-hidden className="grain" />
 				<MotionProvider>
 					<CustomCursor />
-					<TRPCReactProvider>
-						<SiteNav />
-						{children}
-					</TRPCReactProvider>
+					<SiteNav />
+					{children}
 				</MotionProvider>
 			</body>
 		</html>

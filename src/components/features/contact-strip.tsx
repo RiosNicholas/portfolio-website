@@ -85,7 +85,7 @@ export function ContactStrip() {
 					✱ New York City Metropolitan Area
 				</div>
 				<div className="md:flex-1 md:text-right">
-					UI Development· Platform Engineering · Agentic Development
+					UI Development · Platform Engineering · Agentic Development
 				</div>
 			</div>
 		</section>
