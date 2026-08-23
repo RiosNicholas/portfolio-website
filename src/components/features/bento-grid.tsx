@@ -67,6 +67,8 @@ function YearsCell() {
 }
 
 function SkillsCell() {
+	const enabled = useAnimationsEnabled();
+
 	return (
 		<div
 			className={cn(CELL_CLASS, "col-span-2 p-0 md:col-span-4 md:row-span-2")}
@@ -76,8 +78,13 @@ function SkillsCell() {
 				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
 			</div>
 			<Marquee
+				aria-label="Skills"
 				ariaHideDuplicates
-				className="mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)] relative flex-1 p-0 [--duration:28s] [--gap:0px]"
+				className={cn(
+					"relative flex-1 p-0 [--duration:28s] [--gap:0px]",
+					enabled &&
+						"mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]",
+				)}
 				pauseOnHover
 				repeat={2}
 				vertical

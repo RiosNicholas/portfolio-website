@@ -42,7 +42,9 @@ rather than hand-ordering.
   animation utilities / `tw-animate-css` for simple looping effects
   (pulse, spin, bounce). Don't add a new `@keyframes` block to
   `globals.css` if an existing utility or the `Reveal` pattern already
-  covers it.
+  covers it. Every `motion`-driven component must stay accessible when
+  animations are disabled — see
+  `.claude/instructions/animation-accessibility.md`.
 
 ## Imports
 

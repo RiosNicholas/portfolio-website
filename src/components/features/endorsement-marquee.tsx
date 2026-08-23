@@ -8,6 +8,8 @@ import {
 	getAvatarColor,
 	getInitials,
 } from "~/lib/endorsements";
+import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
+import { cn } from "~/lib/utils";
 
 function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
@@ -45,13 +47,21 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 }
 
 export function EndorsementMarquee() {
+	const enabled = useAnimationsEnabled();
 	const mid = Math.ceil(endorsements.length / 2);
 	const rowA = endorsements.slice(0, mid);
 	const rowB = endorsements.slice(mid);
 
 	return (
-		<Reveal className="mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)] relative my-12 flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5 md:my-16 lg:my-20">
+		<Reveal
+			className={cn(
+				"relative my-12 flex flex-col gap-3.5 overflow-hidden border-border border-y py-8.5 md:my-16 lg:my-20",
+				enabled &&
+					"mask-[linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]",
+			)}
+		>
 			<Marquee
+				aria-label="Endorsements, part 1"
 				className="p-0 [--duration:80s] [--gap:14px]"
 				pauseOnHover
 				repeat={2}
@@ -61,6 +71,7 @@ export function EndorsementMarquee() {
 				))}
 			</Marquee>
 			<Marquee
+				aria-label="Endorsements, part 2"
 				className="p-0 [--duration:70s] [--gap:14px]"
 				pauseOnHover
 				repeat={2}

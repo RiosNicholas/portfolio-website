@@ -39,6 +39,13 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
 	 * @default 4
 	 */
 	repeat?: number;
+	/**
+	 * `aria-hidden` the duplicated copies so screen readers announce the
+	 * content once. Only safe when `children` contain no focusable elements —
+	 * a focusable node inside `aria-hidden` is itself an a11y violation.
+	 * @default false
+	 */
+	ariaHideDuplicates?: boolean;
 }
 
 export function Marquee({
@@ -48,6 +55,7 @@ export function Marquee({
 	children,
 	vertical = false,
 	repeat = 4,
+	ariaHideDuplicates = false,
 	...props
 }: MarqueeProps) {
 	const [scope, animate] = useAnimate<HTMLDivElement>();
@@ -60,6 +68,9 @@ export function Marquee({
 		if (!enabled || !track) {
 			controlsRef.current?.stop();
 			controlsRef.current = null;
+			if (track) {
+				animate(track, { x: "0%", y: "0%" }, { duration: 0 });
+			}
 			return;
 		}
 
@@ -85,29 +96,42 @@ export function Marquee({
 		};
 	}, [animate, enabled, repeat, reverse, scope, vertical]);
 
+	// Duplicated copies exist only to make the animated loop seamless — in
+	// the scrollable (disabled) state, render exactly one copy so a screen
+	// reader (and a scrolling user) doesn't encounter the same content twice.
+	const repeatCount = enabled ? repeat : 1;
+
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: mouse enter/leave only pauses a decorative animation, no keyboard/interactive semantics needed
 		<div
 			{...props}
 			className={cn(
-				"overflow-hidden p-2 [--duration:40s] [--gap:1rem]",
+				"p-2 [--duration:40s] [--gap:1rem]",
+				enabled
+					? "overflow-hidden"
+					: vertical
+						? "overflow-y-auto overflow-x-hidden"
+						: "overflow-x-auto overflow-y-hidden",
 				className,
 			)}
-			onMouseEnter={() => {
-				if (pauseOnHover) controlsRef.current?.pause();
-			}}
-			onMouseLeave={() => {
-				if (pauseOnHover) controlsRef.current?.play();
-			}}
+			onMouseEnter={
+				pauseOnHover && enabled ? () => controlsRef.current?.pause() : undefined
+			}
+			onMouseLeave={
+				pauseOnHover && enabled ? () => controlsRef.current?.play() : undefined
+			}
+			role={enabled ? undefined : "group"}
+			tabIndex={enabled ? undefined : 0}
 		>
 			<div
 				className={cn("flex", vertical ? "flex-col" : "flex-row")}
 				ref={scope}
 			>
-				{Array(repeat)
+				{Array(repeatCount)
 					.fill(0)
 					.map((_, i) => (
 						<div
+							aria-hidden={ariaHideDuplicates && i > 0 ? true : undefined}
 							className={cn(
 								"flex shrink-0 justify-around gap-(--gap)",
 								vertical ? "flex-col pb-(--gap)" : "flex-row pr-(--gap)",
