@@ -11,7 +11,7 @@ export type CvEntry = {
 
 export const experience: CvEntry[] = [
 	{
-		years: "Feb '25 — Now",
+		years: "Feb '25 — Present",
 		title: "Software Engineer",
 		where: "JPMorgan Chase & Co. · Jersey City, NJ",
 	},
@@ -48,7 +48,7 @@ export const education: CvEntry[] = [
 
 export const activities: CvEntry[] = [
 	{
-		years: "Apr '23 — Now",
+		years: "Apr '23 — Dec '24",
 		title: "Co-Founder & President",
 		where: "ColorStack Chapter @ Rutgers University–Newark",
 	},
