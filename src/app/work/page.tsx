@@ -5,7 +5,7 @@ import { cases } from "~/lib/work-data";
 
 export default function WorkPage() {
 	return (
-		<main className="shell">
+		<main className="shell" id="main-content">
 			<WorkHero />
 
 			<section>

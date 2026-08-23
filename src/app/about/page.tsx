@@ -4,7 +4,7 @@ import { ContactStrip } from "~/components/features/contact-strip";
 
 export default function AboutPage() {
 	return (
-		<main className="shell">
+		<main className="shell" id="main-content">
 			<AboutHero />
 			<AboutBio />
 			<ContactStrip />

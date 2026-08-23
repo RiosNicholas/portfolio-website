@@ -10,7 +10,7 @@ import { Reveal } from "~/components/ui/reveal";
 
 export default function HomePage() {
 	return (
-		<main className="shell">
+		<main className="shell" id="main-content">
 			{/* Hero */}
 			<HeroSection />
 
