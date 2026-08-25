@@ -7,13 +7,17 @@ export const env = createEnv({
 	 * isn't built with invalid env vars.
 	 */
 	server: {
-		AUTH_SECRET:
-			process.env.NODE_ENV === "production"
-				? z.string()
-				: z.string().optional(),
-		AUTH_DISCORD_ID: z.string(),
-		AUTH_DISCORD_SECRET: z.string(),
-		DATABASE_URL: z.string().url(),
+		// Optional: no prerendered route reads these. The backend scaffolding
+		// (tRPC/Prisma/NextAuth under src/server/, src/trpc/) is retained but
+		// unused today (see README.md "Backend scaffolding") — the two routes
+		// that do consume it (/api/trpc, /api/auth) are dynamic, so they're
+		// never evaluated during `next build`. Requiring these at build time
+		// meant `npm run build` failed on a fresh checkout with no database;
+		// making them optional is the actual fix, not a workaround.
+		AUTH_SECRET: z.string().optional(),
+		AUTH_DISCORD_ID: z.string().optional(),
+		AUTH_DISCORD_SECRET: z.string().optional(),
+		DATABASE_URL: z.string().url().optional(),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),

@@ -5,6 +5,11 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  * This is the primary router for your server.
  *
  * All routers added in /api/routers should be manually added here.
+ *
+ * Not currently wired to any page — retained as scaffolding for a possible
+ * future admin surface (see agentWork/prod-readiness-audit/SCALING.md).
+ * `env.js`'s DATABASE_URL/AUTH_* vars are optional precisely so this can
+ * stay on disk without forcing every deploy to configure a database.
  */
 export const appRouter = createTRPCRouter({
 	post: postRouter,
