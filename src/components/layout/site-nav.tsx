@@ -38,7 +38,7 @@ function ThemeToggle() {
 	return (
 		<button
 			aria-label="Toggle theme"
-			className="inline-flex h-8 w-8 cursor-none items-center justify-center rounded-full text-(--ink-3) transition-colors hover:bg-(--frosted) hover:text-(--ink)"
+			className="inline-flex h-8 w-8 items-center justify-center rounded-full text-(--ink-3) transition-colors hover:bg-(--frosted) hover:text-(--ink)"
 			onClick={toggle}
 			type="button"
 		>
@@ -49,7 +49,7 @@ function ThemeToggle() {
 
 function navItemCls(active: boolean) {
 	return cn(
-		"inline-flex cursor-none items-center gap-1.5 rounded-full px-4 py-2 font-medium text-sm tracking-normal no-underline transition-colors",
+		"inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-medium text-sm tracking-normal no-underline transition-colors",
 		"focus-visible:outline-none focus-visible:ring-(--accent) focus-visible:ring-2",
 		active
 			? "bg-(--ink) text-(--paper) hover:bg-(--ink) hover:text-(--paper)"

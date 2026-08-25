@@ -27,10 +27,10 @@ const socials: { href: string; label: string; icon: React.ReactNode }[] = [
 	},
 ];
 
-export function ContactStrip() {
+export function ContactCta() {
 	return (
 		<section
-			className="relative mt-10 border-border border-t pt-16 pb-6 md:mt-12 md:pt-20 lg:mt-16 lg:pt-28"
+			className="relative mt-10 border-border border-t pt-16 md:mt-12 md:pt-20 lg:mt-16 lg:pt-28"
 			id="contact"
 		>
 			<Reveal
@@ -76,18 +76,6 @@ export function ContactStrip() {
 					))}
 				</div>
 			</Reveal>
-
-			{/* TODO: Move footer to core layout */}
-			{/* Footer */}
-			<div className="mt-16 flex flex-col gap-3 border-border border-t pt-10 pb-10 font-mono text-(--ink-4) text-xs tracking-normal md:flex-row md:items-center md:pb-16 lg:pb-24">
-				<div className="md:flex-1">© 2026 Nicholas Rios</div>
-				<div className="font-medium text-(--accent-text) md:flex-1 md:text-center">
-					✱ New York City Metropolitan Area
-				</div>
-				<div className="md:flex-1 md:text-right">
-					UI Development · Platform Engineering · Agentic Development
-				</div>
-			</div>
 		</section>
 	);
 }

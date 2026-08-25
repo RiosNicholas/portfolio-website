@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { AboutBio } from "~/components/features/about-bio";
 import { AboutHero } from "~/components/features/about-hero";
-import { ContactStrip } from "~/components/features/contact-strip";
+import { ContactCta } from "~/components/features/contact-cta";
 
 const description =
 	"About Nicholas Rios — 3 years building software, focused on frontend platform engineering, design systems, and agentic AI. Based in Jersey City.";
@@ -24,7 +24,7 @@ export default function AboutPage() {
 		<main className="shell" id="main-content">
 			<AboutHero />
 			<AboutBio />
-			<ContactStrip />
+			<ContactCta />
 		</main>
 	);
 }

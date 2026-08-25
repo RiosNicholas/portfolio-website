@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 import BentoGrid from "~/components/features/bento-grid";
-import { ContactStrip } from "~/components/features/contact-strip";
 import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
 import { HeroSection } from "~/components/features/hero-section";
 import { WorkTeaser } from "~/components/features/work-teaser";
@@ -54,9 +53,6 @@ export default function HomePage() {
 				</Reveal>
 				<EndorsementMarquee />
 			</section>
-
-			{/* Contact */}
-			<ContactStrip />
 		</main>
 	);
 }

@@ -6,6 +6,7 @@ import {
 	JetBrains_Mono,
 	Schibsted_Grotesk,
 } from "next/font/google";
+import { SiteFooter } from "~/components/layout/site-footer";
 import { SiteNav } from "~/components/layout/site-nav";
 import { CustomCursor } from "~/components/ui/custom-cursor";
 import { MotionProvider } from "~/components/ui/motion-provider";
@@ -103,6 +104,7 @@ export default function RootLayout({
 					<CustomCursor />
 					<SiteNav />
 					{children}
+					<SiteFooter />
 				</MotionProvider>
 			</body>
 		</html>
