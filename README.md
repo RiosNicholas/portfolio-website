@@ -56,8 +56,8 @@ src/
     ui/                primitives — shadcn/ui + Magic UI + custom
                        (Button, Card, Marquee, Reveal, CustomCursor)
   lib/                site-wide config consts (nav/profile links, structured
-                       data), avatar helpers, and shared utilities (cn,
-                       use-animations-enabled)
+                       data), languages.ts, avatar helpers, and shared
+                       utilities (cn, use-animations-enabled)
   server/
     api/routers/       tRPC routers — one per content model, plus `post`
     api/schemas/       Zod input schemas shared between routers and
@@ -98,6 +98,9 @@ page on the next request — no redeploy needed.
 `src/lib/structured-data.ts` (Person JSON-LD) are **not** modeled — they're
 low-churn structural/deploy config read by static route handlers
 (`robots.ts`, `sitemap.ts`), kept as typed consts on purpose.
+`src/lib/languages.ts` (the bento grid's Languages cell) is the same
+carve-out — three rows that change roughly never, not worth a `Language`
+model or a third `SkillKind`.
 
 The `Endorsement` table ships **empty** by design — the 12 testimonials
 that used to live in `src/lib/endorsements.ts` were fabricated placeholders

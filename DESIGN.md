@@ -102,8 +102,9 @@ JS gate.
 - **Bento grid** (`BentoGrid`) — 6-col grid, 168px auto rows. Cells:
   location (animated pin + ping ring), years (in-view count-up via
   `NumberTicker`), status, skills (vertical `Marquee` reel), favorite
-  tools (chip cloud), currently. Skills/tools data comes from the `Skill`
-  model (`src/server/data/skills.ts`), edited via `/admin/skills`.
+  tools (chip cloud), currently, languages (static, `src/lib/languages.ts`).
+  Skills/tools data comes from the `Skill` model
+  (`src/server/data/skills.ts`), edited via `/admin/skills`.
 - **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
   shows the featured `CaseStudy` rows (`src/server/data/case-studies.ts`);
   `/work` renders every case in full (two-column: meta rail +

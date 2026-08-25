@@ -5,6 +5,7 @@ import { Globe } from "~/components/ui/globe";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
+import { languages } from "~/lib/languages";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 import type { Skill } from "../../../generated/prisma";
@@ -111,6 +112,27 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 	);
 }
 
+function LanguagesCell() {
+	return (
+		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4")}>
+			<CellLabel>Languages</CellLabel>
+			<div className="grid grid-cols-3 gap-3">
+				{languages.map((language) => (
+					<div key={language.name}>
+						<div className="font-display font-semibold text-foreground text-lg leading-tight tracking-tight md:text-xl">
+							{language.name}
+						</div>
+						<div className="font-mono text-(--ink-3) text-xs">
+							{language.level}
+						</div>
+					</div>
+				))}
+			</div>
+			<CellSub>Two native, one in progress</CellSub>
+		</div>
+	);
+}
+
 export function BentoGrid({
 	skills,
 	tools,
@@ -197,6 +219,9 @@ export function BentoGrid({
 				</div>
 				<CellSub>Building UI platform infra &amp; agentic AI systems</CellSub>
 			</div>
+
+			{/* Languages — spans full width of row 4 to avoid an auto-placed hole */}
+			<LanguagesCell />
 		</Reveal>
 	);
 }
