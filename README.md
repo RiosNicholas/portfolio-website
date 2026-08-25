@@ -63,7 +63,7 @@ There's no CMS — copy and structured data live as typed consts in
 | About page bio / CV rows              | `src/lib/about-data.ts`           |
 | Work page case studies                | `src/lib/work-data.ts`            |
 | Home page endorsement cards           | `src/lib/endorsements.ts`         |
-| Bento grid skills / favourite tools   | `src/lib/bento-data.ts`           |
+| Bento grid skills / favorite tools    | `src/lib/bento-data.ts`           |
 | Schema.org structured data            | `src/lib/structured-data.ts`      |
 
 > `src/lib/endorsements.ts` currently ships **placeholder testimonials** —

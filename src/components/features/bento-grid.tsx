@@ -5,7 +5,7 @@ import { Globe } from "~/components/ui/globe";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
-import { favouriteTools, skills } from "~/lib/bento-data";
+import { favoriteTools, skills } from "~/lib/bento-data";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 
@@ -158,10 +158,10 @@ export function BentoGrid() {
 			<SkillsCell />
 
 			{/* Stack */}
-			<div className={cn(CELL_CLASS, "col-span-2")}>
-				<CellLabel>Favourite tools</CellLabel>
+			<div className={cn(CELL_CLASS, "col-span-2 md:row-span-2")}>
+				<CellLabel>Favorite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{favouriteTools.map((tool) => (
+					{favoriteTools.map((tool) => (
 						<span
 							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
 							key={tool}

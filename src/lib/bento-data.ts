@@ -7,13 +7,13 @@ export type Skill = {
 };
 
 export const skills: Skill[] = [
-	{ label: "TypeScript" },
 	{ label: "React · Next.js", accent: "Next.js" },
+	{ label: "TypeScript" },
 	{ label: "Design systems" },
 	{ label: "Tailwind · shadcn/ui", accent: "shadcn/ui" },
 	{ label: "Framer Motion" },
-	{ label: "Node · Python · Go" },
 	{ label: "Agents · LLM UX", accent: "LLM UX" },
+	{ label: "Node · Python · Go" },
 	{ label: "Postgres · Redis" },
 	{ label: "Platform engineering" },
 	{ label: "Observability" },
@@ -21,12 +21,14 @@ export const skills: Skill[] = [
 	{ label: "Animation & motion" },
 ];
 
-export const favouriteTools: string[] = [
+export const favoriteTools: string[] = [
 	"Claude Code",
 	"GitHub Copilot",
+	"VS Code",
 	"Vim",
 	"Raycast",
-	"Ghosty",
+	"Rectangle",
+	"Ghostty",
 	"Figma",
 	"Fish Shell",
 ];

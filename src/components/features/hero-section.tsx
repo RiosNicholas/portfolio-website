@@ -39,7 +39,7 @@ export function HeroSection() {
 					as="h1"
 					className="m-0 font-display font-semibold text-5xl text-foreground leading-none tracking-tighter md:text-7xl lg:text-9xl"
 				>
-					Platform
+					Software
 					<br />
 					engineer &amp;
 					<br />
@@ -54,11 +54,11 @@ export function HeroSection() {
 					as="p"
 					className="mt-6 max-w-xl font-normal font-sans text-(--ink-2) text-base leading-normal tracking-normal md:mt-8 md:text-lg"
 				>
-					I&apos;m Nicholas — a Software Engineer building{" "}
+					I&apos;m Nicholas — a Software Engineer specializing in{" "}
 					<em className="no-underline! font-semibold text-foreground not-italic">
-						UI platform infrastructure{" "}
+						UI platform engineering
 					</em>
-					and{" "}
+					, building infrastructure and{" "}
 					<em className="no-underline! font-semibold text-foreground not-italic">
 						agentic AI systems
 					</em>{" "}

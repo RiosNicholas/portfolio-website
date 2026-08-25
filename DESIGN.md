@@ -101,7 +101,7 @@ JS gate.
 
 - **Bento grid** (`BentoGrid`) — 6-col grid, 168px auto rows. Cells:
   location (animated pin + ping ring), years (in-view count-up via
-  `NumberTicker`), status, skills (vertical `Marquee` reel), favourite
+  `NumberTicker`), status, skills (vertical `Marquee` reel), favorite
   tools (chip cloud), currently. Skills/tools data lives in
   `src/lib/bento-data.ts`.
 - **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
