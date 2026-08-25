@@ -5,6 +5,7 @@ import { m } from "motion/react";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
+import { favouriteTools, skills } from "~/lib/bento-data";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 
@@ -28,26 +29,19 @@ function CellSub({ children }: { children: React.ReactNode }) {
 	);
 }
 
-const skills = [
-	"TypeScript",
-	<>
-		React · <em className="text-(--accent-text) not-italic">Next.js</em>
-	</>,
-	"Design systems",
-	<>
-		Tailwind · <em className="text-(--accent-text) not-italic">shadcn/ui</em>
-	</>,
-	"Framer Motion",
-	"Node · Python · Go",
-	<>
-		Agents · <em className="text-(--accent-text) not-italic">LLM UX</em>
-	</>,
-	"Postgres · Redis",
-	"Platform engineering",
-	"Observability",
-	"CI / CD",
-	"Animation & motion",
-];
+function SkillLabel({ label, accent }: { label: string; accent?: string }) {
+	if (!accent) return <>{label}</>;
+	const index = label.indexOf(accent);
+	if (index === -1) return <>{label}</>;
+
+	return (
+		<>
+			{label.slice(0, index)}
+			<em className="text-(--accent-text) not-italic">{accent}</em>
+			{label.slice(index + accent.length)}
+		</>
+	);
+}
 
 function YearsCell() {
 	return (
@@ -89,13 +83,13 @@ function SkillsCell() {
 				repeat={2}
 				vertical
 			>
-				{skills.map((skill, i) => (
+				{skills.map((skill) => (
 					<div
 						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
-						key={i}
+						key={skill.label}
 					>
 						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
-						{skill}
+						<SkillLabel {...skill} />
 					</div>
 				))}
 			</Marquee>
@@ -132,7 +126,7 @@ function PingRing() {
 	);
 }
 
-export default function BentoGrid() {
+export function BentoGrid() {
 	return (
 		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
 			{/* Location */}
@@ -184,15 +178,7 @@ export default function BentoGrid() {
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Favourite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{[
-						"Claude Code",
-						"GitHub Copilot",
-						"Vim",
-						"Raycast",
-						"Ghosty",
-						"Figma",
-						"Fish Shell",
-					].map((tool) => (
+					{favouriteTools.map((tool) => (
 						<span
 							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
 							key={tool}

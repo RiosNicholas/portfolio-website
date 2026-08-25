@@ -1,51 +1,18 @@
 "use client";
 
-import { Moon, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
+import { ThemeToggle } from "~/components/theme/theme-toggle";
 import {
 	NavigationMenu,
 	NavigationMenuItem,
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "~/components/ui/navigation-menu";
+import { navLinks } from "~/lib/site-links";
 import { cn } from "~/lib/utils";
-
-const navLinks = [
-	{ href: "/", label: "Home" },
-	{ href: "/work", label: "Work" },
-	{ href: "/about", label: "About" },
-] as const;
-
-function ThemeToggle() {
-	const [isDark, setIsDark] = useState(false);
-
-	useEffect(() => {
-		setIsDark(document.documentElement.dataset.theme === "dark");
-	}, []);
-
-	const toggle = () => {
-		const next = isDark ? "light" : "dark";
-		document.documentElement.dataset.theme = next;
-		try {
-			localStorage.setItem("theme", next);
-		} catch {}
-		setIsDark(!isDark);
-	};
-
-	return (
-		<button
-			aria-label="Toggle theme"
-			className="inline-flex h-8 w-8 items-center justify-center rounded-full text-(--ink-3) transition-colors hover:bg-(--frosted) hover:text-(--ink)"
-			onClick={toggle}
-			type="button"
-		>
-			{isDark ? <Moon size={16} /> : <Sun size={16} />}
-		</button>
-	);
-}
 
 function navItemCls(active: boolean) {
 	return cn(
@@ -59,11 +26,31 @@ function navItemCls(active: boolean) {
 
 export function SiteNav() {
 	const pathname = usePathname();
+	const navRef = useRef<HTMLElement>(null);
+
+	// Client-side route changes reuse the same <a> DOM nodes (React keys them
+	// by href), so the browser's cached `:hover` paint from the click that
+	// triggered navigation can persist on an item whose active/inactive state
+	// just changed underneath it — it looks "stuck" until a genuine pointer
+	// event forces a recompute. Toggling `pointer-events` off and back on for
+	// a frame is the standard workaround: it makes the browser drop the stale
+	// hover match and repaint from the element's real (current) state.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the intentional re-run trigger, not a value read inside the effect
+	useEffect(() => {
+		const nav = navRef.current;
+		if (!nav) return;
+		nav.style.pointerEvents = "none";
+		const raf = requestAnimationFrame(() => {
+			nav.style.pointerEvents = "";
+		});
+		return () => cancelAnimationFrame(raf);
+	}, [pathname]);
 
 	return (
 		<nav
 			aria-label="Primary"
 			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] px-5 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-sm md:px-8 lg:px-10"
+			ref={navRef}
 		>
 			{/* Logo */}
 			<Link

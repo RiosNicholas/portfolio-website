@@ -1,11 +1,12 @@
 import Link from "next/link";
 
-import BentoGrid from "~/components/features/bento-grid";
+import { BentoGrid } from "~/components/features/bento-grid";
 import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
 import { HeroSection } from "~/components/features/hero-section";
 import { WorkTeaser } from "~/components/features/work-teaser";
 import { SectionHeader } from "~/components/layout/section-header";
 import { Reveal } from "~/components/ui/reveal";
+import { endorsements } from "~/lib/endorsements";
 
 export default function HomePage() {
 	return (
@@ -42,7 +43,7 @@ export default function HomePage() {
 			<section aria-label="Endorsements" className="py-14 sm:py-20 lg:py-28">
 				<Reveal>
 					<SectionHeader
-						meta="12 endorsements · cont."
+						meta={`${endorsements.length} endorsements · cont.`}
 						num="02 — Kind words"
 						title={
 							<>

@@ -23,9 +23,11 @@ type NumberTickerProps = {
  * `custom-cursor.tsx` idiom) rather than a `MotionValue` rendered as a
  * motion-component child, so it has zero interaction with `LazyMotion strict`.
  *
- * The `0` literal in the initial render keeps server HTML stable — never
- * re-render this span with different children, since React would clobber
- * the imperatively written `textContent`.
+ * Initial render shows `value` itself (not `0`) so a visitor with JS
+ * disabled — who never hydrates, so the effect below never runs — sees the
+ * real number instead of a permanent zero. Never re-render this span with
+ * different `value` props, since React would clobber the imperatively
+ * written `textContent` mid-animation.
  */
 export function NumberTicker({
 	value,
@@ -49,6 +51,7 @@ export function NumberTicker({
 			return;
 		}
 
+		count.set(0);
 		const controls = animate(count, value, {
 			duration,
 			ease: [0.33, 1, 0.68, 1],
@@ -58,7 +61,7 @@ export function NumberTicker({
 
 	return (
 		<span className={className} ref={ref}>
-			0
+			{value}
 		</span>
 	);
 }
