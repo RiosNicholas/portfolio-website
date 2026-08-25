@@ -23,7 +23,7 @@ const socialLinkCls =
 export function SiteFooter() {
 	return (
 		<footer className="shell pb-6">
-			<div className="mt-16 flex flex-col gap-3 border-border border-t pt-10 pb-10 font-mono text-(--ink-4) text-xs tracking-normal md:flex-row md:items-center md:pb-16 lg:pb-24">
+			<div className="mt-16 flex flex-col items-center gap-3 border-border border-t pt-10 pb-10 font-mono text-(--ink-4) text-xs tracking-normal md:flex-row md:pb-16 lg:pb-24">
 				<div className="flex items-center gap-3 md:flex-1">
 					<span>© 2026 Nicholas Rios</span>
 					<div className="flex items-center gap-2.5">
@@ -41,10 +41,10 @@ export function SiteFooter() {
 						))}
 					</div>
 				</div>
-				<div className="font-medium text-(--accent-text) md:flex-1 md:text-center">
+				<div className="text-center font-medium text-(--accent-text) md:flex-1">
 					✱ New York City Metropolitan Area
 				</div>
-				<div className="text-balance md:flex-1 md:text-right">
+				<div className="text-balance text-center md:flex-1 md:text-right">
 					UI Development · Platform Engineering · Agentic Development
 				</div>
 			</div>

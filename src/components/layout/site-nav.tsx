@@ -34,7 +34,7 @@ const socialLinkCls =
 
 function navItemCls(active: boolean) {
 	return cn(
-		"inline-flex items-center gap-1.5 rounded-full px-4 py-2 font-medium text-sm tracking-normal no-underline transition-colors",
+		"inline-flex items-center gap-1.5 rounded-full px-3 py-2 font-medium text-sm tracking-normal no-underline transition-colors sm:px-4",
 		"focus-visible:outline-none focus-visible:ring-(--accent) focus-visible:ring-2",
 		// `NavigationMenuLink`'s shadcn base classes (navigation-menu.tsx) ship
 		// unconditional `hover:bg-muted focus:bg-muted`. tailwind-merge dedupes
@@ -55,7 +55,7 @@ export function SiteNav() {
 	return (
 		<nav
 			aria-label="Primary"
-			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-6 border-border border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] px-5 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-sm md:px-8 lg:px-10"
+			className="fixed inset-x-0 top-0 z-50 flex items-center justify-between gap-2 border-border border-b bg-[color-mix(in_srgb,var(--paper)_92%,transparent)] px-3 py-4 font-medium font-sans text-(--ink-3) text-sm tracking-normal backdrop-blur-sm sm:gap-6 sm:px-5 md:px-8 lg:px-10"
 		>
 			{/* Logo */}
 			<Link
@@ -63,7 +63,9 @@ export function SiteNav() {
 				href="/"
 			>
 				<span className="h-5 w-5 shrink-0 rounded bg-(--accent) transition-transform duration-300 ease-out group-hover:rotate-45" />
-				<span>Nicholas&nbsp;Rios</span>
+				<span className="sr-only min-[420px]:not-sr-only">
+					Nicholas&nbsp;Rios
+				</span>
 			</Link>
 
 			{/* Nav links */}
