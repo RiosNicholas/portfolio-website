@@ -1,8 +1,9 @@
 import { Reveal } from "~/components/ui/reveal";
 import { StatusDot } from "~/components/ui/status-dot";
-import { cases } from "~/lib/work-data";
+import { getCaseStudies } from "~/server/data/case-studies";
 
-export function WorkHero() {
+export async function WorkHero() {
+	const cases = await getCaseStudies();
 	const count = String(cases.length).padStart(2, "0");
 
 	return (

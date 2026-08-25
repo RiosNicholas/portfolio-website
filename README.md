@@ -1,9 +1,9 @@
 # Nicholas Rios — Portfolio
 
 Personal portfolio site: home, work (case studies), and about pages. Built
-as a statically-prerendered marketing site on top of the T3 Stack — the
-backend scaffolding (tRPC/Prisma/NextAuth) is present but unused by any
-page today (see [Backend scaffolding](#backend-scaffolding) below).
+on the T3 Stack — content (case studies, endorsements, CV entries, skills)
+lives in Postgres via Prisma and is edited through a gated `/admin` CRUD UI,
+not in code.
 
 ## Stack
 
@@ -13,63 +13,96 @@ page today (see [Backend scaffolding](#backend-scaffolding) below).
 - **shadcn/ui** + **Magic UI** primitives, **motion** (Framer Motion
   successor) for scroll/interaction animation, **lucide-react** icons
 - **Biome** for linting and formatting (not ESLint/Prettier)
-- tRPC 11 + Prisma 6 + NextAuth v5 exist under `src/server/` and `src/trpc/`
-  but are not wired into any page — see below
+- **tRPC 11 + Prisma 6 + NextAuth v5** — power content storage (`CaseStudy`,
+  `Endorsement`, `CvEntry`, `Skill` models) and the `/admin` surface. Discord
+  OAuth gates `/admin` to a hardcoded allowlist of `User.id`s
+  (`ADMIN_USER_IDS`) — see [Content & admin](#content--admin) below.
 
 ## Commands
 
 ```bash
-npm run dev          # start dev server (Next.js + Turbo)
-npm run build         # production build
-npm run check         # lint/format check (Biome)
-npm run check:write   # auto-fix lint/format issues
-npm run typecheck     # tsc --noEmit
+npm run dev           # start dev server (Next.js + Turbo)
+npm run build          # production build
+npm run check          # lint/format check (Biome)
+npm run check:write    # auto-fix lint/format issues
+npm run typecheck      # tsc --noEmit
+npm run db:generate    # run migrations in dev (prisma migrate dev)
+npm run db:migrate     # apply migrations in prod (prisma migrate deploy)
+npm run db:push        # push schema changes without a migration (prototyping only)
+npm run db:studio      # open Prisma Studio GUI
+npx prisma db seed     # (re)run prisma/seed.ts against the current DATABASE_URL
 ```
 
-`npm run build` succeeds with no `.env` file present — none of the
-prerendered routes read database or auth env vars at build time.
+`npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
+`AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET`, and `ADMIN_USER_IDS` to be set
+(`src/env.js` validates these at build time) — `/`, `/work`, and `/about`
+are Server Components that read from Postgres, and `/admin` needs a working
+NextAuth session. See [Local setup](#local-setup).
 
 ## Where things live
 
 ```
 src/
-  app/                route pages: /, /about, /work, plus error.tsx,
-                       not-found.tsx, robots.ts, sitemap.ts,
+  app/                route pages: /, /about, /work, /admin/**, plus
+                       error.tsx, not-found.tsx, robots.ts, sitemap.ts,
                        opengraph-image.tsx
   components/
-    features/         full page sections (HeroSection, BentoGrid,
+    admin/             styled form primitives for /admin's CRUD pages
+    features/          full page sections (HeroSection, BentoGrid,
                        CaseStudy, ContactCta, EndorsementMarquee, ...)
     layout/            structural wrappers (SiteNav, SiteFooter,
                        SectionHeader)
     theme/             theme provider / toggle
     ui/                primitives — shadcn/ui + Magic UI + custom
                        (Button, Card, Marquee, Reveal, CustomCursor)
-  lib/                static content + typed data (see below) and shared
-                       utilities (cn, use-animations-enabled)
-  server/              tRPC routers + NextAuth config (currently unused
-                       by any page — see Backend scaffolding)
+  lib/                site-wide config consts (nav/profile links, structured
+                       data), avatar helpers, and shared utilities (cn,
+                       use-animations-enabled)
+  server/
+    api/routers/       tRPC routers — one per content model, plus `post`
+    api/schemas/       Zod input schemas shared between routers and
+                       /admin's client-side forms
+    data/               unstable_cache-wrapped Prisma reads, tagged per
+                       model, invalidated by admin mutations
+    auth/               NextAuth v5 config (Discord provider)
   styles/globals.css   Tailwind v4 entry point, OKLCH tokens, motion/
                        accessibility rules
+prisma/
+  schema.prisma        Post/Account/Session/User/VerificationToken (auth)
+                       + CaseStudy/Endorsement/CvEntry/Skill (content)
+  seed.ts               one-time seed of the content that used to live in
+                       src/lib/{work-data,about-data,bento-data}.ts
 ```
 
-## Editing content
+## Content & admin
 
-There's no CMS — copy and structured data live as typed consts in
-`src/lib/` and get imported directly into the components that render them:
+Case studies, endorsements, CV entries (experience/education/activities),
+and skills/tools are Prisma models, read via `src/server/data/*.ts`
+(`unstable_cache`-wrapped, tagged per model) and edited through `/admin`:
 
-| To change...                        | Edit...                          |
-|---------------------------------------|-----------------------------------|
-| Nav links, profile links, site URL    | `src/lib/site-links.ts`           |
-| About page bio / CV rows              | `src/lib/about-data.ts`           |
-| Work page case studies                | `src/lib/work-data.ts`            |
-| Home page endorsement cards           | `src/lib/endorsements.ts`         |
-| Bento grid skills / favorite tools    | `src/lib/bento-data.ts`           |
-| Schema.org structured data            | `src/lib/structured-data.ts`      |
+| Section                | Public page(s)              |
+|-------------------------|------------------------------|
+| `/admin/case-studies`   | `/work`, home page teaser    |
+| `/admin/endorsements`   | home page recommendation reel |
+| `/admin/cv`             | `/about` Experience/Education/Activities |
+| `/admin/skills`         | home page bento grid Skills reel & tools list |
 
-> `src/lib/endorsements.ts` currently ships **placeholder testimonials** —
-> invented names, quotes, and LinkedIn URLs. Replace with real endorsement
-> data before treating the site as launch-ready; see the file's header
-> comment.
+`/admin` is gated two ways: `src/app/admin/layout.tsx` redirects any visitor
+who isn't signed in and allowlisted, and `adminProcedure`
+(`src/server/api/trpc.ts`) rejects mutations from anyone not in
+`ADMIN_USER_IDS` even if they reach a form directly. Each admin mutation
+calls `revalidateTag(...)` after writing, so an edit shows up on the public
+page on the next request — no redeploy needed.
+
+`src/lib/site-links.ts` (nav links, profile URLs, `siteUrl`) and
+`src/lib/structured-data.ts` (Person JSON-LD) are **not** modeled — they're
+low-churn structural/deploy config read by static route handlers
+(`robots.ts`, `sitemap.ts`), kept as typed consts on purpose.
+
+The `Endorsement` table ships **empty** by design — the 12 testimonials
+that used to live in `src/lib/endorsements.ts` were fabricated placeholders
+(LinkedIn's API doesn't expose recommendation data, so real ones have to be
+hand-entered via `/admin/endorsements`, not synced).
 
 ## Design system
 
@@ -91,24 +124,43 @@ component inventory.
 - A skip link (`#main-content`) precedes the fixed nav in `layout.tsx` for
   keyboard users.
 
-## Backend scaffolding
+## Local setup
 
-`src/server/` (tRPC routers, NextAuth, Prisma) and `src/trpc/` (client
-wiring) are retained but not imported by any current page — no prerendered
-route reads `DATABASE_URL`, `AUTH_DISCORD_ID`, or `AUTH_DISCORD_SECRET`, all
-three are `.optional()` in `src/env.js`, and the two live API routes
-(`/api/trpc`, `/api/auth`) are dynamic so they're never evaluated during
-`next build`. This is scaffolding kept for a possible future admin surface
-(see `agentWork/prod-readiness-audit/SCALING.md` for the migration plan) —
-not dead code to delete casually, but also not something any page depends
-on today.
+1. Copy `.env.example` to `.env` and fill in `AUTH_SECRET` (`npx auth
+   secret`), a Discord OAuth app's `AUTH_DISCORD_ID`/`AUTH_DISCORD_SECRET`,
+   and `DATABASE_URL`/`DIRECT_URL` (both can point at the same local
+   Postgres — `start-database.sh` spins one up via Docker/Podman).
+2. `npm install`
+3. `npx prisma migrate dev --name add_content_models` — creates the DB
+   schema (first run also generates the Prisma Client).
+4. `npx prisma db seed` — seeds case studies, CV entries, and skills/tools
+   from their old static values. Endorsements are deliberately left empty.
+5. `npm run dev`, sign in once via Discord at `/api/auth/signin`, then read
+   your `User.id` with `npm run db:studio` and set it as `ADMIN_USER_IDS`
+   in `.env` (comma-separated if there's ever more than one). Restart the
+   dev server so the new env var is picked up.
+6. Visit `/admin` — you should see the CRUD sections instead of being
+   redirected.
 
 ## Deploying
 
-Any Next.js host (Vercel, etc.) works out of the box — no environment
-variables are required for a build to succeed. If the backend scaffolding
-above is ever wired up for real, add `DATABASE_URL`, `AUTH_DISCORD_ID`, and
-`AUTH_DISCORD_SECRET` to the deploy environment at that point.
+Deployed on **Vercel Postgres** (Neon-backed), connected via the Vercel
+dashboard integration. That integration auto-populates
+`POSTGRES_PRISMA_URL` (pooled) and `POSTGRES_URL_NON_POOLING` (direct) as
+project env vars — map those to this project's own names in Vercel's
+project env var settings (one-time, after connecting the integration):
+
+| This project's var | = Vercel Postgres var        |
+|---------------------|-------------------------------|
+| `DATABASE_URL`       | `POSTGRES_PRISMA_URL`         |
+| `DIRECT_URL`         | `POSTGRES_URL_NON_POOLING`    |
+
+Also set `AUTH_SECRET`, `AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET`, and
+`ADMIN_USER_IDS` as real project env vars — all are required at build time
+(`src/env.js`). `package.json`'s `vercel-build` script (`prisma migrate
+deploy && next build`) runs migrations before building so schema changes
+ship automatically on deploy — Vercel picks up a `vercel-build` script over
+`build` automatically, no dashboard override needed.
 
 `src/lib/site-links.ts`'s `siteUrl` constant feeds `metadataBase`, canonical
 URLs, `robots.ts`, and `sitemap.ts` — it's currently a placeholder domain,

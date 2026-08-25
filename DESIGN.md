@@ -22,10 +22,10 @@ minimal, no filler. Voice: confident, plain-spoken, dry wit allowed.
 
 - One `<em className="mark">` per headline — never two, never zero. The
   marker highlight lands on a single 1-word concept.
-- Numbers: show them when real. Don't invent metrics — `src/lib/work-data.ts`
-  and `src/lib/endorsements.ts` both currently carry placeholder content
-  flagged in their own header comments; replace before launch rather than
-  treating them as final.
+- Numbers: show them when real. Don't invent metrics — the seeded
+  `CaseStudy` stats are real; the `Endorsement` table ships empty on
+  purpose (see README.md "Content & admin") rather than carrying invented
+  testimonials.
 - No gerunds as sentence-starting nouns ("Building", "Shipping"). Lead with
   a verb or a statement.
 - Avoid clichés: "passionate", "drives results", "craft at scale".
@@ -102,11 +102,12 @@ JS gate.
 - **Bento grid** (`BentoGrid`) — 6-col grid, 168px auto rows. Cells:
   location (animated pin + ping ring), years (in-view count-up via
   `NumberTicker`), status, skills (vertical `Marquee` reel), favorite
-  tools (chip cloud), currently. Skills/tools data lives in
-  `src/lib/bento-data.ts`.
+  tools (chip cloud), currently. Skills/tools data comes from the `Skill`
+  model (`src/server/data/skills.ts`), edited via `/admin/skills`.
 - **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
-  shows `featuredCases` from `src/lib/work-data.ts`; `/work` renders every
-  case in full (two-column: meta rail + description/tags/stats).
+  shows the featured `CaseStudy` rows (`src/server/data/case-studies.ts`);
+  `/work` renders every case in full (two-column: meta rail +
+  description/tags/stats). Edited via `/admin/case-studies`.
 - **Endorsement marquee** (`EndorsementMarquee`) — two opposing-direction
   rows built on the shared `Marquee` primitive (`src/components/ui/marquee.tsx`),
   which degrades to a single-copy, keyboard-scrollable container (not an

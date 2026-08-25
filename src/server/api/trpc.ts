@@ -11,6 +11,7 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import { env } from "~/env";
 import { auth } from "~/server/auth";
 import { db } from "~/server/db";
 
@@ -133,3 +134,33 @@ export const protectedProcedure = t.procedure
 			},
 		});
 	});
+
+/**
+ * Admin-only procedure
+ *
+ * Gates mutations to a hardcoded allowlist of `User.id`s (`ADMIN_USER_IDS`).
+ * This is a single-owner personal site — a `role` column would be machinery
+ * for a multi-admin system that will never exist here. Enforced again at the
+ * page level in `src/app/admin/layout.tsx`.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
+const adminUserIds = new Set(
+	env.ADMIN_USER_IDS.split(",")
+		.map((s) => s.trim())
+		.filter(Boolean),
+);
+
+/** Shared with `src/app/admin/layout.tsx`, which enforces the same
+ * allowlist at the page level so a non-admin visitor never sees the admin
+ * shell render, not just their mutations rejected. */
+export function isAdminUserId(id: string): boolean {
+	return adminUserIds.has(id);
+}
+
+export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
+	if (!isAdminUserId(ctx.session.user.id)) {
+		throw new TRPCError({ code: "FORBIDDEN" });
+	}
+	return next();
+});

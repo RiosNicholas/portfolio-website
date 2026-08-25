@@ -6,9 +6,16 @@ import { HeroSection } from "~/components/features/hero-section";
 import { WorkTeaser } from "~/components/features/work-teaser";
 import { SectionHeader } from "~/components/layout/section-header";
 import { Reveal } from "~/components/ui/reveal";
-import { endorsements } from "~/lib/endorsements";
+import { getPublishedEndorsements } from "~/server/data/endorsements";
+import { getSkillsByKind } from "~/server/data/skills";
 
-export default function HomePage() {
+export default async function HomePage() {
+	const [skills, tools, endorsements] = await Promise.all([
+		getSkillsByKind("SKILL"),
+		getSkillsByKind("TOOL"),
+		getPublishedEndorsements(),
+	]);
+
 	return (
 		<main className="shell" id="main-content">
 			{/* Hero */}
@@ -16,7 +23,7 @@ export default function HomePage() {
 
 			{/* Bento */}
 			<section aria-label="Quick facts">
-				<BentoGrid />
+				<BentoGrid skills={skills} tools={tools} />
 			</section>
 
 			{/* Work teaser */}
@@ -52,7 +59,7 @@ export default function HomePage() {
 						}
 					/>
 				</Reveal>
-				<EndorsementMarquee />
+				<EndorsementMarquee endorsements={endorsements} />
 			</section>
 		</main>
 	);

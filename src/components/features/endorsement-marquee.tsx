@@ -2,14 +2,10 @@
 
 import { Marquee } from "~/components/ui/marquee";
 import { Reveal } from "~/components/ui/reveal";
-import {
-	type Endorsement,
-	endorsements,
-	getAvatarColor,
-	getInitials,
-} from "~/lib/endorsements";
+import { getAvatarColor, getInitials } from "~/lib/avatar";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
+import type { Endorsement } from "../../../generated/prisma";
 
 function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
@@ -46,7 +42,11 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 	);
 }
 
-export function EndorsementMarquee() {
+export function EndorsementMarquee({
+	endorsements,
+}: {
+	endorsements: Endorsement[];
+}) {
 	const enabled = useAnimationsEnabled();
 	const mid = Math.ceil(endorsements.length / 2);
 	const rowA = endorsements.slice(0, mid);
@@ -68,7 +68,7 @@ export function EndorsementMarquee() {
 				repeat={2}
 			>
 				{rowA.map((e) => (
-					<EndorsementCard e={e} key={e.name} />
+					<EndorsementCard e={e} key={e.id} />
 				))}
 			</Marquee>
 			<Marquee
@@ -80,7 +80,7 @@ export function EndorsementMarquee() {
 				reverse
 			>
 				{rowB.map((e) => (
-					<EndorsementCard e={e} key={e.name} />
+					<EndorsementCard e={e} key={e.id} />
 				))}
 			</Marquee>
 		</Reveal>

@@ -1,6 +1,9 @@
 import Link from "next/link";
-
-import { type CaseStudy, cases, featuredCases } from "~/lib/work-data";
+import {
+	getCaseStudies,
+	getFeaturedCaseStudies,
+} from "~/server/data/case-studies";
+import type { CaseStudy } from "../../../generated/prisma";
 
 function CaseRow({ study }: { study: CaseStudy }) {
 	return (
@@ -31,7 +34,11 @@ function CaseRow({ study }: { study: CaseStudy }) {
 	);
 }
 
-export function WorkTeaser() {
+export async function WorkTeaser() {
+	const [cases, featuredCases] = await Promise.all([
+		getCaseStudies(),
+		getFeaturedCaseStudies(),
+	]);
 	const count = String(cases.length).padStart(2, "0");
 
 	return (

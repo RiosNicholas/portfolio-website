@@ -1,7 +1,14 @@
 import { Reveal } from "~/components/ui/reveal";
-import type { CaseStudy as CaseStudyData } from "~/lib/work-data";
+import type { CaseStudy as CaseStudyData } from "../../../generated/prisma";
+
+/** Shape of `CaseStudy.stats` (Prisma `Json`) — the exactly-3 invariant is
+ * enforced by Zod in the router input, not the DB, so this is a display-time
+ * assumption about already-validated data. */
+type CaseStat = { k: string; v: string };
 
 export function CaseStudy({ study }: { study: CaseStudyData }) {
+	const stats = study.stats as unknown as CaseStat[];
+
 	return (
 		<article
 			aria-labelledby={`${study.id}-title`}
@@ -39,7 +46,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 						{study.tags.join(", ")}
 					</div>
 					<div className="mt-8 grid grid-cols-1 gap-4 border-(--border) border-t pt-6 sm:grid-cols-3">
-						{study.stats.map((stat) => (
+						{stats.map((stat) => (
 							<div key={stat.k}>
 								<div className="font-medium font-mono text-(--ink-3) text-xs uppercase tracking-wider">
 									{stat.k}

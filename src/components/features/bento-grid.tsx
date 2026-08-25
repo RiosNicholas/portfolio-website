@@ -5,9 +5,9 @@ import { Globe } from "~/components/ui/globe";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
-import { favoriteTools, skills } from "~/lib/bento-data";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
+import type { Skill } from "../../../generated/prisma";
 
 const CELL_CLASS =
 	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-out hover:border-(--border-2) hover:shadow-(--shadow-pop)";
@@ -35,7 +35,13 @@ function CellSub({ children }: { children: React.ReactNode }) {
 	);
 }
 
-function SkillLabel({ label, accent }: { label: string; accent?: string }) {
+function SkillLabel({
+	label,
+	accent,
+}: {
+	label: string;
+	accent?: string | null;
+}) {
 	if (!accent) return <>{label}</>;
 	const index = label.indexOf(accent);
 	if (index === -1) return <>{label}</>;
@@ -66,7 +72,7 @@ function YearsCell() {
 	);
 }
 
-function SkillsCell() {
+function SkillsCell({ skills }: { skills: Skill[] }) {
 	const enabled = useAnimationsEnabled();
 
 	return (
@@ -75,7 +81,9 @@ function SkillsCell() {
 		>
 			<div className="flex items-baseline justify-between px-6 pt-6 pb-2">
 				<CellLabel>Skills</CellLabel>
-				<span className="font-mono text-(--ink-3) text-xs">24 / ∞</span>
+				<span className="font-mono text-(--ink-3) text-xs">
+					{skills.length} / ∞
+				</span>
 			</div>
 			<Marquee
 				aria-label="Skills"
@@ -92,10 +100,10 @@ function SkillsCell() {
 				{skills.map((skill) => (
 					<div
 						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
-						key={skill.label}
+						key={skill.id}
 					>
 						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
-						<SkillLabel {...skill} />
+						<SkillLabel accent={skill.accent} label={skill.label} />
 					</div>
 				))}
 			</Marquee>
@@ -103,7 +111,13 @@ function SkillsCell() {
 	);
 }
 
-export function BentoGrid() {
+export function BentoGrid({
+	skills,
+	tools,
+}: {
+	skills: Skill[];
+	tools: Skill[];
+}) {
 	return (
 		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
 			{/* Location */}
@@ -155,18 +169,18 @@ export function BentoGrid() {
 			</div>
 
 			{/* Skills — spans 4 cols, 2 rows */}
-			<SkillsCell />
+			<SkillsCell skills={skills} />
 
 			{/* Stack */}
 			<div className={cn(CELL_CLASS, "col-span-2 md:row-span-2")}>
 				<CellLabel>Favorite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
-					{favoriteTools.map((tool) => (
+					{tools.map((tool) => (
 						<span
 							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
-							key={tool}
+							key={tool.id}
 						>
-							{tool}
+							{tool.label}
 						</span>
 					))}
 				</div>

@@ -1,11 +1,7 @@
 import { Reveal } from "~/components/ui/reveal";
-import {
-	activities,
-	type CvEntry,
-	education,
-	experience,
-} from "~/lib/about-data";
 import { profileLinks } from "~/lib/site-links";
+import { getCvEntriesByCategory } from "~/server/data/cv-entries";
+import type { CvEntry } from "../../../generated/prisma";
 
 function AccentedTitle({
 	title,
@@ -46,7 +42,7 @@ function CvRow({ years, title, titleAccent, where }: CvEntry) {
 			</div>
 			<div className="grow">
 				<div className="font-display font-semibold @lg:text-xl text-foreground text-lg">
-					{titleAccent?.length ? (
+					{titleAccent.length ? (
 						<AccentedTitle accents={titleAccent} title={title} />
 					) : (
 						title
@@ -58,7 +54,13 @@ function CvRow({ years, title, titleAccent, where }: CvEntry) {
 	);
 }
 
-export function AboutBio() {
+export async function AboutBio() {
+	const [experience, education, activities] = await Promise.all([
+		getCvEntriesByCategory("EXPERIENCE"),
+		getCvEntriesByCategory("EDUCATION"),
+		getCvEntriesByCategory("ACTIVITY"),
+	]);
+
 	return (
 		<section className="relative flex flex-col gap-8">
 			<Reveal
@@ -102,7 +104,7 @@ export function AboutBio() {
 					</h2>
 					<div className="mt-4">
 						{experience.map((entry) => (
-							<CvRow key={`${entry.title}-${entry.where}`} {...entry} />
+							<CvRow key={entry.id} {...entry} />
 						))}
 					</div>
 
@@ -111,7 +113,7 @@ export function AboutBio() {
 					</h2>
 					<div className="mt-4">
 						{education.map((entry) => (
-							<CvRow key={`${entry.title}-${entry.where}`} {...entry} />
+							<CvRow key={entry.id} {...entry} />
 						))}
 					</div>
 
@@ -120,7 +122,7 @@ export function AboutBio() {
 					</h2>
 					<div className="mt-4">
 						{activities.map((entry) => (
-							<CvRow key={`${entry.title}-${entry.where}`} {...entry} />
+							<CvRow key={entry.id} {...entry} />
 						))}
 					</div>
 

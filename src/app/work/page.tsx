@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { CaseStudy } from "~/components/features/case-study";
 import { WorkHero } from "~/components/features/work-hero";
-import { cases } from "~/lib/work-data";
+import { getCaseStudies } from "~/server/data/case-studies";
 
 const description =
 	"Selected case studies from Nicholas Rios — platform engineering, design systems, and product work across risk technology, freelance, and side projects.";
@@ -19,7 +19,9 @@ export const metadata: Metadata = {
 	},
 };
 
-export default function WorkPage() {
+export default async function WorkPage() {
+	const cases = await getCaseStudies();
+
 	return (
 		<main className="shell" id="main-content">
 			<WorkHero />

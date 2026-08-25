@@ -13,6 +13,14 @@ datasource db {
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
+    // Vercel Postgres (Neon-backed): the pooled connection above is used at
+    // runtime; migrations need a direct (non-pooled) connection. Locally
+    // both env vars can point at the same start-database.sh Postgres. On
+    // Vercel, set DATABASE_URL = POSTGRES_PRISMA_URL and DIRECT_URL =
+    // POSTGRES_URL_NON_POOLING after connecting the Vercel Postgres
+    // integration (one-time manual mapping in the project's env var
+    // settings — see README.md "Deploying").
+    directUrl = env("DIRECT_URL")
 }
 
 model Post {
@@ -72,4 +80,77 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+enum CvCategory {
+    EXPERIENCE
+    EDUCATION
+    ACTIVITY
+}
+
+enum SkillKind {
+    SKILL
+    TOOL
+}
+
+model CaseStudy {
+    id          String   @id // reuse existing slugs verbatim ("risk-agents", "evangeliu", ...) —
+    // load-bearing as /work#<id> anchors in case-study.tsx / work-teaser.tsx
+    num         String
+    year        String
+    title       String
+    titleEm     String?
+    titleSuffix String?
+    role        String
+    org         String
+    description String
+    tags        String[]
+    stats       Json // CaseStat[] ({k,v}); exactly-3 invariant enforced by Zod in the router input, not the DB
+    featured    Boolean  @default(false)
+    sortOrder   Int      @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([featured])
+}
+
+model Endorsement {
+    id          String   @id @default(cuid())
+    name        String
+    role        String
+    quote       String
+    linkedinUrl String
+    avatarUrl   String?
+    published   Boolean  @default(true) // lets admin stage a pasted-in recommendation before it goes live
+    sortOrder   Int      @default(0)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([published])
+}
+
+model CvEntry {
+    id          String     @id @default(cuid())
+    category    CvCategory
+    years       String
+    title       String
+    titleAccent String[]
+    where       String
+    sortOrder   Int        @default(0)
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+
+    @@index([category, sortOrder])
+}
+
+model Skill {
+    id        String    @id @default(cuid())
+    kind      SkillKind
+    label     String
+    accent    String?
+    sortOrder Int       @default(0)
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+
+    @@index([kind, sortOrder])
 }

@@ -7,17 +7,22 @@ export const env = createEnv({
 	 * isn't built with invalid env vars.
 	 */
 	server: {
-		// Optional: no prerendered route reads these. The backend scaffolding
-		// (tRPC/Prisma/NextAuth under src/server/, src/trpc/) is retained but
-		// unused today (see README.md "Backend scaffolding") — the two routes
-		// that do consume it (/api/trpc, /api/auth) are dynamic, so they're
-		// never evaluated during `next build`. Requiring these at build time
-		// meant `npm run build` failed on a fresh checkout with no database;
-		// making them optional is the actual fix, not a workaround.
-		AUTH_SECRET: z.string().optional(),
-		AUTH_DISCORD_ID: z.string().optional(),
-		AUTH_DISCORD_SECRET: z.string().optional(),
-		DATABASE_URL: z.string().url().optional(),
+		// Required: `/`, `/work`, and `/about` are Server Components that read
+		// content from Postgres via Prisma at request/prerender time (see
+		// `src/server/data/*.ts`), and `/admin` requires a working NextAuth +
+		// Discord session. A build with these unset now fails fast instead of
+		// silently shipping a broken deploy — see README.md "Deploying".
+		AUTH_SECRET: z.string(),
+		AUTH_DISCORD_ID: z.string(),
+		AUTH_DISCORD_SECRET: z.string(),
+		DATABASE_URL: z.string().url(),
+		// Direct (non-pooled) connection, used only by `prisma migrate`. Can be
+		// the same value as DATABASE_URL for local dev.
+		DIRECT_URL: z.string().url(),
+		// Comma-separated NextAuth `User.id`s allowed to use `/admin` and
+		// adminProcedure mutations. Sign in once via Discord in dev, then read
+		// the created User.id with `npm run db:studio`.
+		ADMIN_USER_IDS: z.string(),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),
@@ -41,6 +46,8 @@ export const env = createEnv({
 		AUTH_DISCORD_ID: process.env.AUTH_DISCORD_ID,
 		AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
 		DATABASE_URL: process.env.DATABASE_URL,
+		DIRECT_URL: process.env.DIRECT_URL,
+		ADMIN_USER_IDS: process.env.ADMIN_USER_IDS,
 		NODE_ENV: process.env.NODE_ENV,
 	},
 	/**
