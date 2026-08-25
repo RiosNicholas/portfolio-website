@@ -1,6 +1,8 @@
 /**
- * One-time seed: migrates the static content that used to live in
- * `src/lib/{work-data,about-data,bento-data}.ts` into Postgres. Run via
+ * Seed: originally a one-time migration of the static content that used to
+ * live in `src/lib/{work-data,about-data,bento-data}.ts` into Postgres; now
+ * also the supported way to apply post-migration content edits (skills,
+ * case-study copy fixes/additions) to a fresh or existing DB. Run via
  * `npx prisma db seed` (or automatically after `prisma migrate dev`).
  *
  * Deliberately does NOT seed `src/lib/endorsements.ts` — those 12 entries
@@ -77,11 +79,11 @@ const cases: SeedCaseStudy[] = [
 		],
 	},
 	{
-		id: "acountabuddy",
+		id: "accountabuddy",
 		num: "003",
 		year: "2024",
 		title: "",
-		titleEm: "Acountabuddy",
+		titleEm: "Accountabuddy",
 		featured: true,
 		role: "Solo · Product & Engineering",
 		org: "Habit pairing app · React Native · Supabase",
@@ -97,19 +99,54 @@ const cases: SeedCaseStudy[] = [
 	{
 		id: "gslsamp",
 		num: "004",
-		year: "2023 —",
+		year: "Feb '23 — May '24",
 		title: "",
-		titleEm: "gslsamp",
-		titleSuffix: " Run Club",
-		role: "Co-maintainer · Community",
-		org: "Astro · MDX · Open source",
+		titleEm: "GS-LSAMP",
+		titleSuffix: " Website",
+		role: "Lead Web Developer",
+		org: "Rutgers University–Newark · NSF GS-LSAMP · Next · TypeScript",
 		description:
-			"Scrappy static site for a weekly run club — schedule, routes, shoe opinions, an active blog. Maintained with friends. Exists to make Sunday mornings less negotiable.",
-		tags: ["Astro", "MDX", "Mapbox", "OSS"],
+			"Official site for the NSF-sponsored GS-LSAMP program at Rutgers–Newark. Surfaces undergraduate research, funding, and post-bacc pathways in STEM for 500+ students and staff from historically underrepresented backgrounds. Built and maintained from first commit through handoff.",
+		tags: ["Next.js", "TypeScript", "Tailwind", "Vercel"],
 		stats: [
-			{ k: "Runs logged", v: "312" },
-			{ k: "Contributors", v: "9" },
-			{ k: "Pace", v: "easy" },
+			{ k: "Students & staff", v: "500+" },
+			{ k: "Tenure", v: "16 mo" },
+			{ k: "Shipped", v: "May '24" },
+		],
+	},
+	{
+		id: "groove-exchange",
+		num: "005",
+		year: "Nov '23",
+		title: "",
+		titleEm: "Groove",
+		titleSuffix: " Exchange",
+		role: "Solo · Full-stack",
+		org: "Anonymous music forum · React · Node · Express",
+		description:
+			"Full-stack forum where music people argue about records without a username attached. Anonymous threads, posts, and critique on whatever's in rotation. Built and deployed end to end as a CodePath capstone.",
+		tags: ["React", "JavaScript", "Node", "REST"],
+		stats: [
+			{ k: "Scope", v: "Full-stack" },
+			{ k: "Program", v: "CodePath" },
+			{ k: "Shipped", v: "Nov '23" },
+		],
+	},
+	{
+		id: "datawell",
+		num: "006",
+		year: "Sep '23",
+		title: "",
+		titleEm: "DataWell",
+		role: "Co-developer · Frontend",
+		org: "Wellfare · NYC nonprofit · React · Tailwind",
+		description:
+			"In-house CRM dashboards for Wellfare, a NYC nonprofit. Staff-facing views that personalize each recipient's shopping experience and make tracking legible instead of spreadsheet archaeology. Co-built with a team at Code for Good.",
+		tags: ["React", "Tailwind", "JavaScript", "CRM"],
+		stats: [
+			{ k: "Scope", v: "Frontend" },
+			{ k: "Program", v: "Code for Good" },
+			{ k: "Shipped", v: "Sep '23" },
 		],
 	},
 ];
@@ -194,6 +231,8 @@ const skills: SeedSkill[] = [
 	{ label: "Tailwind · shadcn/ui", accent: "shadcn/ui" },
 	{ label: "Framer Motion" },
 	{ label: "Agents · LLM UX", accent: "LLM UX" },
+	{ label: "Agentic AI development" },
+	{ label: "Prompt engineering" },
 	{ label: "Node · Python · Go" },
 	{ label: "Postgres · Redis" },
 	{ label: "Platform engineering" },
@@ -215,6 +254,11 @@ const favoriteTools: string[] = [
 ];
 
 async function main() {
+	// One-time: the "acountabuddy" → "accountabuddy" rename (Aug 2026)
+	// changes a primary key, which upsert can't do — it would leave the
+	// old row orphaned. Idempotent no-op on a DB that never had it.
+	await db.caseStudy.deleteMany({ where: { id: "acountabuddy" } });
+
 	// Case studies — upsert by slug id.
 	for (const [index, study] of cases.entries()) {
 		await db.caseStudy.upsert({
