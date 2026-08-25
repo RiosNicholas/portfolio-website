@@ -62,6 +62,7 @@ export function EndorsementMarquee() {
 		>
 			<Marquee
 				aria-label="Endorsements, part 1"
+				ariaHideDuplicates
 				className="p-0 [--duration:80s] [--gap:14px]"
 				pauseOnHover
 				repeat={2}
@@ -72,6 +73,7 @@ export function EndorsementMarquee() {
 			</Marquee>
 			<Marquee
 				aria-label="Endorsements, part 2"
+				ariaHideDuplicates
 				className="p-0 [--duration:70s] [--gap:14px]"
 				pauseOnHover
 				repeat={2}

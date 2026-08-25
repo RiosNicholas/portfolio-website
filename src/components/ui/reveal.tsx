@@ -19,6 +19,8 @@ type RevealProps = {
 	className?: string;
 	children: React.ReactNode;
 	delay?: number;
+	/** Forwarded to the rendered element — e.g. for `aria-labelledby` targets. */
+	id?: string;
 };
 
 const variants = {
@@ -48,6 +50,7 @@ export function Reveal({
 	className,
 	children,
 	delay = 0,
+	id,
 }: RevealProps) {
 	const ref = useRef(null);
 	const [hasArmed, setHasArmed] = useState(false);
@@ -81,6 +84,7 @@ export function Reveal({
 		<Component
 			animate={target}
 			className={className}
+			id={id}
 			initial={false}
 			ref={ref}
 			transition={{

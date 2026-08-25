@@ -101,6 +101,22 @@ export function CustomCursor() {
 		setSupportsHover(!matchMedia("(hover: none)").matches);
 	}, []);
 
+	// `body { cursor: none }` in globals.css is gated behind this attribute
+	// so it's only ever applied once this component has actually confirmed a
+	// real pointer device and is rendering the replacement. Without this, a
+	// user with JS disabled (or on first paint before hydration) would get a
+	// hidden native cursor and no fake one to replace it — an invisible
+	// pointer. Only `supportsHover` gates this, not `enabled`: the cursor
+	// still renders under reduced motion (see the guard below), so the
+	// native cursor must stay suppressed in that state too.
+	useEffect(() => {
+		if (!supportsHover) return;
+		document.documentElement.dataset.customCursor = "on";
+		return () => {
+			delete document.documentElement.dataset.customCursor;
+		};
+	}, [supportsHover]);
+
 	useEffect(() => {
 		// Skip attaching listeners entirely on devices without a real pointer —
 		// there's nothing to track. `enabled` (motion preference) does NOT gate

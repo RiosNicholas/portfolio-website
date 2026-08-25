@@ -4,6 +4,7 @@ import type { CaseStudy as CaseStudyData } from "~/lib/work-data";
 export function CaseStudy({ study }: { study: CaseStudyData }) {
 	return (
 		<article
+			aria-labelledby={`${study.id}-title`}
 			className="scroll-mt-28 border-border border-t py-10 md:py-16 lg:py-20"
 			id={study.id}
 		>
@@ -13,11 +14,14 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 					<span className="font-mono text-(--ink-4) text-xs">
 						{study.num} — {study.year}
 					</span>
-					<h3 className="mt-3 font-display font-semibold text-3xl text-foreground leading-none tracking-tighter md:text-4xl lg:text-5xl">
+					<h2
+						className="mt-3 font-display font-semibold text-3xl text-foreground leading-none tracking-tighter md:text-4xl lg:text-5xl"
+						id={`${study.id}-title`}
+					>
 						{study.title}
 						<em className="text-(--accent-text) not-italic">{study.titleEm}</em>
 						{study.titleSuffix}
-					</h3>
+					</h2>
 					<div className="mt-4 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
 						{study.role}
 					</div>

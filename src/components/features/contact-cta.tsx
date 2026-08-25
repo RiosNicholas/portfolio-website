@@ -30,6 +30,7 @@ const socials: { href: string; label: string; icon: React.ReactNode }[] = [
 export function ContactCta() {
 	return (
 		<section
+			aria-labelledby="contact-heading"
 			className="relative mt-10 border-border border-t pt-16 md:mt-12 md:pt-20 lg:mt-16 lg:pt-28"
 			id="contact"
 		>
@@ -43,6 +44,7 @@ export function ContactCta() {
 			<Reveal
 				as="h2"
 				className="m-0 font-display font-semibold text-(--ink) text-5xl leading-none tracking-tighter md:text-7xl lg:text-9xl"
+				id="contact-heading"
 			>
 				Let&apos;s build
 				<br />

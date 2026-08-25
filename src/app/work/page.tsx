@@ -24,7 +24,7 @@ export default function WorkPage() {
 		<main className="shell" id="main-content">
 			<WorkHero />
 
-			<section>
+			<section aria-label="Case studies">
 				{cases.map((study) => (
 					<CaseStudy key={study.id} study={study} />
 				))}
