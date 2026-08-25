@@ -78,7 +78,10 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 
 	return (
 		<div
-			className={cn(CELL_CLASS, "col-span-2 p-0 md:col-span-4 md:row-span-2")}
+			className={cn(
+				CELL_CLASS,
+				"col-span-2 p-0 md:col-span-4 md:row-span-2 lg:col-span-3 lg:row-span-3",
+			)}
 		>
 			<div className="flex items-baseline justify-between px-6 pt-6 pb-2">
 				<CellLabel>Skills</CellLabel>
@@ -100,7 +103,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 			>
 				{skills.map((skill) => (
 					<div
-						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl"
+						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl xl:text-4xl"
 						key={skill.id}
 					>
 						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
@@ -114,21 +117,20 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 
 function LanguagesCell() {
 	return (
-		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4")}>
+		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-3")}>
 			<CellLabel>Languages</CellLabel>
-			<div className="grid grid-cols-3 gap-3">
+			<div className="grid flex-1 grid-cols-3 items-center gap-3">
 				{languages.map((language) => (
 					<div key={language.name}>
-						<div className="font-display font-semibold text-foreground text-lg leading-tight tracking-tight md:text-xl">
+						<div className="font-display font-semibold text-foreground text-xl leading-tight tracking-tight md:text-2xl xl:text-3xl">
 							{language.name}
 						</div>
-						<div className="font-mono text-(--ink-3) text-xs">
+						<div className="mt-1 font-mono text-(--ink-3) text-xs md:text-sm">
 							{language.level}
 						</div>
 					</div>
 				))}
 			</div>
-			<CellSub>Two native, one in progress</CellSub>
 		</div>
 	);
 }
@@ -141,6 +143,26 @@ export function BentoGrid({
 	tools: Skill[];
 }) {
 	return (
+		// Grid layout reference — the source order below (Based, Experience,
+		// Status, Skills, Favorite tools, Currently, Languages) satisfies BOTH
+		// row maps via CSS Grid auto-placement. Do not reorder these children,
+		// and every row must total 6 columns at both breakpoints.
+		//
+		// md (768–1023px):
+		//   row1  [Based 2      ][Experience 2 ][Status 2     ]
+		//   row2  [Skills 4, row-span-2        ][Tools 2, rs2 ]
+		//   row3  [ ...                        ][ ...         ]
+		//   row4  [Currently 2  ][Languages 4                 ]
+		//
+		// lg (≥1024px):
+		//   row1  [Based 2      ][Experience 2 ][Status 2     ]
+		//   row2  [Skills 3,    ][Favorite tools 3            ]
+		//   row3  [ row-span-3  ][Currently 3                 ]
+		//   row4  [ ...         ][Languages 3                 ]
+		//
+		// source order already satisfies both placements — do not reorder
+		// these children, and every row must total 6 columns at both
+		// breakpoints.
 		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
 			{/* Location */}
 			<div
@@ -158,7 +180,7 @@ export function BentoGrid({
 							<em className="text-(--accent-text) not-italic">City</em>
 						</div>
 						<div className="mt-2 font-mono text-(--ink-3) text-xs">
-							40.7248° N · -74.0347° W
+							NJ · 40.7248° N · -74.0347° W
 						</div>
 					</div>
 				</div>
@@ -190,11 +212,16 @@ export function BentoGrid({
 				<CellSub>Reply within 48 hours</CellSub>
 			</div>
 
-			{/* Skills — spans 4 cols, 2 rows */}
+			{/* Skills — see grid layout reference above <Reveal> */}
 			<SkillsCell skills={skills} />
 
 			{/* Stack */}
-			<div className={cn(CELL_CLASS, "col-span-2 md:row-span-2")}>
+			<div
+				className={cn(
+					CELL_CLASS,
+					"col-span-2 md:row-span-2 lg:col-span-3 lg:row-span-1",
+				)}
+			>
 				<CellLabel>Favorite tools</CellLabel>
 				<div className="flex flex-wrap gap-1.5">
 					{tools.map((tool) => (
@@ -210,7 +237,7 @@ export function BentoGrid({
 			</div>
 
 			{/* Now */}
-			<div className={cn(CELL_CLASS, "col-span-2")}>
+			<div className={cn(CELL_CLASS, "col-span-2 lg:col-span-3")}>
 				<CellLabel>Currently</CellLabel>
 				<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
 					JPMorgan
@@ -220,7 +247,7 @@ export function BentoGrid({
 				<CellSub>Building UI platform infra &amp; agentic AI systems</CellSub>
 			</div>
 
-			{/* Languages — spans full width of row 4 to avoid an auto-placed hole */}
+			{/* Languages — see grid layout reference above <Reveal> */}
 			<LanguagesCell />
 		</Reveal>
 	);
