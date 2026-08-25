@@ -6,7 +6,7 @@ import { StatusDot } from "~/components/ui/status-dot";
 
 export function HeroSection() {
 	return (
-		<section className="hero-min relative flex min-h-screen flex-col justify-center pt-28 pb-12 md:pt-32 md:pb-16 lg:pt-36 lg:pb-20">
+		<section className="relative flex min-h-screen flex-col justify-center pt-28 pb-12 md:pt-32 md:pb-16 lg:pt-36 lg:pb-20">
 			{/* Geometric decorations */}
 			<GeoDecoration
 				className="geo geo-ring no-low top-[13%] right-[5%] h-29.5 w-29.5 text-(--c-cobalt) opacity-65"

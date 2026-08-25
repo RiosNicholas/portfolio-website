@@ -1,330 +1,136 @@
 # DESIGN.md — Nicholas Rios · Portfolio
 
-A handover spec for the portfolio site. Covers aesthetic, tokens, structure,
-components, and the rules the site plays by.
+Design direction and token reference for the portfolio site. Implementation
+lives in `src/styles/globals.css` (Tailwind v4 + OKLCH tokens) and
+`src/components/`; see `README.md` for the file map and where content lives.
 
 ---
 
 ## 1. Direction
 
-**Streamtime-inspired warm paper with bold accent pops.** Soft warm cream
-paper (light) or warm espresso (dark) with a low-contrast graph-paper grid
-running edge to edge. Confident display type (Schibsted Grotesk), hot-pink
-accent by default with swappable cobalt/lime/grape variants, geometric shapes
-(rings, triangles, dots) floating in whitespace, marker-highlight emphasis on
-one word per headline, yellow CTA buttons.
+Warm paper with bold accent pops. Soft warm cream paper (light) or warm
+espresso/stone (dark) with a low-contrast graph-paper grid running edge to
+edge. Confident display type (Schibsted Grotesk), a swappable accent
+(cobalt/pink/lime/grape — cobalt is the current default), geometric shapes
+(rings, triangles, dots) floating in whitespace, marker-highlight emphasis
+on one word per headline, yellow CTA buttons.
 
 Primary goal: sell technical skills in UI + platform engineering. Clean,
 minimal, no filler. Voice: confident, plain-spoken, dry wit allowed.
 
----
+## 2. Copy rules
 
-## 2. File map
-
-```
-index.html           · Home (hero · bento · work teaser · marquee · contact)
-work.html            · Full case studies (04 projects)
-about.html           · Bio + CV
-
-styles/
-  tokens.css         · Colors, type, radii, shadows, theme + accent variants, motion flag
-  base.css           · Reset, shell, cursor, grid ambience, grain, reveals, geo shapes
-  components.css     · Everything else (nav, bento, cards, marquee, tweaks, etc.)
-
-scripts/
-  cursor.js          · Dot + ring custom cursor (hover states: link, text)
-  paper.js           · Cursor-reactive warm highlight over grid
-  reveal.js          · IntersectionObserver for .reveal; years counter; smooth anchors
-  tweaks.js          · Theme / accent / grid / motion toggles + localStorage + auto light/dark
-```
-
-Shared chrome (top nav, tweaks panel) is duplicated across the three HTML
-pages on purpose — no build step, easy to edit.
-
----
-
-## 3. Tokens (`styles/tokens.css`)
-
-### Color — light (warm cream paper)
-| Token              | Value                       | Use                              |
-|--------------------|-----------------------------|-----------------------------------|
-| `--paper`          | `#efe7d8`                   | Page background                   |
-| `--paper-2`        | `#fbf7ef`                   | Cards, cells, endorsements        |
-| `--paper-3`        | `#e6dac6`                   | Raised surfaces                   |
-| `--ink`            | `#2a2520`                   | Primary text (charcoal)           |
-| `--ink-2`          | `#4a433b`                   | Secondary text                    |
-| `--ink-3`          | `#847b6e`                   | Tertiary / meta                   |
-| `--ink-4`          | `#aa9f8d`                   | Disabled / footer                 |
-| `--border`         | `rgba(42,37,32,0.13)`       | Hairlines                         |
-| `--border-2`       | `rgba(42,37,32,0.22)`       | Stronger hairlines                |
-
-### Color — dark (warm espresso)
-`--paper: #1a1714`, `--paper-2: #241f1a`, `--paper-3: #2e2820`. Ink inverts
-to warm off-white `#f3ece0`. Grain uses `screen` blend mode. Borders lighten
-to maintain contrast. **Never cold black** — always warm espresso.
-
-### Accent (default = pink, swappable)
-| Token              | Default (pink)    | Use                              |
-|--------------------|--------------------|-----------------------------------|
-| `--accent`         | `#ff4dd5`          | Fills, markers, shapes           |
-| `--accent-text`    | `#b81e94` (light)  | Readable text color on accent    |
-|                    | `#ff8ae0` (dark)   | …on dark theme                   |
-| `--accent-glow`    | `rgba(255,77,213,0.20)` | Soft halo behind shapes          |
-| `--accent-glow-2`  | `rgba(255,77,213,0.34)` | Stronger glow (hover)            |
-| `--marker-ink`     | `#2a0a22`          | Text sitting on marker block     |
-| `--cta-bg`         | `#ffde3b`          | Yellow CTA button fill           |
-| `--cta-bg-hover`   | `#f2ce1f`          | CTA hover                        |
-| `--cta-ink`        | `#1a1206`          | CTA text (dark)                  |
-
-### Secondary palette (geometric accents)
-| Token       | Value     | Use                                    |
-|-------------|-----------|----------------------------------------|
-| `--c-pink`  | `#ff4dd5` | Default accent (also in geo shapes)    |
-| `--c-lime`  | `#c1f32b` | Status dots, geo shapes                |
-| `--c-cobalt`| `#6483ff` | Geo shapes, rings                      |
-| `--c-grape` | `#7a3dff` | Geo shapes, dotted squares             |
-| `--c-yellow`| `#ffde3b` | CTA buttons, geo shapes                |
-| `--c-clay`  | `#d2691e` | Warm accent alternative (unused)       |
-
-### Accent swaps (via `data-accent` on `<html>`)
-- `pink`    — `#ff4dd5` *(default, streamtime signature)*
-- `cobalt`  — `#6483ff`
-- `lime`    — `#c1f32b`
-- `grape`   — `#7a3dff`
-
-Each swap includes a readable text variant (deeper on light, lighter on
-dark) and a glow that coordinates with the fill.
-
-### Type
-- **Display** — `Schibsted Grotesk`, weight 600, letter-spacing **−0.04em**.
-  Used for hero, section titles, bento values, case titles. `<em>` becomes
-  a tilted marker block: `background: var(--accent); color: var(--marker-ink);
-  padding: 0.01em 0.16em; border-radius: 6px; transform: rotate(-1.4deg)`.
-- **Body** — `Hanken Grotesk`, 400/500, tracking **−0.005em**. Readable on
-  warm backgrounds. Use for body copy, nav, UI labels, endorsements.
-- **Mono** — `JetBrains Mono` for meta/labels/CV years. 11–13px. No uppercase
-  tracking.
-
-### Radii
-`--r-sm 4 / --r-md 6 / --r-lg 10 / --r-xl 16 / --r-pill 999`. Cards use
-`--r-lg`, buttons/chips use `--r-pill`.
-
-### Shadows (warm drop shadows, no neon rings)
-- `--shadow-card`  — subtle card lift
-- `--shadow-pop`   — hover elevation (1–4px)
-- `--shadow-hard`  — strong depth (case studies, modals)
-- `--shadow-float` — frosted panels (nav, tweaks)
-
-### Motion
-`data-motion="low"` on `<html>` collapses all animation durations to ~0 and
-hides `.no-low` nodes. Respect `prefers-reduced-motion: reduce`.
-
-### Grid (paper background)
-`.paper-bg` is a **two-layer graph-paper grid** that tiles the entire viewport
-(no mask — the grid runs edge to edge, like a real notebook):
-
-- **Minor lines** every `28px` at `--grid-minor` opacity
-- **Major lines** every `140px` (5×28) at `--grid-major` opacity
-
-Light theme uses charcoal lines (`rgba(42,37,32,0.055)` minor,
-`rgba(42,37,32,0.10)` major). Dark theme uses warm-white lines. Behind the
-hero on every page, `.paper-bg::after` paints a single soft accent halo so
-the grid feels lit from above.
-
-`data-grid` = `on` / `subtle` / `off` toggles `.paper-bg` opacity (`1` /
-`0.5` / `0`). Defaults to `subtle`.
-
-### Theme (light/dark auto-detect)
-On first load, `theme` defaults to the OS preference (`prefers-color-scheme`).
-User can toggle via the sun/moon button in the top nav; choice persists in
-`localStorage`. The tweaks panel also exposes `theme: "auto" | "light" | "dark"`.
-
----
-
-## 4. Page structure
-
-Each page is:
-
-```
-<body>
-  <div class="paper-bg"></div>     · ambient grid + accent halo
-  <div class="grain"></div>         · subtle noise overlay
-  <nav class="nav">…</nav>          · top bar: brand (left) + nav menu (center)
-                                     + tweaks/theme toggle (right)
-  <main class="shell">
-    <section class="hero-min">…     · page hero (shorter on sub-pages)
-    …page sections…
-    <section class="contact-strip">…· shared close-out
-  </main>
-  <aside class="tweaks">…</aside>   · floating panel, hidden by default
-</body>
-```
-
-`main.shell` is `max-width: 1280px` with fluid side padding
-`clamp(24px, 4vw, 64px)`.
-
----
-
-## 5. Top nav (`.nav`)
-
-Horizontal bar, edge-to-edge, frosted backdrop. Layout:
-- **Left**: `.mark` = brand glyph (rotating square, accent color) + name
-- **Center**: `.nav-menu` = links (Home / Work / About / Contact)
-- **Right**: `.nav-tools` = tweaks toggle (`✱`) + theme toggle (sun/moon SVG)
-
-Active link gets a filled pill background (charcoal on light, off-white on
-dark) with a leading accent dot. On narrow screens (≤640px) the brand name
-collapses to just the glyph.
-
----
-
-## 6. Signature components
-
-### Bento (`.bento > .cell`)
-6-column grid, `168px` auto rows, `12px` gap. Cells span with
-`c-1-2` / `c-1-3` / `c-1-4` / `c-1-6` and rows with `r-1-2`. Anatomy:
-
-```
-.cell
-  .label        (tiny caps, accent color, dot prefix)
-  .v            (big display number / word)
-  .sub          (mono micro line)
-```
-
-Specialized variants:
-- `.cell-location` — grid background + animated accent pin + ripple
-- `.cell-years` — oversized number, `data-count` + `data-sup="yrs"` triggers
-  counter on scroll
-- `.cell-status` — pulsing lime dot + availability line
-- `.cell-skills` — vertical marquee, 24-row reel; duplicate `innerHTML` at
-  runtime for seamless loop
-- `.cell-stack` — chip cloud of tools (frosted pills)
-- `.cell-now` — current projects (strong words use `<strong>`)
-
-### Work list (`.case-row`)
-Grid of `60px 1fr auto 24px`. Title, role label, year, arrow. On hover,
-title color shifts to accent and the arrow slides 8px right. Used on home
-for a teaser (3 rows + "view all" CTA).
-
-### Case full (`.case-full`)
-Two-column (1 : 2) block per project: left rail (num, title, meta), right
-(paragraph, tag chips, 3-up stats). Hairlines separate entries. Use on
-`work.html`.
-
-### Endorsement marquee (`.marquee-wrap > .marquee`)
-Two rows, one forward (80s) one reverse (70s). JS duplicates `innerHTML`
-once for a seamless loop. Pause on hover. Cards (`.endorse`) are frosted
-with subtle shadows; quote + 1-line attribution with small avatar disc.
-
-### Contact strip (`.contact-strip`)
-Oversized display headline with one tilted accent marker, email as a big
-linked word (underlined in accent), social pill links on the right, footer
-beneath. Shared across all pages.
-
-**Social pills** — `.socials a` is a frosted pill with an inline SVG icon
-(16px, `currentColor`) and a label. Icons live inline in the markup (not
-in a sprite) and are sized by the `.ic` wrapper. On hover the pill border
-and icon both swap to accent. Icon set: LinkedIn, GitHub, Instagram,
-Read.cv, Are.na, X/Twitter, Dribbble, Email.
-
-### Tweaks panel (`.tweaks`)
-Floating panel, top-right above the main content. Toggled from the nav's `✱`
-button or from the host edit-mode toggle. Lives behind
-`/*EDITMODE-BEGIN*/{…}/*EDITMODE-END*/` in markup so changes persist on save.
-Exposed keys: `theme` (auto/light/dark), `accent` (pink/cobalt/lime/grape),
-`motion` (high/low), `grid` (on/subtle/off).
-
-### Geometric shapes (`.geo`)
-Decorative elements scattered in whitespace: circles (`.geo-circle`), rings
-(`.geo-ring`), triangles (`.geo-tri`), squares (`.geo-square`), and dotted
-grids (`.geo-dotsq`). Animated with `.float` (gentle vertical bob) or `.spin`
-(360° rotation). Use `color:` to colorize (inherits from `--c-*` tokens).
-Always set `pointer-events: none` and `aria-hidden="true"`. Optional
-`--geo-rot` CSS var for initial tilt.
-
----
-
-## 7. Interaction rules
-
-- **Custom cursor** is subtle but present. Dot + ring + occasional trail.
-  States: `hover-link` (enlarged ring), `hover-text` (I-beam). Fall back to
-  system cursor on touch devices.
-- **Reveals** — use `class="reveal"` on any section block. IntersectionObserver
-  adds `.in` at 12% visibility; optional `data-delay="120"` staggers.
-- **Years counter** — `data-count="10" data-sup="yrs"` on any element with a
-  child `.v` counts up on first intersection.
-- **Active nav link** — matches current page filename; for in-page anchors
-  (`#contact`) the scroll observer flips the class.
-- **Hover ≠ tap.** On `pointer:coarse` devices the custom cursor and hover
-  states are bypassed; keep label text in markup, not just on hover.
-
----
-
-## 8. Copy rules
-
-- Always one `<em>` per headline — never two, never zero. The marker
-  highlight should land on a 1-word concept ("interface", "platform",
-  "craft").
-- Numbers: show them when real (years, subscribers, completion rate). Leave
-  placeholders as-is until you have real metrics; don't invent.
-- Endorsements are placeholder quotes. Replace with real ones (LinkedIn,
-  friends, former managers) before going live.
-- No gerunds as nouns ("Building", "Shipping") as sentence starters. Lead
-  with a verb or a statement.
+- One `<em className="mark">` per headline — never two, never zero. The
+  marker highlight lands on a single 1-word concept.
+- Numbers: show them when real. Don't invent metrics — `src/lib/work-data.ts`
+  and `src/lib/endorsements.ts` both currently carry placeholder content
+  flagged in their own header comments; replace before launch rather than
+  treating them as final.
+- No gerunds as sentence-starting nouns ("Building", "Shipping"). Lead with
+  a verb or a statement.
 - Avoid clichés: "passionate", "drives results", "craft at scale".
 
----
+## 3. Tokens (`src/styles/globals.css`)
 
-## 9. Known placeholders / pre-launch TODOs
+All colors are OKLCH via Tailwind v4's `@theme` + CSS custom properties, not
+hex. The values below are the underlying Tailwind palette names each token
+resolves to — read `globals.css` for the actual `:root` block, don't
+hand-copy hex here.
 
-1. **Real projects** — `work.html` currently has placeholder projects. Swap
-   for your actual case studies (role, year, description, 3-4 stats per
-   project, tags).
-2. **Real endorsements** — update quote blocks in `index.html` (marquee
-   section). Name, role, one-line quote; avatar is two initials or a
-   monogram.
-3. **Metrics** — bento cells and case stats have plausible numbers. Confirm
-   or replace per project and role.
-4. **CV download** — the "Download full CV" CTA on `about.html` is a stub.
-   Link a PDF or a real document.
-5. **Email** — `hello@nicholasrios.co` is a placeholder. Swap for the real
-   address.
-6. **Social links** — all `<a href="#">` in footers and social sections need
-   real URLs (LinkedIn, GitHub, Read.cv, etc.).
-7. **OG / favicon** — not yet wired. Add `/favicon.svg` and update the `<meta>`
-   tags if deploying.
-8. **Location** — "Jersey City" is hardcoded across nav, hero bento, and
-   footer. Update if you relocate.
+**Light** — `--paper: amber-50`, `--paper-2: white`, `--paper-3: amber-100`,
+`--ink: stone-900`, `--ink-2: stone-700`, `--ink-3: stone-600`,
+`--ink-4:` a stone-500/600 mix (footer/meta text — contrast-checked against
+`--paper`, ~5.7:1, passes WCAG AA).
 
----
+**Dark** (`:root[data-theme="dark"]`) — `--paper: stone-950`,
+`--paper-2: stone-900`, `--paper-3: stone-800`, `--ink: amber-50`,
+`--ink-2/3/4: stone-200/300/400`. Never cold black — always warm stone.
 
-## 10. Tweakable keys (edit mode)
+**Accent** (`data-accent` on `<html>`: `cobalt` default, plus `pink`,
+`lime`, `grape`) — each sets `--accent`, `--accent-text` (readable on
+`--paper`, distinct light/dark values), `--accent-glow`, `--marker-ink`.
 
-```json
-{
-  "theme":  "auto" | "light" | "dark",
-  "accent": "pink" | "cobalt" | "lime" | "grape",
-  "motion": "high" | "low",
-  "grid":   "on" | "subtle" | "off"
-}
-```
+**Secondary palette** (decorative only — geo shapes, status dots; never UI
+surfaces) — `--c-pink`, `--c-lime`, `--c-cobalt`, `--c-yellow`, `--c-grape`,
+`--c-clay`.
 
-These read on boot from `window.__TWEAKS__`, then fall back to
-`localStorage`, and persist via the tweaks script. The `theme: "auto"` mode
-follows the OS preference.
+**CTA** — always yellow regardless of accent: `--cta-bg` (amber-300),
+`--cta-bg-hover` (amber-400), `--cta-ink` (stone-950).
 
----
+**Type** — Display/heading: Schibsted Grotesk (`font-display`/`font-heading`),
+tight tracking, used for hero/section titles/bento values/case titles.
+`<em className="mark">` renders as a tilted accent marker block. Body:
+Hanken Grotesk (`font-sans`). Mono: JetBrains Mono (`font-mono`) for
+meta/labels/CV years, small size, no forced uppercase (components opt in
+with `uppercase tracking-wider` where wanted).
 
-## 11. Don'ts
+**Radii** — `--r-sm 4 / --r-md 6 / --r-lg 10 / --r-xl 16 / --r-pill 999`.
+Cards use `--r-lg`, buttons/chips use `--r-pill` or `--r-md`.
 
-- Don't add a profile photo of yourself. Site stays about the work.
-- Don't introduce gradients except the one accent halo on the hero.
-- Don't paint UI surfaces in the secondary colors. They're for accents on
-  labels, dots, tag chips, and geo shapes — not buttons, borders,
-  backgrounds, or large fills (except geo shapes and markers).
-- Don't add more than ~24 skills to the reel. If it scrolls too fast it
-  becomes decoration, not communication.
-- Don't bump font sizes to fill space. If a block looks empty, cut it.
+**Shadows** — `--shadow-card` (subtle lift), `--shadow-pop` (hover
+elevation), `--shadow-hard` (strong depth), `--shadow-float` (frosted
+panels like the nav).
+
+**Grid background** (`.paper-bg`) — two-layer graph-paper grid, minor lines
+every 28px, major every 140px, plus a soft accent radial halo above the
+hero. `data-grid="on" | "subtle" | "off"` on `<html>` controls opacity
+(defaults to `subtle`).
+
+**Theme** — defaults to OS `prefers-color-scheme` on first load, toggled via
+`src/components/theme/theme-toggle.tsx`, persisted to `localStorage`. An
+inline script in `layout.tsx` sets `data-theme`/`data-accent`/`data-grid`/
+`data-motion` before paint to avoid a flash of the wrong theme.
+
+## 4. Motion
+
+`useAnimationsEnabled()` (`src/lib/use-animations-enabled.ts`) is the single
+gate for all `motion`-driven animation — `false` when OS
+`prefers-reduced-motion: reduce` is set or the site's `data-motion="low"`
+toggle is active. Every animated component must render a complete,
+non-animated resting state when it's `false` — see
+`.claude/instructions/animation-accessibility.md` for the required pattern
+and worked examples (`StatusDot`, `NumberTicker`, `Marquee`'s
+scrollable-fallback behavior).
+
+Plain CSS animations (not JS/`motion`-driven) are throttled separately via
+`:root[data-motion="low"] * { animation-duration: 0.001s !important; ... }`
+in `globals.css` — reserved for simple looping effects that don't need the
+JS gate.
+
+## 5. Signature components
+
+- **Bento grid** (`BentoGrid`) — 6-col grid, 168px auto rows. Cells:
+  location (animated pin + ping ring), years (in-view count-up via
+  `NumberTicker`), status, skills (vertical `Marquee` reel), favourite
+  tools (chip cloud), currently. Skills/tools data lives in
+  `src/lib/bento-data.ts`.
+- **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
+  shows `featuredCases` from `src/lib/work-data.ts`; `/work` renders every
+  case in full (two-column: meta rail + description/tags/stats).
+- **Endorsement marquee** (`EndorsementMarquee`) — two opposing-direction
+  rows built on the shared `Marquee` primitive (`src/components/ui/marquee.tsx`),
+  which degrades to a single-copy, keyboard-scrollable container (not an
+  animated one) when motion is disabled.
+- **Contact CTA + footer** (`ContactCta`, `SiteFooter`) — oversized display
+  headline with one tilted accent marker, email as a big linked word,
+  social pill links. The CTA renders per-page (currently `/about`); the
+  footer is global, rendered once in the root layout.
+- **Custom cursor** (`CustomCursor`) — dot + spring-follow ring, states for
+  link/text/photo hover. Only takes over (`data-custom-cursor="on"` on
+  `<html>`) once it confirms a real pointer device and has mounted — native
+  cursor is used on touch devices and whenever JavaScript hasn't run.
+- **Geometric shapes** (`GeoDecoration`) — decorative circles/rings/
+  triangles/dotted-squares in whitespace. `aria-hidden`, `pointer-events: none`,
+  `float`/`spin` variants, `.no-low` to hide entirely under low motion.
+
+## 6. Don'ts
+
+- Don't add a profile photo. The site stays about the work.
+- Don't introduce gradients beyond the one accent halo on the hero.
+- Don't use the secondary palette (`--c-*`) for UI surfaces — accents,
+  dots, and geo shapes only, never buttons/borders/backgrounds/large fills.
+- Don't add more than ~24 skills to the reel — past that it's decoration,
+  not communication.
 - Don't emoji. The accent color is the only loud thing on the page.
-- Don't tilt or rotate text except the marker `<em>` highlight (which rotates
-  −1.4°) and geo shapes. Readability first.
+- Don't ship placeholder endorsements or invented metrics as if they were
+  real — see the copy rules above.

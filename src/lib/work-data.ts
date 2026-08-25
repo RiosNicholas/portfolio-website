@@ -1,6 +1,6 @@
-/** Static case study content for the Work page. Title splits (title / titleEm /
- * titleSuffix) must stay in sync with `work-teaser.tsx`'s three existing rows —
- * gslsamp is new here and not yet mirrored in the teaser (out of scope). */
+/** Static case study content for the Work page. `work-teaser.tsx` derives its
+ * rows from `featuredCases` below, so this is the single source of truth —
+ * no separate list to keep in sync. */
 export type CaseStat = { k: string; v: string };
 
 export type CaseStudy = {
@@ -21,6 +21,8 @@ export type CaseStudy = {
 	tags: string[];
 	/** Exactly 3 stats per case. */
 	stats: CaseStat[];
+	/** Shown in the home page's `WorkTeaser`. Not every case study needs to be. */
+	featured?: boolean;
 };
 
 export const cases: CaseStudy[] = [
@@ -30,6 +32,7 @@ export const cases: CaseStudy[] = [
 		year: "2025 —",
 		title: "Risk Tech ",
 		titleEm: "Agents",
+		featured: true,
 		role: "Platform · Lead UI",
 		org: "Credit Risk Technology · Internal · NDA",
 		description:
@@ -48,6 +51,7 @@ export const cases: CaseStudy[] = [
 		title: "",
 		titleEm: "Evangeliu",
 		titleSuffix: " Coffee",
+		featured: true,
 		role: "Freelance · Full-stack",
 		org: "Roaster & green distributor · Next · Sanity · Stripe",
 		description:
@@ -65,6 +69,7 @@ export const cases: CaseStudy[] = [
 		year: "2024",
 		title: "",
 		titleEm: "Acountabuddy",
+		featured: true,
 		role: "Solo · Product & Engineering",
 		org: "Habit pairing app · React Native · Supabase",
 		description:
@@ -95,3 +100,7 @@ export const cases: CaseStudy[] = [
 		],
 	},
 ];
+
+export const featuredCases: CaseStudy[] = cases.filter(
+	(study) => study.featured,
+);

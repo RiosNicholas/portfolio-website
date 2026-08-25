@@ -23,7 +23,9 @@ function AccentedTitle({
 				accents.includes(part) ? (
 					<em
 						className="text-(--accent-text) not-italic"
-						// biome-ignore lint/suspicious/noArrayIndexKey: parts are derived from a static string, order never changes
+						// parts are derived from a static string; order never changes, so
+						// the index is a stable key (the noArrayIndexKey rule is globally
+						// disabled in biome.jsonc, this comment is just the human context)
 						key={index}
 					>
 						{part}

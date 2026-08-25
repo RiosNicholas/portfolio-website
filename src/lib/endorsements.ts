@@ -1,11 +1,11 @@
 /** Replace with real endorsement data. `avatarUrl` is optional — cards fall back to initials when omitted. */
-export interface Endorsement {
+export type Endorsement = {
 	name: string;
 	role: string;
 	quote: string;
 	linkedinUrl: string;
 	avatarUrl?: string;
-}
+};
 
 const AVATAR_PALETTE = [
 	"#2f4a3a",
