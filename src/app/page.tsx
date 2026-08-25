@@ -40,7 +40,7 @@ export default function HomePage() {
 			</section>
 
 			{/* Endorsements */}
-			<section aria-label="Endorsements" className="py-14 sm:py-20 lg:py-28">
+			<section aria-label="Endorsements" className="pt-14 sm:pt-20 lg:pt-28">
 				<Reveal>
 					<SectionHeader
 						meta={`${endorsements.length} endorsements · cont.`}

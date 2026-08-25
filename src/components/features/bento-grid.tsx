@@ -1,7 +1,7 @@
 "use client";
 
-import { m } from "motion/react";
-
+import type { Marker } from "cobe";
+import { Globe } from "~/components/ui/globe";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
@@ -11,6 +11,12 @@ import { cn } from "~/lib/utils";
 
 const CELL_CLASS =
 	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-out hover:border-(--border-2) hover:shadow-(--shadow-pop)";
+
+// Jersey City — kept in sync with the coordinate text rendered in the Based
+// cell below.
+const JERSEY_CITY_MARKERS: Marker[] = [
+	{ location: [40.7248, -74.0347], size: 0.08 },
+];
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (
@@ -97,35 +103,6 @@ function SkillsCell() {
 	);
 }
 
-/**
- * Location cell's radar-style ping ring. Same shape as `StatusDot` —
- * `useAnimationsEnabled()` gate, `m.div` when enabled — translating
- * Tailwind's `animate-ping` exactly (including its final-25% hold).
- * File-local: it has exactly one call site.
- */
-function PingRing() {
-	const enabled = useAnimationsEnabled();
-
-	if (!enabled) {
-		return (
-			<m.div className="absolute -inset-4 rounded-full border border-(--accent) opacity-50" />
-		);
-	}
-
-	return (
-		<m.div
-			animate={{ scale: [1, 2, 2], opacity: [0.5, 0, 0] }}
-			className="absolute -inset-4 rounded-full border border-(--accent) opacity-50"
-			transition={{
-				duration: 1,
-				times: [0, 0.75, 1],
-				ease: [0, 0, 0.2, 1],
-				repeat: Infinity,
-			}}
-		/>
-	);
-}
-
 export function BentoGrid() {
 	return (
 		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
@@ -136,21 +113,23 @@ export function BentoGrid() {
 					"col-span-2 bg-[linear-gradient(to_right,var(--grid-minor)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-minor)_1px,transparent_1px)] bg-size-[22px_22px]",
 				)}
 			>
-				<CellLabel>Based</CellLabel>
-				<div>
-					<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
-						Jersey
-						<br />
-						<em className="text-(--accent-text) not-italic">City</em>
-					</div>
-					<div className="mt-2 font-mono text-(--ink-3) text-xs">
-						40.7248° N · -74.0347° W
+				<div className="relative z-10 flex h-full flex-col justify-between">
+					<CellLabel>Based</CellLabel>
+					<div>
+						<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
+							Jersey
+							<br />
+							<em className="text-(--accent-text) not-italic">City</em>
+						</div>
+						<div className="mt-2 font-mono text-(--ink-3) text-xs">
+							40.7248° N · -74.0347° W
+						</div>
 					</div>
 				</div>
-				{/* Animated pin */}
-				<div className="absolute top-[38%] left-[58%] h-3 w-3 rounded-full bg-(--accent) shadow-[0_0_0_4px_var(--accent-glow)]">
-					<PingRing />
-				</div>
+				<Globe
+					className="absolute -right-20 -bottom-20 size-64 md:-right-36 md:-bottom-20 md:size-72 lg:-right-12"
+					markers={JERSEY_CITY_MARKERS}
+				/>
 			</div>
 
 			{/* Years */}
@@ -163,9 +142,13 @@ export function BentoGrid() {
 					<div className="font-display font-semibold text-foreground text-lg leading-tight tracking-tight md:text-xl">
 						Open to{" "}
 						<strong className="font-semibold text-(--accent-text)">
+							full-time
+						</strong>{" "}
+						+{" "}
+						<strong className="font-semibold text-(--accent-text)">
 							consulting
-						</strong>
-						+ full-time opportunities
+						</strong>{" "}
+						opportunities
 					</div>
 				</div>
 				<CellSub>Reply within 48 hours</CellSub>
@@ -193,13 +176,12 @@ export function BentoGrid() {
 			{/* Now */}
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Currently</CellLabel>
-				<div className="font-normal font-sans text-(--ink-2) text-sm leading-normal tracking-normal">
-					Building{" "}
-					<strong className="font-semibold text-(--accent-text)">
-						UI platform infra
-					</strong>{" "}
-					and agentic AI systems at JPMorganChase.
+				<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
+					JPMorgan
+					<br />
+					<em className="text-(--accent-text) not-italic">Chase</em>
 				</div>
+				<CellSub>Building UI platform infra &amp; agentic AI systems</CellSub>
 			</div>
 		</Reveal>
 	);
