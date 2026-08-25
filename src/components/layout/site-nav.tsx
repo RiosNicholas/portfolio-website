@@ -1,5 +1,6 @@
 "use client";
 
+import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,8 +11,26 @@ import {
 	NavigationMenuLink,
 	NavigationMenuList,
 } from "~/components/ui/navigation-menu";
-import { navLinks } from "~/lib/site-links";
+import { navLinks, profileLinks } from "~/lib/site-links";
 import { cn } from "~/lib/utils";
+
+const socialIconCls = "size-4 shrink-0";
+
+const socialLinks = [
+	{
+		href: profileLinks.github,
+		label: "Visit my GitHub profile",
+		icon: <GitHubLogoIcon aria-hidden="true" className={socialIconCls} />,
+	},
+	{
+		href: profileLinks.linkedin,
+		label: "Visit my LinkedIn profile",
+		icon: <LinkedInLogoIcon aria-hidden="true" className={socialIconCls} />,
+	},
+];
+
+const socialLinkCls =
+	"inline-flex h-8 w-8 items-center justify-center rounded-full text-(--ink-3) transition-colors hover:bg-(--frosted) hover:text-(--ink)";
 
 function navItemCls(active: boolean) {
 	return cn(
@@ -69,8 +88,26 @@ export function SiteNav() {
 				</NavigationMenuList>
 			</NavigationMenu>
 
-			{/* Theme toggle */}
-			<div className="flex items-center">
+			{/* Profile links + theme toggle */}
+			<div className="flex items-center gap-0.5">
+				<div className="hidden items-center gap-0.5 sm:flex">
+					{socialLinks.map(({ href, label, icon }) => (
+						<a
+							aria-label={label}
+							className={socialLinkCls}
+							href={href}
+							key={href}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							{icon}
+						</a>
+					))}
+				</div>
+				<span
+					aria-hidden="true"
+					className="mx-1 hidden h-4 w-px bg-border sm:block"
+				/>
 				<ThemeToggle />
 			</div>
 		</nav>

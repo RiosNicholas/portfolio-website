@@ -1,31 +1,4 @@
-import {
-	FileTextIcon,
-	GitHubLogoIcon,
-	LinkedInLogoIcon,
-} from "@radix-ui/react-icons";
-
 import { Reveal } from "~/components/ui/reveal";
-import { profileLinks } from "~/lib/site-links";
-
-const iconCls = "size-4 shrink-0";
-
-const socials: { href: string; label: string; icon: React.ReactNode }[] = [
-	{
-		href: profileLinks.linkedin,
-		label: "LinkedIn",
-		icon: <LinkedInLogoIcon aria-hidden="true" className={iconCls} />,
-	},
-	{
-		href: profileLinks.github,
-		label: "GitHub",
-		icon: <GitHubLogoIcon aria-hidden="true" className={iconCls} />,
-	},
-	{
-		href: profileLinks.resume,
-		label: "Resume",
-		icon: <FileTextIcon aria-hidden="true" className={iconCls} />,
-	},
-];
 
 export function ContactCta() {
 	return (
@@ -55,28 +28,13 @@ export function ContactCta() {
 				.
 			</Reveal>
 
-			<Reveal className="mt-12 flex flex-wrap items-end justify-between gap-6">
+			<Reveal className="mt-12">
 				<a
 					className="border-(--accent) border-b-2 pb-0.5 font-display font-semibold text-(--ink) text-2xl tracking-tight no-underline transition-colors duration-200 hover:text-(--accent-text) md:text-3xl"
 					href="mailto:rios.nicholas@protonmail.com"
 				>
 					rios.nicholas@protonmail.com
 				</a>
-
-				<div className="flex flex-wrap gap-2 font-medium font-sans text-sm tracking-normal">
-					{socials.map(({ href, label, icon }) => (
-						<a
-							className="inline-flex items-center gap-2 rounded-full border border-(--border-2) bg-(--paper-2) py-2 pr-4 pl-3 text-(--ink-2) no-underline transition-all duration-200 hover:-translate-y-0.5 hover:border-(--accent) hover:bg-(--paper) hover:text-(--accent-text)"
-							href={href}
-							key={href}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							{icon}
-							{label}
-						</a>
-					))}
-				</div>
 			</Reveal>
 		</section>
 	);
