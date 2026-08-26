@@ -23,9 +23,8 @@ minimal, no filler. Voice: confident, plain-spoken, dry wit allowed.
 - One `<em className="mark">` per headline — never two, never zero. The
   marker highlight lands on a single 1-word concept.
 - Numbers: show them when real. Don't invent metrics — the seeded
-  `CaseStudy` stats are real; the `Endorsement` table ships empty on
-  purpose (see README.md "Content & admin") rather than carrying invented
-  testimonials.
+  `CaseStudy` stats and `Endorsement` quotes are both real (see README.md
+  "Content & admin"), never invented placeholders.
 - No gerunds as sentence-starting nouns ("Building", "Shipping"). Lead with
   a verb or a statement.
 - Avoid clichés: "passionate", "drives results", "craft at scale".

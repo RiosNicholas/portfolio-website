@@ -102,10 +102,12 @@ low-churn structural/deploy config read by static route handlers
 carve-out — three rows that change roughly never, not worth a `Language`
 model or a third `SkillKind`.
 
-The `Endorsement` table ships **empty** by design — the 12 testimonials
-that used to live in `src/lib/endorsements.ts` were fabricated placeholders
-(LinkedIn's API doesn't expose recommendation data, so real ones have to be
-hand-entered via `/admin/endorsements`, not synced).
+The `Endorsement` table is seeded with real LinkedIn recommendations
+(`prisma/seed.ts`, upserted by `linkedinUrl`) — not the 12 fabricated
+placeholders that used to live in `src/lib/endorsements.ts`. LinkedIn's API
+doesn't expose recommendation data, so new ones get copy-pasted in by hand,
+either by adding to the seed script and re-running it or directly via
+`/admin/endorsements`.
 
 ## Design system
 
@@ -136,8 +138,8 @@ component inventory.
 2. `npm install`
 3. `npx prisma migrate dev --name add_content_models` — creates the DB
    schema (first run also generates the Prisma Client).
-4. `npx prisma db seed` — seeds case studies, CV entries, and skills/tools
-   from their old static values. Endorsements are deliberately left empty.
+4. `npx prisma db seed` — seeds case studies, CV entries, skills/tools, and
+   a handful of real LinkedIn endorsements.
 5. `npm run dev`, sign in once via Discord at `/api/auth/signin`, then read
    your `User.id` with `npm run db:studio` and set it as `ADMIN_USER_IDS`
    in `.env` (comma-separated if there's ever more than one). Restart the

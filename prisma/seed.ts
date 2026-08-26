@@ -5,11 +5,12 @@
  * case-study copy fixes/additions) to a fresh or existing DB. Run via
  * `npx prisma db seed` (or automatically after `prisma migrate dev`).
  *
- * Deliberately does NOT seed `src/lib/endorsements.ts` — those 12 entries
- * are fabricated placeholder testimonials (flagged in that file's own
- * header comment). The Endorsement table is left empty; real
- * recommendations get added by hand via `/admin/endorsements` or
- * `npm run db:studio`.
+ * Endorsements are real recommendations copy-pasted from LinkedIn (not the
+ * 12 fabricated placeholders that used to live in `src/lib/endorsements.ts`
+ * — those are gone for good). Upserted by `linkedinUrl` (`@unique` in the
+ * schema), so adding a new one here and re-running is safe; editing an
+ * existing entry's quote/role here and re-running updates that row in
+ * place rather than duplicating it.
  *
  * `CaseStudy` rows are upserted by their slug `id` (stable, load-bearing as
  * `/work#<id>` anchors) so re-running this script is safe. `CvEntry` and
@@ -253,6 +254,39 @@ const favoriteTools: string[] = [
 	"Fish Shell",
 ];
 
+// ─── Endorsements (real LinkedIn recommendations) ───────────────────────────
+
+type SeedEndorsement = {
+	name: string;
+	role: string;
+	quote: string;
+	linkedinUrl: string;
+};
+
+const endorsements: SeedEndorsement[] = [
+	{
+		name: "Matthew Baker",
+		role: "Senior Software Engineer · JPMorgan Chase",
+		quote:
+			"Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented.",
+		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
+	},
+	{
+		name: "Steven Tejeda",
+		role: "Senior Software Engineer II · FINBOA",
+		quote:
+			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
+		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
+	},
+	{
+		name: "Joshua Hwang",
+		role: "Software Engineer · Veteran",
+		quote:
+			"In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular.",
+		linkedinUrl: "https://www.linkedin.com/in/joshuaphwang/",
+	},
+];
+
 async function main() {
 	// One-time: the "acountabuddy" → "accountabuddy" rename (Aug 2026)
 	// changes a primary key, which upsert can't do — it would leave the
@@ -349,10 +383,27 @@ async function main() {
 	});
 	console.log(`Seeded ${skills.length + favoriteTools.length} skills/tools.`);
 
-	// Endorsements deliberately NOT seeded — see file header comment.
-	console.log(
-		"Skipped endorsements (deliberate — add real ones via /admin/endorsements).",
-	);
+	// Endorsements — upsert by linkedinUrl so re-running is safe and editing
+	// a quote here updates the existing row instead of duplicating it.
+	for (const [index, endorsement] of endorsements.entries()) {
+		await db.endorsement.upsert({
+			where: { linkedinUrl: endorsement.linkedinUrl },
+			create: {
+				name: endorsement.name,
+				role: endorsement.role,
+				quote: endorsement.quote,
+				linkedinUrl: endorsement.linkedinUrl,
+				sortOrder: index,
+			},
+			update: {
+				name: endorsement.name,
+				role: endorsement.role,
+				quote: endorsement.quote,
+				sortOrder: index,
+			},
+		});
+	}
+	console.log(`Seeded ${endorsements.length} endorsements.`);
 }
 
 main()

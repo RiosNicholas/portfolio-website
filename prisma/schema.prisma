@@ -119,7 +119,7 @@ model Endorsement {
     name        String
     role        String
     quote       String
-    linkedinUrl String
+    linkedinUrl String   @unique // also doubles as the seed script's upsert key
     avatarUrl   String?
     published   Boolean  @default(true) // lets admin stage a pasted-in recommendation before it goes live
     sortOrder   Int      @default(0)
