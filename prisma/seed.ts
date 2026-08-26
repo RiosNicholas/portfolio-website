@@ -294,7 +294,7 @@ const recommenders: SeedRecommender[] = [
 	},
 	{
 		name: "Steven Tejeda",
-		role: "Senior Software Engineer II · FINBOA · Fiserv",
+		role: "Senior Software Engineer II · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
 		quotes: [
 			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
