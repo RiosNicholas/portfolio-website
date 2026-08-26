@@ -7,17 +7,19 @@
  *
  * Endorsements are real recommendations copy-pasted from LinkedIn (not the
  * 12 fabricated placeholders that used to live in `src/lib/endorsements.ts`
- * — those are gone for good). Upserted by `linkedinUrl` (`@unique` in the
- * schema), so adding a new one here and re-running is safe; editing an
- * existing entry's quote/role here and re-running updates that row in
- * place rather than duplicating it.
+ * — those are gone for good), split into multiple single-sentence quote
+ * cards per person rather than one long paragraph each. Same person can
+ * legitimately have several rows sharing one `linkedinUrl`, so unlike
+ * `CaseStudy` there's no natural per-row unique key — this table falls
+ * into the same "clear and reinsert" bucket as `CvEntry`/`Skill` below.
  *
  * `CaseStudy` rows are upserted by their slug `id` (stable, load-bearing as
- * `/work#<id>` anchors) so re-running this script is safe. `CvEntry` and
- * `Skill` have no natural unique key from the source data, so this script
- * clears and re-inserts those two tables on every run — fine for the
- * initial migration, but don't re-run it after you've started editing CV
- * entries or skills by hand via /admin, or those edits will be wiped.
+ * `/work#<id>` anchors) so re-running this script is safe. `CvEntry`,
+ * `Skill`, and `Endorsement` have no natural unique key from the source
+ * data, so this script clears and re-inserts those three tables on every
+ * run — fine for the initial migration, but don't re-run it after you've
+ * started editing CV entries, skills, or endorsements by hand via /admin,
+ * or those edits will be wiped.
  *
  * IMPORTANT: this script writes to Postgres directly, bypassing tRPC, so it
  * never calls `revalidateTag()` — unlike an edit made through /admin, a
@@ -268,29 +270,69 @@ type SeedEndorsement = {
 	linkedinUrl: string;
 };
 
-const endorsements: SeedEndorsement[] = [
+type SeedRecommender = {
+	name: string;
+	role: string;
+	linkedinUrl: string;
+	/** Each entry becomes its own marquee card -- split from one LinkedIn
+	 * recommendation into separate sentence-level quotes, verbatim. */
+	quotes: string[];
+};
+
+const recommenders: SeedRecommender[] = [
 	{
 		name: "Matthew Baker",
 		role: "Senior Software Engineer · JPMorgan Chase",
-		quote:
-			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with, etc. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
+		quotes: [
+			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat.",
+			"Nick has a strong work ethic and is passionate about technology.",
+			"He's also a really nice guy, easy to get along with, etc.",
+			"Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented.",
+			"He was a strong member of our architecture team at JPMorgan Chase.",
+		],
 	},
 	{
 		name: "Steven Tejeda",
 		role: "Senior Software Engineer II · FINBOA",
-		quote:
-			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
+		quotes: [
+			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
+			"During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn.",
+			"He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles.",
+			"His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
+		],
 	},
 	{
 		name: "Joshua Hwang",
 		role: "Software Engineer · Veteran",
-		quote:
-			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship. Nick came in every day ready to learn and made an effort to always deliver on tasks assigned to him. In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular. His ability to take on challenges, gain background knowledge through research, and then seeing tasks to their completion allows me to confidently say that Nick would be a great addition to any team as a software engineer.",
 		linkedinUrl: "https://www.linkedin.com/in/joshuaphwang/",
+		quotes: [
+			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship.",
+			"Nick came in every day ready to learn and made an effort to always deliver on tasks assigned to him.",
+			"In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular.",
+			"His ability to take on challenges, gain background knowledge through research, and then seeing tasks to their completion allows me to confidently say that Nick would be a great addition to any team as a software engineer.",
+		],
 	},
 ];
+
+// Interleave round-robin across people so the marquee doesn't show the same
+// name several times in a row.
+const endorsements: SeedEndorsement[] = [];
+const maxQuotes = Math.max(...recommenders.map((r) => r.quotes.length));
+for (let i = 0; i < maxQuotes; i++) {
+	for (const r of recommenders) {
+		const quote = r.quotes[i];
+		if (quote) {
+			endorsements.push({
+				name: r.name,
+				role: r.role,
+				quote,
+				linkedinUrl: r.linkedinUrl,
+			});
+		}
+	}
+}
 
 async function main() {
 	// One-time: the "acountabuddy" → "accountabuddy" rename (Aug 2026)
@@ -388,26 +430,18 @@ async function main() {
 	});
 	console.log(`Seeded ${skills.length + favoriteTools.length} skills/tools.`);
 
-	// Endorsements — upsert by linkedinUrl so re-running is safe and editing
-	// a quote here updates the existing row instead of duplicating it.
-	for (const [index, endorsement] of endorsements.entries()) {
-		await db.endorsement.upsert({
-			where: { linkedinUrl: endorsement.linkedinUrl },
-			create: {
-				name: endorsement.name,
-				role: endorsement.role,
-				quote: endorsement.quote,
-				linkedinUrl: endorsement.linkedinUrl,
-				sortOrder: index,
-			},
-			update: {
-				name: endorsement.name,
-				role: endorsement.role,
-				quote: endorsement.quote,
-				sortOrder: index,
-			},
-		});
-	}
+	// Endorsements — no natural unique key once one person can have several
+	// quote cards, so same clear-and-reinsert approach as CvEntry/Skill.
+	await db.endorsement.deleteMany({});
+	await db.endorsement.createMany({
+		data: endorsements.map((endorsement, index) => ({
+			name: endorsement.name,
+			role: endorsement.role,
+			quote: endorsement.quote,
+			linkedinUrl: endorsement.linkedinUrl,
+			sortOrder: index,
+		})),
+	});
 	console.log(`Seeded ${endorsements.length} endorsements.`);
 }
 
