@@ -18,6 +18,11 @@
  * clears and re-inserts those two tables on every run — fine for the
  * initial migration, but don't re-run it after you've started editing CV
  * entries or skills by hand via /admin, or those edits will be wiped.
+ *
+ * IMPORTANT: this script writes to Postgres directly, bypassing tRPC, so it
+ * never calls `revalidateTag()` — unlike an edit made through /admin, a
+ * change here won't show up on the public pages until the Next.js data
+ * cache is cleared (restart `next dev` locally, or redeploy in production).
  */
 import { PrismaClient } from "../generated/prisma";
 
@@ -268,21 +273,21 @@ const endorsements: SeedEndorsement[] = [
 		name: "Matthew Baker",
 		role: "Senior Software Engineer · JPMorgan Chase",
 		quote:
-			"Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented.",
+			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with, etc. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
 	},
 	{
 		name: "Steven Tejeda",
 		role: "Senior Software Engineer II · FINBOA",
 		quote:
-			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
+			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
 	},
 	{
 		name: "Joshua Hwang",
 		role: "Software Engineer · Veteran",
 		quote:
-			"In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular.",
+			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship. Nick came in every day ready to learn and made an effort to always deliver on tasks assigned to him. In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular. His ability to take on challenges, gain background knowledge through research, and then seeing tasks to their completion allows me to confidently say that Nick would be a great addition to any team as a software engineer.",
 		linkedinUrl: "https://www.linkedin.com/in/joshuaphwang/",
 	},
 ];
