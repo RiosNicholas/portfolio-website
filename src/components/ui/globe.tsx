@@ -30,8 +30,14 @@ const INITIAL_PHI = (3 * Math.PI) / 2 - (-74.0347 * Math.PI) / 180;
  * `phi` — so `INITIAL_PHI` is independent of this value.
  */
 const THETA = 0.5;
-/** ~42s per revolution — a small decorative globe should read as unhurried. */
-const RAD_PER_SEC = 0.15;
+/**
+ * Marker pulse. The globe itself is static (fixed at `INITIAL_PHI` — no
+ * rotation), so the only motion left is the marker breathing in size,
+ * `MARKER_PULSE_PERIOD_MS` per cycle, oscillating between `1×` and
+ * `1 + MARKER_PULSE_AMPLITUDE` of its base size via a sine wave.
+ */
+const MARKER_PULSE_PERIOD_MS = 2200;
+const MARKER_PULSE_AMPLITUDE = 0.6;
 /**
  * cobe's land dots are a fixed size in sphere space, so a larger on-screen
  * sphere (see the framing note below) needs more samples to keep coastlines
@@ -40,14 +46,12 @@ const RAD_PER_SEC = 0.15;
  */
 const MAP_SAMPLES = 16_000;
 /**
- * Marker elevation. Kept low deliberately: the marker orbits at radius
- * `0.8 + elevation` while the sphere is `0.8`, and cobe only culls a
- * back-facing marker when its own projection also falls inside the sphere's
- * silhouette (`if (l.z < 0 && length(l.xy) < 0.8) discard`). At `THETA`'s
- * tilt, a higher elevation pushes the marker's projection outside that
- * silhouette for part of the rotation, so it never gets culled and floats
- * past the limb while Jersey City is on the far side of the globe. Must
- * change together with `THETA` — see the globe deep-dive.
+ * Marker elevation — how far the marker sits above the sphere surface
+ * (radius `0.8 + elevation` vs the sphere's `0.8`). Kept low; the globe is
+ * static and Jersey City is always front-facing (`INITIAL_PHI`), so the
+ * occlusion concern that constrained this value pre-pulse (a rotating globe
+ * culling a back-facing marker only when its projection also falls inside
+ * the silhouette) no longer applies — this is purely a visual choice now.
  */
 const MARKER_ELEVATION = 0.03;
 /** How long the reduced-motion resting state redraws identical frames for,
@@ -82,10 +86,11 @@ function getPalette(): Palette {
 }
 
 /**
- * Decorative, non-interactive rotating globe (cobe/WebGL) with a marker.
- * Auto-rotates only — no drag-to-spin — so it never becomes a pointer-only
- * control (that would be a fresh WCAG 2.1.1 failure). Gated on
- * `useAnimationsEnabled()`.
+ * Decorative, non-interactive globe (cobe/WebGL) with a marker. Static —
+ * fixed at `INITIAL_PHI`, never rotates — so the only motion is the marker
+ * pulsing in place. Non-interactive (no drag-to-spin) so it never becomes a
+ * pointer-only control (that would be a fresh WCAG 2.1.1 failure). The pulse
+ * itself is gated on `useAnimationsEnabled()`.
  *
  * The rendered element tree is identical in both motion states — only what
  * the mount effect *does* branches — because the animations context is
@@ -115,7 +120,6 @@ export function Globe({ markers, className }: GlobeProps) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const canvasRef = useRef<HTMLCanvasElement>(null);
 	const globeRef = useRef<ReturnType<typeof createGlobe> | null>(null);
-	const phiRef = useRef(INITIAL_PHI);
 	const visibleRef = useRef(true);
 	// Captured once — this is a decorative primitive with a fixed marker set
 	// in practice, and reading only the initial value keeps this effect's
@@ -176,19 +180,22 @@ export function Globe({ markers, className }: GlobeProps) {
 		};
 	}, []);
 
-	// Effect B — frame loop only, never canvas creation.
+	// Effect B — frame loop only, never canvas creation. The globe itself
+	// never moves (`phi` is always `INITIAL_PHI`); this effect only decides
+	// whether the marker pulses.
 	useEffect(() => {
 		const globe = globeRef.current;
 		if (!globe) return;
 
+		const baseMarkers = markersRef.current;
 		let rafId: number;
 
 		if (enabled) {
-			// Resume from wherever `phiRef` currently sits (either its initial
-			// value, or wherever the resting state last froze it) rather than
-			// resetting to `INITIAL_PHI` — a runtime flip back to enabled must
-			// resume smoothly, not snap the globe back to its start angle.
-			const startPhi = phiRef.current;
+			// Continuous pulse: marker size oscillates sinusoidally between 1×
+			// and `1 + MARKER_PULSE_AMPLITUDE`× its base size. `phi` is passed
+			// on every frame too, since the resting-burst branch below may have
+			// left the globe mid-fade-in and this is the frame loop that keeps
+			// driving `ready`.
 			const start = performance.now();
 			let frameCount = 0;
 			const tick = (now: number) => {
@@ -200,21 +207,27 @@ export function Globe({ markers, className }: GlobeProps) {
 				// so it resumes instantly rather than needing to be re-armed.
 				if (!visibleRef.current || document.hidden) return;
 				const elapsed = now - start;
-				const phi = startPhi + (elapsed / 1000) * RAD_PER_SEC;
-				phiRef.current = phi;
-				globe.update({ phi });
+				const wave = Math.sin((elapsed / MARKER_PULSE_PERIOD_MS) * 2 * Math.PI);
+				const scale = 1 + MARKER_PULSE_AMPLITUDE * (0.5 + 0.5 * wave);
+				globe.update({
+					phi: INITIAL_PHI,
+					markers: baseMarkers.map((m) => ({
+						...m,
+						size: (m.size ?? 0.05) * scale,
+					})),
+				});
 			};
 			rafId = requestAnimationFrame(tick);
 		} else {
-			// Resting state: redraw the *same* frame for a short burst so the
-			// async-loading map texture has time to appear, then stop — never
-			// animate toward INITIAL_PHI, freeze at the current phi instead.
+			// Resting state: redraw the *same* frame (marker at its base size,
+			// no pulse) for a short burst so the async-loading map texture has
+			// time to appear, then stop.
 			const restStart = performance.now();
 			let frameCount = 0;
 			const tick = (now: number) => {
 				frameCount += 1;
 				if (frameCount === 2) setReady(true);
-				globe.update({ phi: phiRef.current });
+				globe.update({ phi: INITIAL_PHI, markers: baseMarkers });
 				if (now - restStart < RESTING_BURST_MS) {
 					rafId = requestAnimationFrame(tick);
 				}
