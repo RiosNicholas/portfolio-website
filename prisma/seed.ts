@@ -282,7 +282,7 @@ type SeedRecommender = {
 const recommenders: SeedRecommender[] = [
 	{
 		name: "Matthew Baker",
-		role: "Senior Software Engineer · JPMorgan Chase",
+		role: "Senior Lead Software Engineer · JPMorgan Chase",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
 		quotes: [
 			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat.",
