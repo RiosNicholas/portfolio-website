@@ -24,7 +24,7 @@ function CaseRow({ study }: { study: CaseStudy }) {
 					{study.titleSuffix}
 				</h3>
 			</div>
-			<span className="shrink-0 font-mono text-(--ink-3) text-sm">
+			<span className="hidden shrink-0 font-mono text-(--ink-3) text-sm sm:inline">
 				{study.year}
 			</span>
 			<span className="shrink-0 font-mono text-(--ink-3) text-lg transition duration-300 ease-out group-hover:translate-x-2 group-hover:text-(--accent-text)">

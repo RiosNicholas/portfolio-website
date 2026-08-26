@@ -18,9 +18,11 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 			<Reveal className="grid grid-cols-1 gap-9 md:grid-cols-[0.8fr_1.2fr]">
 				{/* Left */}
 				<div>
-					<span className="font-mono text-(--ink-4) text-xs">
-						{study.num} — {study.year}
-					</span>
+					<div className="flex items-center gap-2.5 font-mono text-xs">
+						<span className="text-(--ink-4)">{study.num}</span>
+						<span aria-hidden className="h-3 w-px bg-(--border)" />
+						<span className="text-(--ink-3)">{study.year}</span>
+					</div>
 					<h2
 						className="mt-3 font-display font-semibold text-3xl text-foreground leading-none tracking-tighter md:text-4xl lg:text-5xl"
 						id={`${study.id}-title`}
