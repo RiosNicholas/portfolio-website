@@ -282,7 +282,7 @@ type SeedRecommender = {
 const recommenders: SeedRecommender[] = [
 	{
 		name: "Matthew Baker",
-		role: "Senior Lead Software Engineer · JPMorgan Chase",
+		role: "Senior Lead Software Engineer · JPMorganChase",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
 		quotes: [
 			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat.",
@@ -294,7 +294,7 @@ const recommenders: SeedRecommender[] = [
 	},
 	{
 		name: "Steven Tejeda",
-		role: "Senior Software Engineer II · FINBOA",
+		role: "Senior Software Engineer II · FINBOA · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
 		quotes: [
 			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
@@ -305,7 +305,7 @@ const recommenders: SeedRecommender[] = [
 	},
 	{
 		name: "Joshua Hwang",
-		role: "Software Engineer · Veteran",
+		role: "Software Engineer · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/joshuaphwang/",
 		quotes: [
 			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship.",
