@@ -58,7 +58,7 @@ const cases: SeedCaseStudy[] = [
 		role: "UI SME · Core Developer",
 		org: "Internal agent platform · Financial services · Design system · Observability · Orchestration",
 		description:
-			"Purpose-built agents for developers, product, and designers — built to shift risk and compliance work left in the SDLC, catching issues earlier instead of at review. Core developer on the platform and its UI subject-matter expert, shaping how agent work gets surfaced, measured, and made legible to the teams that use it.",
+			"Agents that shift risk and compliance left in the SDLC for developers, product, and design — faster, less disjointed iteration. Platform engineering and UI SME: guardrails and tollgates that hold generated code to the design system and architecture, instead of re-prompting into technical debt.",
 		tags: ["MCP", "Claude Code", "GitHub Copilot", "React", "Cypress"],
 		stats: [
 			{ k: "Scope", v: "Design system & UI" },
@@ -73,7 +73,7 @@ const cases: SeedCaseStudy[] = [
 		title: "",
 		titleEm: "Accountabuddy",
 		featured: true,
-		role: "Solo · Product & Engineering",
+		role: "Solo · Capstone",
 		org: "Habit pairing app · React · Supabase",
 		description:
 			"Accountability app pairing you with exactly one other person — not a feed, not a streak machine. You set a thing, they set a thing, the app handles nudges. Designed, built, shipped in 8 weeks.",
@@ -101,9 +101,9 @@ const cases: SeedCaseStudy[] = [
 		titleEm: "GS-LSAMP",
 		titleSuffix: " Website",
 		role: "Lead Web Developer",
-		org: "Rutgers University–Newark · National Science Foundation GS-LSAMP · Next · TypeScript",
+		org: "Rutgers University–Newark · National Science Foundation GS-LSAMP",
 		description:
-			"Official site for the NSF-sponsored GS-LSAMP program at Rutgers–Newark. Surfaces undergraduate research, funding, and post-bacc pathways in STEM for 500+ students and staff. Built and maintained from first commit through handoff.",
+			"Official site for the NSF-sponsored GS-LSAMP program at Rutgers–Newark. Surfaces undergraduate research, funding, and post-bacc pathways in STEM. Built and maintained from first commit through handoff.",
 		tags: ["Next.js", "React", "TypeScript", "Tailwind", "Vercel"],
 		stats: [
 			{ k: "Students & staff", v: "500+" },
@@ -161,10 +161,10 @@ const cases: SeedCaseStudy[] = [
 		year: "2023",
 		title: "Spotify ",
 		titleEm: "Valence Trends",
-		role: "Group · Data Analysis",
+		role: "Data Analysis · Data Wrangling",
 		org: "Rutgers University · Data Science minor · Spotify Web API · Python",
 		description:
-			"Group study of valence — the musical-positivity measure of how happy or somber a track sounds — across 44,894 US tracks from the 1960s through the 2010s, pulled from the Spotify Web API with Spotipy. Deduplicated the set, split tracks into hits and flops by popularity, and banded valence into happy (≥.6) and somber (<.4) to test whether the 2000s and 2010s trended downward. Delivered as a Jupyter notebook and a final presentation.",
+			"Study of valence — the musical-positivity measure of how happy or somber a track sounds — across 44,894 US tracks, 1960s through 2010s. Pulled with Spotipy, deduplicated, split into hits and flops by popularity, then banded happy vs. somber. Delivered as a Jupyter notebook and presentation.",
 		tags: [
 			"Python",
 			"Pandas",
