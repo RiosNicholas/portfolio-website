@@ -17,11 +17,10 @@ type NumberTickerProps = {
 };
 
 /**
- * In-view count-up primitive, replacing the manual `requestAnimationFrame` +
- * `IntersectionObserver` loop that used to live in `bento-grid.tsx`'s
- * `YearsCell`. Deliberately a plain `<span>` driven by a `MotionValue` (the
- * `custom-cursor.tsx` idiom) rather than a `MotionValue` rendered as a
- * motion-component child, so it has zero interaction with `LazyMotion strict`.
+ * In-view count-up primitive. Deliberately a plain `<span>` driven by a
+ * `MotionValue` (the `custom-cursor.tsx` idiom) rather than a
+ * `MotionValue` rendered as a motion-component child, so it has zero
+ * interaction with `LazyMotion strict`.
  *
  * Initial render shows `value` itself (not `0`) so a visitor with JS
  * disabled — who never hydrates, so the effect below never runs — sees the

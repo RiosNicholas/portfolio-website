@@ -160,10 +160,6 @@ export function BentoGrid({
 		//   row2  [Skills 3,    ][Favorite tools 3            ]
 		//   row3  [ row-span-3  ][Currently 3                 ]
 		//   row4  [ ...         ][Languages 3                 ]
-		//
-		// source order already satisfies both placements — do not reorder
-		// these children, and every row must total 6 columns at both
-		// breakpoints.
 		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
 			{/* Location */}
 			<div

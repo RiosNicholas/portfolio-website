@@ -135,20 +135,6 @@ export const protectedProcedure = t.procedure
 		});
 	});
 
-/**
- * Admin-only procedure
- *
- * Gates mutations to the single credentials identity this app can ever
- * mint (`ADMIN_USER_ID`, `src/server/auth/config.ts`). There is no `User`
- * row behind it — Credentials sessions are JWT-only. The check still
- * exists (rather than collapsing this into `protectedProcedure`) so that
- * adding a second provider later can't silently promote every signed-in
- * stranger to admin. Enforced again at the page level in
- * `src/app/admin/layout.tsx`.
- *
- * @see https://trpc.io/docs/procedures
- */
-
 /** Shared with `src/app/admin/layout.tsx`, which enforces the same check
  * at the page level so a non-admin visitor never sees the admin shell
  * render, not just their mutations rejected. */
@@ -156,6 +142,16 @@ export function isAdminUserId(id: string): boolean {
 	return id === ADMIN_USER_ID;
 }
 
+/**
+ * Gates mutations to the single credentials identity this app can ever
+ * mint (`ADMIN_USER_ID`, `src/server/auth/config.ts`). There is no
+ * `User` row behind it — Credentials sessions are JWT-only. The check
+ * stays separate from `protectedProcedure` so that adding a second
+ * provider later can't silently promote every signed-in stranger to
+ * admin.
+ *
+ * @see https://trpc.io/docs/procedures
+ */
 export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
 	if (!isAdminUserId(ctx.session.user.id)) {
 		throw new TRPCError({ code: "FORBIDDEN" });

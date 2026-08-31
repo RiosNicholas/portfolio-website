@@ -5,8 +5,8 @@ export const contentType = "image/png";
 
 /**
  * Deliberately uses the system sans stack, not next/font — ImageResponse
- * needs fonts loaded as raw buffers, and fighting that for a social-card
- * generator isn't worth it per the audit plan. Colors are the light-theme
+ * needs fonts loaded as raw buffers, and fighting that isn't worth the
+ * complexity for a social-card generator. Colors are the light-theme
  * `--paper`/`--ink`/`--accent` values hardcoded, since CSS custom properties
  * from globals.css aren't available in this isolated render.
  */

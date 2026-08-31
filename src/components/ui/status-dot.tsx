@@ -13,10 +13,10 @@ const BASE_CLASS =
 	"h-2 w-2 shrink-0 rounded-full bg-(--c-lime) shadow-[0_0_0_3px_color-mix(in_srgb,var(--c-lime)_30%,transparent)]";
 
 /**
- * "Available" status dot with a continuous Framer Motion pulse, replacing
- * Tailwind's `animate-pulse` at its three call sites. Respects
- * `useAnimationsEnabled()` — renders statically (fully opaque) when reduced
- * motion or `data-motion="low"` is active, since `animate-pulse` doesn't.
+ * "Available" status dot with a continuous Framer Motion pulse. Respects
+ * `useAnimationsEnabled()` — renders statically (fully opaque) when
+ * reduced motion or `data-motion="low"` is active, which Tailwind's
+ * `animate-pulse` does not; that's why the pulse is hand-rolled.
  */
 export function StatusDot({ className }: StatusDotProps) {
 	const enabled = useAnimationsEnabled();

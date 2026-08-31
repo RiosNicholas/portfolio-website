@@ -14,10 +14,9 @@ type GeoDecorationProps = {
 };
 
 /**
- * Decorative geo shape with a continuous Framer Motion animation, replacing
- * the CSS `.geo.float` / `.geo.spin` keyframes. Respects
- * `useAnimationsEnabled()` — renders statically (still at its base rotation)
- * when reduced motion or `data-motion="low"` is active.
+ * Decorative geo shape with a continuous Framer Motion animation.
+ * Respects `useAnimationsEnabled()` — renders statically (still at its
+ * base rotation) when reduced motion or `data-motion="low"` is active.
  */
 export function GeoDecoration({
 	variant,

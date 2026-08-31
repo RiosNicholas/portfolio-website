@@ -47,15 +47,13 @@ const MARKER_PULSE_AMPLITUDE = 0.6;
 const MAP_SAMPLES = 16_000;
 /**
  * Marker elevation — how far the marker sits above the sphere surface
- * (radius `0.8 + elevation` vs the sphere's `0.8`). Kept low; the globe is
- * static and Jersey City is always front-facing (`INITIAL_PHI`), so the
- * occlusion concern that constrained this value pre-pulse (a rotating globe
- * culling a back-facing marker only when its projection also falls inside
- * the silhouette) no longer applies — this is purely a visual choice now.
+ * (radius `0.8 + elevation` vs the sphere's `0.8`). The globe is static
+ * and Jersey City is always front-facing (`INITIAL_PHI`), so nothing
+ * ever occludes the marker; this value is purely a visual choice.
  */
 const MARKER_ELEVATION = 0.03;
 /** How long the reduced-motion resting state redraws identical frames for,
- * so the async-loading map texture has time to appear (see cobe deep-dive). */
+ * so the async-loading map texture has time to appear. */
 const RESTING_BURST_MS = 1200;
 
 type Palette = {
@@ -65,24 +63,62 @@ type Palette = {
 	markerColor: [number, number, number];
 };
 
-const LIGHT_PALETTE: Palette = {
-	dark: 0,
-	baseColor: [0.6, 0.6, 0.62],
-	glowColor: [1, 1, 1],
-	markerColor: [0.145, 0.388, 0.922], // --accent (blue-600)
-};
+// Shared 1×1 canvas used to turn a design-token color (oklch()/color-mix(),
+// whatever it resolves to) into a cobe-compatible [r, g, b] float triplet —
+// letting the browser's own color parser do the conversion instead of
+// hand-rolling OKLch math.
+let sampleCtx: CanvasRenderingContext2D | null | undefined;
 
-const DARK_PALETTE: Palette = {
-	dark: 1,
-	baseColor: [0.15, 0.15, 0.17],
-	glowColor: [0.08, 0.08, 0.1],
-	markerColor: [0.576, 0.772, 0.992], // dark-theme --accent-text (blue-300)
-};
+function getSampleCtx(): CanvasRenderingContext2D | null {
+	if (sampleCtx !== undefined) return sampleCtx;
+	const canvas = document.createElement("canvas");
+	canvas.width = 1;
+	canvas.height = 1;
+	sampleCtx = canvas.getContext("2d", { willReadFrequently: true });
+	return sampleCtx;
+}
 
+/**
+ * Resolves a design-system CSS custom property to the [r, g, b] (0–1) it
+ * would actually paint as. `bgVar` is composited first so a semi-transparent
+ * token (e.g. `--accent-glow`, a color-mix with `transparent`) blends against
+ * the real card background it's drawn over on the page, rather than against
+ * canvas black.
+ */
+function resolveToken(
+	fgVar: string,
+	bgVar = "--paper-2",
+): [number, number, number] {
+	const ctx = getSampleCtx();
+	if (!ctx) return [0.5, 0.5, 0.5];
+	const styles = getComputedStyle(document.documentElement);
+	ctx.fillStyle = styles.getPropertyValue(bgVar).trim();
+	ctx.fillRect(0, 0, 1, 1);
+	ctx.fillStyle = styles.getPropertyValue(fgVar).trim();
+	ctx.fillRect(0, 0, 1, 1);
+	const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+	return [(r ?? 128) / 255, (g ?? 128) / 255, (b ?? 128) / 255];
+}
+
+/**
+ * Base/glow/marker all read live design tokens instead of hardcoded RGB
+ * guesses, so the globe tracks both light/dark and whichever `data-accent`
+ * preset (pink/cobalt/lime/grape) is active. `--ink-3` is the same
+ * mid-contrast tone already used for secondary text against `--paper-2`
+ * elsewhere, so the sphere reads clearly against its card in both themes
+ * (the old hardcoded dark-mode base, `[0.15,0.15,0.17]`, was nearly the same
+ * color as the `--paper-2` card behind it). `--accent-glow` is the
+ * design system's actual glow token, tinted and semi-transparent, in place
+ * of a glow that used to equal the background exactly in light mode and sit
+ * darker than it in dark mode — both of which made the glow invisible.
+ */
 function getPalette(): Palette {
-	return document.documentElement.dataset.theme === "dark"
-		? DARK_PALETTE
-		: LIGHT_PALETTE;
+	return {
+		dark: document.documentElement.dataset.theme === "dark" ? 1 : 0,
+		baseColor: resolveToken("--ink-3"),
+		glowColor: resolveToken("--accent-glow"),
+		markerColor: resolveToken("--accent-text"),
+	};
 }
 
 /**
@@ -124,7 +160,7 @@ export function Globe({ markers, className }: GlobeProps) {
 	// Captured once — this is a decorative primitive with a fixed marker set
 	// in practice, and reading only the initial value keeps this effect's
 	// deps genuinely `[]` (a changing `markers` identity must not re-create
-	// the globe; see cobe deep-dive #4).
+	// the globe).
 	const markersRef = useRef(markers);
 	const [ready, setReady] = useState(false);
 
@@ -163,7 +199,7 @@ export function Globe({ markers, className }: GlobeProps) {
 			globe.update(getPalette());
 		});
 		themeObserver.observe(document.documentElement, {
-			attributeFilter: ["data-theme"],
+			attributeFilter: ["data-theme", "data-accent"],
 		});
 
 		const intersectionObserver = new IntersectionObserver(([entry]) => {

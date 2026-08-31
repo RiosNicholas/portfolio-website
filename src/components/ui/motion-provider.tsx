@@ -11,11 +11,12 @@ import { createContext, useEffect, useState } from "react";
 export const AnimationsEnabledContext = createContext(true);
 
 /**
- * Single `matchMedia` + `MutationObserver` pair for the whole tree.
- * Previously every `Reveal`/`GeoDecoration`/`Marquee`/`CustomCursor`
- * instance created its own pair of each (20+ per page, torn down and
- * recreated on every navigation) — this hoists that subscription here,
- * once, since `MotionProvider` already wraps the entire app.
+ * One `matchMedia` + `MutationObserver` pair for the whole tree. Every
+ * `Reveal`/`GeoDecoration`/`Marquee`/`CustomCursor` consumer reads the
+ * result through context rather than subscribing itself — there are 20+
+ * such consumers on a page, and per-instance subscriptions would be torn
+ * down and recreated on every navigation. `MotionProvider` already wraps
+ * the entire app, so this is the right level to own it.
  */
 function useAnimationsEnabledValue(): boolean {
 	const [enabled, setEnabled] = useState(true);

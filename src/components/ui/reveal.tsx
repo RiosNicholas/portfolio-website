@@ -29,11 +29,9 @@ const variants = {
 };
 
 /**
- * Polymorphic scroll-reveal. Replaces the old `.reveal` class +
- * `RevealObserver` IntersectionObserver singleton — this is the bug fix.
- * Each `<Reveal>` owns its own `useInView`, so it re-arms on every mount
- * (including client-side route transitions), unlike the old observer which
- * only ever scanned the DOM once at root layout mount.
+ * Polymorphic scroll-reveal. Each `<Reveal>` owns its own `useInView`, so
+ * it re-arms on every mount, including client-side route transitions — a
+ * single shared observer scanned once at root-layout mount would not.
  *
  * Renders the `show` variant by default so prerendered/server HTML never
  * ships `opacity:0` — content is readable immediately and with JS disabled.
