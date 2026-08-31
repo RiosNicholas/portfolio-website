@@ -52,7 +52,7 @@ export default async function HomePage() {
 			<section aria-label="Endorsements" className="pt-14 sm:pt-20 lg:pt-28">
 				<Reveal>
 					<SectionHeader
-						meta={`${endorsements.length} endorsements · cont.`}
+						meta={`${endorsements.length} endorsements.`}
 						num="02 — Kind words"
 						title={
 							<>
