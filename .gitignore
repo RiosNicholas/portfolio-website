@@ -48,3 +48,4 @@ yarn-error.log*
 
 # agent pipeline handoff docs (scratch working state, not source)
 /agentWork/
+.prisma/

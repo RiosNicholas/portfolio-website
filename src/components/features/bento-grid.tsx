@@ -5,10 +5,9 @@ import { Globe } from "~/components/ui/globe";
 import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
-import { languages } from "~/lib/languages";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
-import type { Skill } from "../../../generated/prisma";
+import type { Language, Skill } from "../../../generated/prisma";
 
 const CELL_CLASS =
 	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-out hover:border-(--border-2) hover:shadow-(--shadow-pop)";
@@ -115,7 +114,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 	);
 }
 
-function LanguagesCell() {
+function LanguagesCell({ languages }: { languages: Language[] }) {
 	return (
 		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-3")}>
 			<CellLabel>Languages</CellLabel>
@@ -138,9 +137,11 @@ function LanguagesCell() {
 export function BentoGrid({
 	skills,
 	tools,
+	languages,
 }: {
 	skills: Skill[];
 	tools: Skill[];
+	languages: Language[];
 }) {
 	return (
 		// Grid layout reference — the source order below (Based, Experience,
@@ -248,7 +249,7 @@ export function BentoGrid({
 			</div>
 
 			{/* Languages — see grid layout reference above <Reveal> */}
-			<LanguagesCell />
+			<LanguagesCell languages={languages} />
 		</Reveal>
 	);
 }

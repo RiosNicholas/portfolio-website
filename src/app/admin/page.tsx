@@ -21,6 +21,11 @@ const sections = [
 		title: "Skills & tools",
 		description: "Home page bento grid skills reel and tools list.",
 	},
+	{
+		href: "/admin/languages",
+		title: "Languages",
+		description: "Home page bento grid languages cell.",
+	},
 ];
 
 export default function AdminPage() {

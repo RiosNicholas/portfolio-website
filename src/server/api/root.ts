@@ -1,6 +1,7 @@
 import { caseStudyRouter } from "~/server/api/routers/case-study";
 import { cvEntryRouter } from "~/server/api/routers/cv-entry";
 import { endorsementRouter } from "~/server/api/routers/endorsement";
+import { languageRouter } from "~/server/api/routers/language";
 import { postRouter } from "~/server/api/routers/post";
 import { skillRouter } from "~/server/api/routers/skill";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
@@ -16,6 +17,7 @@ export const appRouter = createTRPCRouter({
 	endorsement: endorsementRouter,
 	cvEntry: cvEntryRouter,
 	skill: skillRouter,
+	language: languageRouter,
 });
 
 // export type definition of API

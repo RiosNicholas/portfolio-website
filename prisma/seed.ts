@@ -13,13 +13,14 @@
  * `CaseStudy` there's no natural per-row unique key — this table falls
  * into the same "clear and reinsert" bucket as `CvEntry`/`Skill` below.
  *
- * `CaseStudy` rows are upserted by their slug `id` (stable, load-bearing as
- * `/work#<id>` anchors) so re-running this script is safe. `CvEntry`,
- * `Skill`, and `Endorsement` have no natural unique key from the source
- * data, so this script clears and re-inserts those three tables on every
- * run — fine for the initial migration, but don't re-run it after you've
- * started editing CV entries, skills, or endorsements by hand via /admin,
- * or those edits will be wiped.
+ * `CaseStudy` and `Language` rows are upserted by their natural key (slug
+ * `id`, load-bearing as `/work#<id>` anchors, and `name` respectively) so
+ * re-running this script is safe for those two. `CvEntry`, `Skill`, and
+ * `Endorsement` have no natural unique key from the source data, so this
+ * script clears and re-inserts those three tables on every run — fine for
+ * the initial migration, but don't re-run it after you've started editing
+ * CV entries, skills, or endorsements by hand via /admin, or those edits
+ * will be wiped.
  *
  * IMPORTANT: this script writes to Postgres directly, bypassing tRPC, so it
  * never calls `revalidateTag()` — unlike an edit made through /admin, a
@@ -261,6 +262,16 @@ const favoriteTools: string[] = [
 	"Fish Shell",
 ];
 
+// ─── Languages ────────────────────────────────────────────────────────────
+
+type SeedLanguage = { name: string; level: string };
+
+const languages: SeedLanguage[] = [
+	{ name: "English", level: "Native" },
+	{ name: "Spanish", level: "Native" },
+	{ name: "Portuguese", level: "Elementary" },
+];
+
 // ─── Endorsements (real LinkedIn recommendations) ───────────────────────────
 
 type SeedEndorsement = {
@@ -443,6 +454,23 @@ async function main() {
 		})),
 	});
 	console.log(`Seeded ${endorsements.length} endorsements.`);
+
+	// Languages — upsert by name (natural key), same approach as CaseStudy.
+	for (const [index, language] of languages.entries()) {
+		await db.language.upsert({
+			where: { name: language.name },
+			create: {
+				name: language.name,
+				level: language.level,
+				sortOrder: index,
+			},
+			update: {
+				level: language.level,
+				sortOrder: index,
+			},
+		});
+	}
+	console.log(`Seeded ${languages.length} languages.`);
 }
 
 main()

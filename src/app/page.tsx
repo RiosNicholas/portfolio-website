@@ -7,13 +7,15 @@ import { WorkTeaser } from "~/components/features/work-teaser";
 import { SectionHeader } from "~/components/layout/section-header";
 import { Reveal } from "~/components/ui/reveal";
 import { getPublishedEndorsements } from "~/server/data/endorsements";
+import { getPublishedLanguages } from "~/server/data/languages";
 import { getSkillsByKind } from "~/server/data/skills";
 
 export default async function HomePage() {
-	const [skills, tools, endorsements] = await Promise.all([
+	const [skills, tools, endorsements, languages] = await Promise.all([
 		getSkillsByKind("SKILL"),
 		getSkillsByKind("TOOL"),
 		getPublishedEndorsements(),
+		getPublishedLanguages(),
 	]);
 
 	return (
@@ -23,7 +25,7 @@ export default async function HomePage() {
 
 			{/* Bento */}
 			<section aria-label="Quick facts">
-				<BentoGrid skills={skills} tools={tools} />
+				<BentoGrid languages={languages} skills={skills} tools={tools} />
 			</section>
 
 			{/* Work teaser */}
