@@ -1,17 +1,23 @@
 import "~/styles/globals.css";
 
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import {
 	Hanken_Grotesk,
 	JetBrains_Mono,
 	Schibsted_Grotesk,
 } from "next/font/google";
+import { JsonLd } from "~/components/layout/json-ld";
 import { SiteFooter } from "~/components/layout/site-footer";
 import { SiteNav } from "~/components/layout/site-nav";
+import { SkipToContent } from "~/components/layout/skip-to-content";
+import { ThemeInitScript } from "~/components/layout/theme-init-script";
 import { CustomCursor } from "~/components/ui/custom-cursor";
 import { MotionProvider } from "~/components/ui/motion-provider";
 import { profileLinks, siteUrl } from "~/lib/site-links";
 import { personJsonLd } from "~/lib/structured-data";
+import { themeDefaults } from "~/lib/theme";
 import { cn } from "~/lib/utils";
 
 const schibstedGrotesk = Schibsted_Grotesk({
@@ -71,8 +77,6 @@ export const metadata: Metadata = {
 	robots: { index: true, follow: true },
 };
 
-const themeInitScript = `(function(){try{var t=localStorage.getItem('theme');if(!t)t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var a=localStorage.getItem('accent')||'cobalt';var g=localStorage.getItem('grid')||'subtle';var m=localStorage.getItem('motion')||'high';var el=document.documentElement;el.dataset.theme=t;el.dataset.accent=a;el.dataset.grid=g;el.dataset.motion=m;}catch(e){}})();`;
-
 export default function RootLayout({
 	children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -83,34 +87,27 @@ export default function RootLayout({
 				hankenGrotesk.variable,
 				jetbrainsMono.variable,
 			)}
-			data-accent="cobalt"
-			data-grid="subtle"
-			data-motion="high"
-			data-theme="light"
+			data-accent={themeDefaults.accent}
+			data-grid={themeDefaults.grid}
+			data-motion={themeDefaults.motion}
+			data-theme={themeDefaults.theme}
 			lang="en"
 			suppressHydrationWarning
 		>
 			<body className="antialiased" suppressHydrationWarning>
-				{/* Runs before paint to avoid FOUC */}
-				<script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-				<script
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
-					type="application/ld+json"
-				/>
+				<ThemeInitScript />
+				<JsonLd data={personJsonLd} />
 				<div aria-hidden className="paper-bg" />
 				<div aria-hidden className="grain" />
-				<a
-					className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[9999] focus:rounded-(--r-md) focus:bg-(--cta-bg) focus:px-4 focus:py-2.5 focus:font-display focus:font-semibold focus:text-(--cta-ink) focus:text-sm"
-					href="#main-content"
-				>
-					Skip to content
-				</a>
+				<SkipToContent />
 				<MotionProvider>
 					<CustomCursor />
 					<SiteNav />
 					{children}
 					<SiteFooter />
 				</MotionProvider>
+				<Analytics />
+				<SpeedInsights />
 			</body>
 		</html>
 	);

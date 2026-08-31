@@ -2,6 +2,7 @@
 
 import { Moon, Sun } from "lucide-react";
 import { useEffect, useState } from "react";
+import { themeStorageKeys } from "~/lib/theme";
 
 export function ThemeToggle() {
 	const [isDark, setIsDark] = useState(false);
@@ -14,7 +15,7 @@ export function ThemeToggle() {
 		const next = isDark ? "light" : "dark";
 		document.documentElement.dataset.theme = next;
 		try {
-			localStorage.setItem("theme", next);
+			localStorage.setItem(themeStorageKeys.theme, next);
 		} catch {}
 		setIsDark(!isDark);
 	};
