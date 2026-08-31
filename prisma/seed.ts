@@ -29,8 +29,6 @@
  */
 import { PrismaClient } from "../generated/prisma";
 
-const db = new PrismaClient();
-
 // ─── Case studies (verbatim from src/lib/work-data.ts) ──────────────────────
 
 type CaseStat = { k: string; v: string };
@@ -57,11 +55,11 @@ const cases: SeedCaseStudy[] = [
 		title: "Risk Tech ",
 		titleEm: "Agents",
 		featured: true,
-		role: "Platform · Lead UI",
-		org: "Internal agent platform · Financial services · Next · shadcn/ui",
+		role: "UI SME · Core Developer",
+		org: "Internal agent platform · Financial services · Design system · Observability · Orchestration",
 		description:
-			"Purpose-built agents sitting between risk analysts and internal tooling. Lead UI design system, streaming patterns, review flows, audit surfaces.",
-		tags: ["Next.js", "shadcn/ui", "MCP", "Claude · GPT", "Pydantic"],
+			"Purpose-built agents for developers, product, and designers — built to shift risk and compliance work left in the SDLC, catching issues earlier instead of at review. Core developer on the platform and its UI subject-matter expert, shaping how agent work gets surfaced, measured, and made legible to the teams that use it.",
+		tags: ["MCP", "Claude Code", "GitHub Copilot", "React", "Cypress"],
 		stats: [
 			{ k: "Scope", v: "Design system & UI" },
 			{ k: "Surfaces", v: "Review & audit flows" },
@@ -69,54 +67,44 @@ const cases: SeedCaseStudy[] = [
 		],
 	},
 	{
-		id: "evangeliu",
-		num: "002",
-		year: "2026 — Present",
-		title: "",
-		titleEm: "Evangeliu",
-		titleSuffix: " Coffee",
-		featured: true,
-		role: "Freelance · Full-stack",
-		org: "Roaster & green distributor · Next · Sanity · Stripe",
-		description:
-			"In-progress website for a specialty roaster with green bean sourcing. Editorial product pages, subscriptions, wholesale portal. Feels like the shop — records, plants, chalkboard menu.",
-		tags: ["Next.js", "Sanity", "Stripe", "Tailwind", "GSAP"],
-		stats: [
-			{ k: "Scope", v: "Full-stack" },
-			{ k: "Focus", v: "Editorial commerce" },
-			{ k: "Status", v: "In progress" },
-		],
-	},
-	{
 		id: "accountabuddy",
-		num: "003",
+		num: "002",
 		year: "2024",
 		title: "",
 		titleEm: "Accountabuddy",
 		featured: true,
 		role: "Solo · Product & Engineering",
-		org: "Habit pairing app · React Native · Supabase",
+		org: "Habit pairing app · React · Supabase",
 		description:
 			"Accountability app pairing you with exactly one other person — not a feed, not a streak machine. You set a thing, they set a thing, the app handles nudges. Designed, built, shipped in 8 weeks.",
-		tags: ["Expo", "Supabase", "Push", "Tamagui"],
+		tags: [
+			"React",
+			"Next.js",
+			"Redux",
+			"Tailwind",
+			"shadcn/ui",
+			"NextAuth.js",
+			"Supabase",
+			"Vercel",
+		],
 		stats: [
-			{ k: "DAU/MAU", v: "0.48" },
-			{ k: "Pair completion", v: "63%" },
-			{ k: "Beta users", v: "~900" },
+			{ k: "Scope", v: "Solo build" },
+			{ k: "Duration", v: "8 weeks" },
+			{ k: "Status", v: "Shipped 2024" },
 		],
 	},
 	{
 		id: "gslsamp",
-		num: "004",
+		num: "003",
 		year: "Feb '23 — May '24",
 		title: "",
 		titleEm: "GS-LSAMP",
 		titleSuffix: " Website",
 		role: "Lead Web Developer",
-		org: "Rutgers University–Newark · NSF GS-LSAMP · Next · TypeScript",
+		org: "Rutgers University–Newark · National Science Foundation GS-LSAMP · Next · TypeScript",
 		description:
-			"Official site for the NSF-sponsored GS-LSAMP program at Rutgers–Newark. Surfaces undergraduate research, funding, and post-bacc pathways in STEM for 500+ students and staff from historically underrepresented backgrounds. Built and maintained from first commit through handoff.",
-		tags: ["Next.js", "TypeScript", "Tailwind", "Vercel"],
+			"Official site for the NSF-sponsored GS-LSAMP program at Rutgers–Newark. Surfaces undergraduate research, funding, and post-bacc pathways in STEM for 500+ students and staff. Built and maintained from first commit through handoff.",
+		tags: ["Next.js", "React", "TypeScript", "Tailwind", "Vercel"],
 		stats: [
 			{ k: "Students & staff", v: "500+" },
 			{ k: "Tenure", v: "16 mo" },
@@ -125,7 +113,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "groove-exchange",
-		num: "005",
+		num: "004",
 		year: "Nov '23",
 		title: "",
 		titleEm: "Groove",
@@ -133,8 +121,17 @@ const cases: SeedCaseStudy[] = [
 		role: "Solo · Full-stack",
 		org: "Anonymous music forum · React · Node · Express",
 		description:
-			"Full-stack forum where music people argue about records without a username attached. Anonymous threads, posts, and critique on whatever's in rotation. Built and deployed end to end as a CodePath capstone.",
-		tags: ["React", "JavaScript", "Node", "REST"],
+			"Full-stack music forum built in the spirit of Reddit and RateYourMusic — a collaborative space for talking about records without a username attached. Anonymous threads, posts, and critique on whatever's in rotation. Built and deployed end to end as a CodePath capstone.",
+		tags: [
+			"React",
+			"JavaScript",
+			"Node",
+			"REST",
+			"Supabase",
+			"PostgreSQL",
+			"Tailwind",
+			"Netlify",
+		],
 		stats: [
 			{ k: "Scope", v: "Full-stack" },
 			{ k: "Program", v: "CodePath" },
@@ -143,7 +140,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "datawell",
-		num: "006",
+		num: "005",
 		year: "Sep '23",
 		title: "",
 		titleEm: "DataWell",
@@ -156,6 +153,31 @@ const cases: SeedCaseStudy[] = [
 			{ k: "Scope", v: "Frontend" },
 			{ k: "Program", v: "JPMorganChase Code for Good Hackathon" },
 			{ k: "Shipped", v: "Sep '23" },
+		],
+	},
+	{
+		id: "spotify-valence",
+		num: "006",
+		year: "2023",
+		title: "Spotify ",
+		titleEm: "Valence Trends",
+		role: "Group · Data Analysis",
+		org: "Rutgers University · Data Science minor · Spotify Web API · Python",
+		description:
+			"Group study of valence — the musical-positivity measure of how happy or somber a track sounds — across 44,894 US tracks from the 1960s through the 2010s, pulled from the Spotify Web API with Spotipy. Deduplicated the set, split tracks into hits and flops by popularity, and banded valence into happy (≥.6) and somber (<.4) to test whether the 2000s and 2010s trended downward. Delivered as a Jupyter notebook and a final presentation.",
+		tags: [
+			"Python",
+			"Pandas",
+			"NumPy",
+			"Seaborn",
+			"Matplotlib",
+			"Jupyter",
+			"Spotify API",
+		],
+		stats: [
+			{ k: "Dataset", v: "44,894 tracks" },
+			{ k: "Hypothesis", v: "Valence decline, 2000s–2010s" },
+			{ k: "Presented", v: "2023" },
 		],
 	},
 ];
@@ -345,11 +367,21 @@ for (let i = 0; i < maxQuotes; i++) {
 	}
 }
 
-async function main() {
+// Exported per-table so the deploy pipeline (scripts/seed-if-empty.ts) can
+// seed only whichever tables are currently empty, instead of an all-or-
+// nothing run — a DB can legitimately have some tables populated (by a
+// prior seed, or by hand via /admin) and others still empty.
+
+export async function seedCaseStudies(db: PrismaClient) {
 	// One-time: the "acountabuddy" → "accountabuddy" rename (Aug 2026)
 	// changes a primary key, which upsert can't do — it would leave the
 	// old row orphaned. Idempotent no-op on a DB that never had it.
 	await db.caseStudy.deleteMany({ where: { id: "acountabuddy" } });
+
+	// One-time: Evangeliu Coffee pulled from the site (Aug 2026) — not
+	// enough shipped yet to show. Upsert can't delete a dropped row, so
+	// remove it explicitly. Idempotent no-op once applied.
+	await db.caseStudy.deleteMany({ where: { id: "evangeliu" } });
 
 	// Case studies — upsert by slug id.
 	for (const [index, study] of cases.entries()) {
@@ -387,7 +419,9 @@ async function main() {
 		});
 	}
 	console.log(`Seeded ${cases.length} case studies.`);
+}
 
+export async function seedCvEntries(db: PrismaClient) {
 	// CV entries — no natural unique key in the source data, so clear + reinsert.
 	await db.cvEntry.deleteMany({});
 	await db.cvEntry.createMany({
@@ -421,7 +455,9 @@ async function main() {
 	console.log(
 		`Seeded ${experience.length + education.length + activities.length} CV entries.`,
 	);
+}
 
+export async function seedSkills(db: PrismaClient) {
 	// Skills & tools — same "no natural key" situation as CV entries.
 	await db.skill.deleteMany({});
 	await db.skill.createMany({
@@ -440,7 +476,9 @@ async function main() {
 		],
 	});
 	console.log(`Seeded ${skills.length + favoriteTools.length} skills/tools.`);
+}
 
+export async function seedEndorsements(db: PrismaClient) {
 	// Endorsements — no natural unique key once one person can have several
 	// quote cards, so same clear-and-reinsert approach as CvEntry/Skill.
 	await db.endorsement.deleteMany({});
@@ -454,7 +492,9 @@ async function main() {
 		})),
 	});
 	console.log(`Seeded ${endorsements.length} endorsements.`);
+}
 
+export async function seedLanguages(db: PrismaClient) {
 	// Languages — upsert by name (natural key), same approach as CaseStudy.
 	for (const [index, language] of languages.entries()) {
 		await db.language.upsert({
@@ -473,12 +513,21 @@ async function main() {
 	console.log(`Seeded ${languages.length} languages.`);
 }
 
-main()
-	.then(async () => {
-		await db.$disconnect();
-	})
-	.catch(async (e) => {
+async function main() {
+	const db = new PrismaClient();
+	await seedCaseStudies(db);
+	await seedCvEntries(db);
+	await seedSkills(db);
+	await seedEndorsements(db);
+	await seedLanguages(db);
+	await db.$disconnect();
+}
+
+// Only run when invoked directly (`npx prisma db seed` / `tsx prisma/seed.ts`),
+// not when scripts/seed-if-empty.ts imports the functions above.
+if (import.meta.url === `file://${process.argv[1]}`) {
+	main().catch((e) => {
 		console.error(e);
-		await db.$disconnect();
 		process.exit(1);
 	});
+}
