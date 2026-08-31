@@ -54,7 +54,6 @@ export const metadata: Metadata = {
 		"design systems",
 		"agentic AI",
 	],
-	icons: [{ rel: "icon", url: "/favicon.ico" }],
 	alternates: { canonical: "/" },
 	openGraph: {
 		type: "website",
