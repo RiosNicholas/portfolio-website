@@ -14,9 +14,9 @@ not in code.
   successor) for scroll/interaction animation, **lucide-react** icons
 - **Biome** for linting and formatting (not ESLint/Prettier)
 - **tRPC 11 + Prisma 6 + NextAuth v5** — power content storage (`CaseStudy`,
-  `Endorsement`, `CvEntry`, `Skill` models) and the `/admin` surface. Discord
-  OAuth gates `/admin` to a hardcoded allowlist of `User.id`s
-  (`ADMIN_USER_IDS`) — see [Content & admin](#content--admin) below.
+  `Endorsement`, `CvEntry`, `Skill`, `Language` models) and the `/admin`
+  surface. A username/password (Credentials) sign-in gates `/admin` — see
+  [Content & admin](#content--admin) below.
 
 ## Commands
 
@@ -31,13 +31,14 @@ npm run db:migrate     # apply migrations in prod (prisma migrate deploy)
 npm run db:push        # push schema changes without a migration (prototyping only)
 npm run db:studio      # open Prisma Studio GUI
 npx prisma db seed     # (re)run prisma/seed.ts against the current DATABASE_URL
+npm run auth:hash      # generate an ADMIN_PASSWORD_HASH value for .env
 ```
 
 `npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
-`AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET`, and `ADMIN_USER_IDS` to be set
-(`src/env.js` validates these at build time) — `/`, `/work`, and `/about`
-are Server Components that read from Postgres, and `/admin` needs a working
-NextAuth session. See [Local setup](#local-setup).
+`ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` to be set (`src/env.js`
+validates these at build time) — `/`, `/work`, and `/about` are Server
+Components that read from Postgres, and `/admin` needs a working NextAuth
+Credentials session. See [Local setup](#local-setup).
 
 ## Where things live
 
@@ -56,29 +57,33 @@ src/
     ui/                primitives — shadcn/ui + Magic UI + custom
                        (Button, Card, Marquee, Reveal, CustomCursor)
   lib/                site-wide config consts (nav/profile links, structured
-                       data), languages.ts, avatar helpers, and shared
-                       utilities (cn, use-animations-enabled)
+                       data), avatar helpers, and shared utilities (cn,
+                       use-animations-enabled)
   server/
     api/routers/       tRPC routers — one per content model, plus `post`
     api/schemas/       Zod input schemas shared between routers and
                        /admin's client-side forms
     data/               unstable_cache-wrapped Prisma reads, tagged per
                        model, invalidated by admin mutations
-    auth/               NextAuth v5 config (Discord provider)
+    auth/               NextAuth v5 config (Credentials provider, JWT
+                       sessions) + scrypt password helpers
   styles/globals.css   Tailwind v4 entry point, OKLCH tokens, motion/
                        accessibility rules
 prisma/
   schema.prisma        Post/Account/Session/User/VerificationToken (auth)
-                       + CaseStudy/Endorsement/CvEntry/Skill (content)
+                       + CaseStudy/Endorsement/CvEntry/Skill/Language (content)
   seed.ts               one-time seed of the content that used to live in
                        src/lib/{work-data,about-data,bento-data}.ts
+scripts/
+  hash-password.ts      npm run auth:hash — generates ADMIN_PASSWORD_HASH
 ```
 
 ## Content & admin
 
 Case studies, endorsements, CV entries (experience/education/activities),
-and skills/tools are Prisma models, read via `src/server/data/*.ts`
-(`unstable_cache`-wrapped, tagged per model) and edited through `/admin`:
+skills/tools, and languages are Prisma models, read via
+`src/server/data/*.ts` (`unstable_cache`-wrapped, tagged per model) and
+edited through `/admin`:
 
 | Section                | Public page(s)              |
 |-------------------------|------------------------------|
@@ -86,21 +91,19 @@ and skills/tools are Prisma models, read via `src/server/data/*.ts`
 | `/admin/endorsements`   | home page recommendation reel |
 | `/admin/cv`             | `/about` Experience/Education/Activities |
 | `/admin/skills`         | home page bento grid Skills reel & tools list |
+| `/admin/languages`      | home page bento grid languages cell |
 
 `/admin` is gated two ways: `src/app/admin/layout.tsx` redirects any visitor
-who isn't signed in and allowlisted, and `adminProcedure`
-(`src/server/api/trpc.ts`) rejects mutations from anyone not in
-`ADMIN_USER_IDS` even if they reach a form directly. Each admin mutation
-calls `revalidateTag(...)` after writing, so an edit shows up on the public
-page on the next request — no redeploy needed.
+who isn't signed in as the single credentials identity, and `adminProcedure`
+(`src/server/api/trpc.ts`) rejects mutations from anyone else even if they
+reach a form directly. Each admin mutation calls `revalidateTag(...)` after
+writing, so an edit shows up on the public page on the next request — no
+redeploy needed.
 
 `src/lib/site-links.ts` (nav links, profile URLs, `siteUrl`) and
 `src/lib/structured-data.ts` (Person JSON-LD) are **not** modeled — they're
 low-churn structural/deploy config read by static route handlers
 (`robots.ts`, `sitemap.ts`), kept as typed consts on purpose.
-`src/lib/languages.ts` (the bento grid's Languages cell) is the same
-carve-out — three rows that change roughly never, not worth a `Language`
-model or a third `SkillKind`.
 
 The `Endorsement` table is seeded with real LinkedIn recommendations
 (`prisma/seed.ts`, upserted by `linkedinUrl`) — not the 12 fabricated
@@ -132,20 +135,48 @@ component inventory.
 ## Local setup
 
 1. Copy `.env.example` to `.env` and fill in `AUTH_SECRET` (`npx auth
-   secret`), a Discord OAuth app's `AUTH_DISCORD_ID`/`AUTH_DISCORD_SECRET`,
-   and `DATABASE_URL`/`DIRECT_URL` (both can point at the same local
-   Postgres — `start-database.sh` spins one up via Docker/Podman).
+   secret`), `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` (see "Credentials-based
+   admin access" below), and `DATABASE_URL`/`DIRECT_URL` (both can point at
+   the same local Postgres — `start-database.sh` spins one up via
+   Docker/Podman).
 2. `npm install`
 3. `npx prisma migrate dev --name add_content_models` — creates the DB
    schema (first run also generates the Prisma Client).
 4. `npx prisma db seed` — seeds case studies, CV entries, skills/tools, and
    a handful of real LinkedIn endorsements.
-5. `npm run dev`, sign in once via Discord at `/api/auth/signin`, then read
-   your `User.id` with `npm run db:studio` and set it as `ADMIN_USER_IDS`
-   in `.env` (comma-separated if there's ever more than one). Restart the
-   dev server so the new env var is picked up.
+5. `npm run auth:hash` (before first boot, if you haven't already), then
+   `npm run dev`, sign in at `/api/auth/signin` with `ADMIN_USERNAME` and
+   the password you hashed. `/admin` works immediately — no `db:studio`
+   lookup, no restart-after-first-login. See "Credentials-based admin
+   access" below for the full walkthrough.
 6. Visit `/admin` — you should see the CRUD sections instead of being
    redirected.
+
+### Credentials-based admin access
+
+`/admin` is gated behind a username/password (Credentials) sign-in — no
+OAuth app, no chicken-and-egg allowlist step:
+
+1. **Pick a username.** Set `ADMIN_USERNAME` in `.env` to anything
+   non-empty.
+2. **Generate a password hash.** `npm run auth:hash`, enter a password at
+   the prompt, and paste the printed line into `.env` as
+   `ADMIN_PASSWORD_HASH`. Never put the plaintext password in `.env` —
+   `src/env.js` validates the value against a `scrypt:<salt>:<key>` regex
+   and fails the build if it looks like plaintext.
+3. **Sign in.** `npm run dev`, visit `/api/auth/signin` (NextAuth's
+   built-in page — this project has no custom sign-in UI by design), and
+   sign in with `ADMIN_USERNAME` and the password you just hashed.
+4. Visit `/admin` — it renders the hub immediately.
+
+This replaces the previous Discord OAuth setup's three-restart
+chicken-and-egg dance (sign in once, look up a DB-generated `User.id` with
+`db:studio`, set it as an allowlist env var, restart). Credentials sessions
+are JWT-only — Auth.js never writes a `User` row for them — so the identity
+`authorize()` returns is a fixed code constant (`ADMIN_USER_ID` in
+`src/server/auth/config.ts`), known at config time. That's also why there's
+no allowlist env var to populate anymore: `isAdminUserId()`
+(`src/server/api/trpc.ts`) just compares against that constant.
 
 ## Deploying
 
@@ -160,11 +191,13 @@ project env var settings (one-time, after connecting the integration):
 | `DATABASE_URL`       | `POSTGRES_PRISMA_URL`         |
 | `DIRECT_URL`         | `POSTGRES_URL_NON_POOLING`    |
 
-Also set `AUTH_SECRET`, `AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET`, and
-`ADMIN_USER_IDS` as real project env vars — all are required at build time
-(`src/env.js`). `package.json`'s `vercel-build` script (`prisma migrate
-deploy && next build`) runs migrations before building so schema changes
-ship automatically on deploy — Vercel picks up a `vercel-build` script over
+Also set `AUTH_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as real
+project env vars — all are required at build time (`src/env.js`). Generate
+the production hash from a *different* password than the local dev one
+(`npm run auth:hash` locally, paste the result into Vercel — never the
+plaintext). `package.json`'s `vercel-build` script (`prisma migrate deploy
+&& next build`) runs migrations before building so schema changes ship
+automatically on deploy — Vercel picks up a `vercel-build` script over
 `build` automatically, no dashboard override needed.
 
 `src/lib/site-links.ts`'s `siteUrl` constant feeds `metadataBase`, canonical
