@@ -103,19 +103,25 @@ function resolveToken(
 /**
  * Base/glow/marker all read live design tokens instead of hardcoded RGB
  * guesses, so the globe tracks both light/dark and whichever `data-accent`
- * preset (pink/cobalt/lime/grape) is active. `--ink-3` is the same
- * mid-contrast tone already used for secondary text against `--paper-2`
- * elsewhere, so the sphere reads clearly against its card in both themes
- * (the old hardcoded dark-mode base, `[0.15,0.15,0.17]`, was nearly the same
- * color as the `--paper-2` card behind it). `--accent-glow` is the
- * design system's actual glow token, tinted and semi-transparent, in place
- * of a glow that used to equal the background exactly in light mode and sit
+ * preset (pink/cobalt/lime/grape) is active. `--accent-glow` is the design
+ * system's actual glow token, tinted and semi-transparent, in place of a
+ * glow that used to equal the background exactly in light mode and sit
  * darker than it in dark mode — both of which made the glow invisible.
+ *
+ * `baseColor` deliberately reads a different token per theme rather than
+ * one name resolved automatically by the cascade: `--ink-*` tokens are
+ * calibrated for text legibility, which in light mode means dark enough to
+ * read on `--paper` — but cobe's directional diffuse shading darkens the
+ * sphere's far side further still, so a legibility-dark base crushes to a
+ * muddy near-black hemisphere. `--border-2` is a mid-strength decorative
+ * tone (not text) that survives that shading in light mode; in dark mode
+ * `--ink-3` already reads correctly as a lit sphere, so it stays.
  */
 function getPalette(): Palette {
+	const dark = document.documentElement.dataset.theme === "dark";
 	return {
-		dark: document.documentElement.dataset.theme === "dark" ? 1 : 0,
-		baseColor: resolveToken("--ink-3"),
+		dark: dark ? 1 : 0,
+		baseColor: resolveToken(dark ? "--ink-3" : "--border-2"),
 		glowColor: resolveToken("--accent-glow"),
 		markerColor: resolveToken("--accent-text"),
 	};
