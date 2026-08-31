@@ -1,13 +1,18 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
+	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
 	AdminField,
 	AdminInput,
+	AdminList,
+	AdminListRow,
+	AdminLoading,
 	AdminPageHeader,
 } from "~/components/admin/admin-ui";
 import { api } from "~/trpc/react";
@@ -142,61 +147,58 @@ export default function AdminLanguagesPage() {
 				</div>
 			</AdminCard>
 
-			{isLoading && (
-				<p className="font-mono text-(--ink-3) text-sm">Loading…</p>
-			)}
+			{isLoading && <AdminLoading />}
 
 			{!isLoading && languages?.length === 0 && (
 				<AdminEmptyState>No languages yet.</AdminEmptyState>
 			)}
 
 			{!isLoading && languages && languages.length > 0 && (
-				<div className="flex flex-col">
+				<AdminList>
 					{languages.map((row) => (
-						<div
-							className="flex items-center justify-between gap-4 border-border border-t py-3"
+						<AdminListRow
+							actions={
+								<>
+									<AdminButton
+										onClick={() =>
+											setForm({
+												id: row.id,
+												name: row.name,
+												level: row.level,
+												published: row.published,
+												sortOrder: String(row.sortOrder),
+											})
+										}
+										size="sm"
+									>
+										<Pencil className="size-3.5" />
+										Edit
+									</AdminButton>
+									<AdminButton
+										onClick={() => {
+											if (confirm(`Delete "${row.name}"?`))
+												deleteMutation.mutate({ id: row.id });
+										}}
+										size="sm"
+										variant="danger"
+									>
+										<Trash2 className="size-3.5" />
+										Delete
+									</AdminButton>
+								</>
+							}
 							key={row.id}
 						>
-							<div>
-								<span className="font-display font-semibold text-foreground text-sm">
-									{row.name}
-								</span>
-								<span className="ml-2 font-mono text-(--ink-4) text-xs">
-									{row.level}
-								</span>
-								{!row.published && (
-									<span className="ml-2 font-mono text-(--ink-4) text-xs uppercase tracking-wider">
-										unpublished
-									</span>
-								)}
-							</div>
-							<div className="flex shrink-0 gap-2">
-								<AdminButton
-									onClick={() =>
-										setForm({
-											id: row.id,
-											name: row.name,
-											level: row.level,
-											published: row.published,
-											sortOrder: String(row.sortOrder),
-										})
-									}
-								>
-									Edit
-								</AdminButton>
-								<AdminButton
-									onClick={() => {
-										if (confirm(`Delete "${row.name}"?`))
-											deleteMutation.mutate({ id: row.id });
-									}}
-									variant="danger"
-								>
-									Delete
-								</AdminButton>
-							</div>
-						</div>
+							<span className="font-display font-semibold text-foreground text-sm">
+								{row.name}
+							</span>
+							<span className="ml-2 font-mono text-(--ink-4) text-xs">
+								{row.level}
+							</span>
+							{!row.published && <AdminBadge>Unpublished</AdminBadge>}
+						</AdminListRow>
 					))}
-				</div>
+				</AdminList>
 			)}
 		</div>
 	);

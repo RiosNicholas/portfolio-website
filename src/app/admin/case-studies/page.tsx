@@ -1,13 +1,18 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
+	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
 	AdminField,
 	AdminInput,
+	AdminList,
+	AdminListRow,
+	AdminLoading,
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
@@ -302,80 +307,79 @@ export default function AdminCaseStudiesPage() {
 				</div>
 			</AdminCard>
 
-			{isLoading && (
-				<p className="font-mono text-(--ink-3) text-sm">Loading…</p>
-			)}
+			{isLoading && <AdminLoading />}
 			{!isLoading && cases?.length === 0 && (
 				<AdminEmptyState>No case studies yet.</AdminEmptyState>
 			)}
 
 			{!isLoading && cases && cases.length > 0 && (
-				<div className="flex flex-col">
+				<AdminList>
 					{cases.map((row) => {
 						const stats = row.stats as unknown as StatForm[];
 						return (
-							<div
-								className="flex items-center justify-between gap-4 border-border border-t py-3"
+							<AdminListRow
+								actions={
+									<>
+										<AdminButton
+											onClick={() =>
+												setForm({
+													id: row.id,
+													originalId: row.id,
+													num: row.num,
+													year: row.year,
+													title: row.title,
+													titleEm: row.titleEm ?? "",
+													titleSuffix: row.titleSuffix ?? "",
+													role: row.role,
+													org: row.org,
+													description: row.description,
+													tags: row.tags.join(", "),
+													stats: [
+														stats[0] ?? { k: "", v: "" },
+														stats[1] ?? { k: "", v: "" },
+														stats[2] ?? { k: "", v: "" },
+													],
+													featured: row.featured,
+													sortOrder: String(row.sortOrder),
+												})
+											}
+											size="sm"
+										>
+											<Pencil className="size-3.5" />
+											Edit
+										</AdminButton>
+										<AdminButton
+											onClick={() => {
+												if (confirm(`Delete "${row.id}"?`))
+													deleteMutation.mutate({ id: row.id });
+											}}
+											size="sm"
+											variant="danger"
+										>
+											<Trash2 className="size-3.5" />
+											Delete
+										</AdminButton>
+									</>
+								}
 								key={row.id}
 							>
-								<div>
-									<div className="flex items-center gap-2">
-										<span className="font-display font-semibold text-foreground text-sm">
-											{row.title}
-											{row.titleEm}
-											{row.titleSuffix}
-										</span>
-										{row.featured && (
-											<span className="rounded-full bg-(--accent) px-2 py-0.5 font-mono text-(--marker-ink) text-[10px] uppercase tracking-wider">
-												Featured
-											</span>
-										)}
-									</div>
-									<div className="font-mono text-(--ink-3) text-xs">
-										{row.id} · {row.role}
-									</div>
+								<div className="flex items-center gap-2">
+									<span className="font-display font-semibold text-foreground text-sm">
+										{row.title}
+										{row.titleEm}
+										{row.titleSuffix}
+									</span>
+									{row.featured && (
+										<AdminBadge tone="accent">Featured</AdminBadge>
+									)}
 								</div>
-								<div className="flex shrink-0 gap-2">
-									<AdminButton
-										onClick={() =>
-											setForm({
-												id: row.id,
-												originalId: row.id,
-												num: row.num,
-												year: row.year,
-												title: row.title,
-												titleEm: row.titleEm ?? "",
-												titleSuffix: row.titleSuffix ?? "",
-												role: row.role,
-												org: row.org,
-												description: row.description,
-												tags: row.tags.join(", "),
-												stats: [
-													stats[0] ?? { k: "", v: "" },
-													stats[1] ?? { k: "", v: "" },
-													stats[2] ?? { k: "", v: "" },
-												],
-												featured: row.featured,
-												sortOrder: String(row.sortOrder),
-											})
-										}
-									>
-										Edit
-									</AdminButton>
-									<AdminButton
-										onClick={() => {
-											if (confirm(`Delete "${row.id}"?`))
-												deleteMutation.mutate({ id: row.id });
-										}}
-										variant="danger"
-									>
-										Delete
-									</AdminButton>
+								<div className="font-mono text-(--ink-3) text-xs">
+									{row.id} · {row.role}
 								</div>
-							</div>
+							</AdminListRow>
 						);
 					})}
-				</div>
+				</AdminList>
 			)}
 		</div>
 	);

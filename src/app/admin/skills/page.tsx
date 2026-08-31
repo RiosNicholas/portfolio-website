@@ -1,5 +1,6 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
 	AdminButton,
@@ -7,7 +8,12 @@ import {
 	AdminEmptyState,
 	AdminField,
 	AdminInput,
+	AdminList,
+	AdminListRow,
+	AdminLoading,
 	AdminPageHeader,
+	AdminSectionLabel,
+	AdminSelect,
 } from "~/components/admin/admin-ui";
 import { api } from "~/trpc/react";
 
@@ -96,8 +102,7 @@ export default function AdminSkillsPage() {
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="kind" label="Kind">
-						<select
-							className="w-full rounded-(--r-md) border border-(--border-2) bg-(--paper-2) px-3 py-2 font-sans text-foreground text-sm"
+						<AdminSelect
 							id="kind"
 							onChange={(e) =>
 								setForm((f) => ({ ...f, kind: e.target.value as SkillKind }))
@@ -106,7 +111,7 @@ export default function AdminSkillsPage() {
 						>
 							<option value="SKILL">Skill</option>
 							<option value="TOOL">Tool</option>
-						</select>
+						</AdminSelect>
 					</AdminField>
 					<AdminField htmlFor="sortOrder" label="Sort order">
 						<AdminInput
@@ -155,9 +160,7 @@ export default function AdminSkillsPage() {
 				</div>
 			</AdminCard>
 
-			{isLoading && (
-				<p className="font-mono text-(--ink-3) text-sm">Loading…</p>
-			)}
+			{isLoading && <AdminLoading />}
 
 			{!isLoading && skills?.length === 0 && (
 				<AdminEmptyState>No skills or tools yet.</AdminEmptyState>
@@ -220,39 +223,43 @@ function SkillGroup({
 }) {
 	return (
 		<div>
-			<h2 className="mb-3 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
+			<AdminSectionLabel>
 				{label} ({rows.length})
-			</h2>
-			<div className="flex flex-col">
+			</AdminSectionLabel>
+			<AdminList>
 				{rows.map((row) => (
-					<div
-						className="flex items-center justify-between gap-4 border-border border-t py-3"
+					<AdminListRow
+						actions={
+							<>
+								<AdminButton onClick={() => onEdit(row)} size="sm">
+									<Pencil className="size-3.5" />
+									Edit
+								</AdminButton>
+								<AdminButton
+									onClick={() => {
+										if (confirm(`Delete "${row.label}"?`)) onDelete(row.id);
+									}}
+									size="sm"
+									variant="danger"
+								>
+									<Trash2 className="size-3.5" />
+									Delete
+								</AdminButton>
+							</>
+						}
 						key={row.id}
 					>
-						<div>
-							<span className="font-display font-semibold text-foreground text-sm">
-								{row.label}
+						<span className="font-display font-semibold text-foreground text-sm">
+							{row.label}
+						</span>
+						{row.accent && (
+							<span className="ml-2 font-mono text-(--ink-4) text-xs">
+								accent: {row.accent}
 							</span>
-							{row.accent && (
-								<span className="ml-2 font-mono text-(--ink-4) text-xs">
-									accent: {row.accent}
-								</span>
-							)}
-						</div>
-						<div className="flex shrink-0 gap-2">
-							<AdminButton onClick={() => onEdit(row)}>Edit</AdminButton>
-							<AdminButton
-								onClick={() => {
-									if (confirm(`Delete "${row.label}"?`)) onDelete(row.id);
-								}}
-								variant="danger"
-							>
-								Delete
-							</AdminButton>
-						</div>
-					</div>
+						)}
+					</AdminListRow>
 				))}
-			</div>
+			</AdminList>
 		</div>
 	);
 }

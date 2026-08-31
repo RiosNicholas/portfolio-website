@@ -29,8 +29,17 @@ export default async function AdminLayout({
 
 	return (
 		<TRPCReactProvider>
-			<main className="shell min-h-screen pt-28 pb-20" id="main-content">
-				{children}
+			<main className="shell min-h-screen" id="main-content">
+				{/* Nav clearance lives on this wrapper, not on `<main>`: `.shell`
+				    (globals.css) is unlayered CSS and its `padding: 0 clamp(...)`
+				    shorthand beats any Tailwind `pt-*`/`pb-*` utility, which Tailwind
+				    emits inside `@layer utilities`. Unlayered always wins over layered,
+				    regardless of specificity — so `pt-28` on the `.shell` element
+				    computes to 0px. Same split every public page uses (see
+				    about/page.tsx + about-hero.tsx). */}
+				<div className="mx-auto w-full max-w-5xl pt-24 pb-16 md:pt-28 md:pb-20">
+					{children}
+				</div>
 			</main>
 		</TRPCReactProvider>
 	);

@@ -1,13 +1,18 @@
 "use client";
 
+import { Pencil, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
+	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
 	AdminField,
 	AdminInput,
+	AdminList,
+	AdminListRow,
+	AdminLoading,
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
@@ -184,9 +189,7 @@ export default function AdminEndorsementsPage() {
 				</div>
 			</AdminCard>
 
-			{isLoading && (
-				<p className="font-mono text-(--ink-3) text-sm">Loading…</p>
-			)}
+			{isLoading && <AdminLoading />}
 			{!isLoading && endorsements?.length === 0 && (
 				<AdminEmptyState>
 					No endorsements yet — the 12 placeholder testimonials that used to
@@ -196,57 +199,56 @@ export default function AdminEndorsementsPage() {
 			)}
 
 			{!isLoading && endorsements && endorsements.length > 0 && (
-				<div className="flex flex-col">
+				<AdminList>
 					{endorsements.map((row) => (
-						<div
-							className="flex items-center justify-between gap-4 border-border border-t py-3"
+						<AdminListRow
+							actions={
+								<>
+									<AdminButton
+										onClick={() =>
+											setForm({
+												id: row.id,
+												name: row.name,
+												role: row.role,
+												quote: row.quote,
+												linkedinUrl: row.linkedinUrl,
+												avatarUrl: row.avatarUrl ?? "",
+												published: row.published,
+												sortOrder: String(row.sortOrder),
+											})
+										}
+										size="sm"
+									>
+										<Pencil className="size-3.5" />
+										Edit
+									</AdminButton>
+									<AdminButton
+										onClick={() => {
+											if (confirm(`Delete "${row.name}"?`))
+												deleteMutation.mutate({ id: row.id });
+										}}
+										size="sm"
+										variant="danger"
+									>
+										<Trash2 className="size-3.5" />
+										Delete
+									</AdminButton>
+								</>
+							}
 							key={row.id}
 						>
-							<div>
-								<div className="flex items-center gap-2">
-									<span className="font-display font-semibold text-foreground text-sm">
-										{row.name}
-									</span>
-									{!row.published && (
-										<span className="rounded-full bg-(--frosted) px-2 py-0.5 font-mono text-(--ink-3) text-[10px] uppercase tracking-wider">
-											Draft
-										</span>
-									)}
-								</div>
-								<div className="max-w-md truncate font-mono text-(--ink-3) text-xs">
-									{row.role} — &ldquo;{row.quote}&rdquo;
-								</div>
+							<div className="flex items-center gap-2">
+								<span className="font-display font-semibold text-foreground text-sm">
+									{row.name}
+								</span>
+								{!row.published && <AdminBadge>Draft</AdminBadge>}
 							</div>
-							<div className="flex shrink-0 gap-2">
-								<AdminButton
-									onClick={() =>
-										setForm({
-											id: row.id,
-											name: row.name,
-											role: row.role,
-											quote: row.quote,
-											linkedinUrl: row.linkedinUrl,
-											avatarUrl: row.avatarUrl ?? "",
-											published: row.published,
-											sortOrder: String(row.sortOrder),
-										})
-									}
-								>
-									Edit
-								</AdminButton>
-								<AdminButton
-									onClick={() => {
-										if (confirm(`Delete "${row.name}"?`))
-											deleteMutation.mutate({ id: row.id });
-									}}
-									variant="danger"
-								>
-									Delete
-								</AdminButton>
+							<div className="max-w-md truncate font-mono text-(--ink-3) text-xs">
+								{row.role} — &ldquo;{row.quote}&rdquo;
 							</div>
-						</div>
+						</AdminListRow>
 					))}
-				</div>
+				</AdminList>
 			)}
 		</div>
 	);
