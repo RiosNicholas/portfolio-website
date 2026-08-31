@@ -11,12 +11,17 @@ not in code.
 - **Tailwind CSS v4** via `@tailwindcss/postcss`, OKLCH design tokens in
   `src/styles/globals.css`
 - **shadcn/ui** + **Magic UI** primitives, **motion** (Framer Motion
-  successor) for scroll/interaction animation, **lucide-react** icons
+  successor) for scroll/interaction animation, **lucide-react** icons,
+  **cobe** for the interactive WebGL globe on the home page
 - **Biome** for linting and formatting (not ESLint/Prettier)
 - **tRPC 11 + Prisma 6 + NextAuth v5** — power content storage (`CaseStudy`,
   `Endorsement`, `CvEntry`, `Skill`, `Language` models) and the `/admin`
-  surface. A username/password (Credentials) sign-in gates `/admin` — see
+  surface. A username/password (Credentials) sign-in at a custom
+  `/auth/login` page gates `/admin` — see
   [Content & admin](#content--admin) below.
+- **Vercel Postgres** (data), **Vercel Blob** (rehosts pasted endorsement
+  avatar URLs so they don't rot — see `src/server/blob.ts`), **Vercel
+  Analytics** + **Speed Insights** (wired up in `src/app/layout.tsx`)
 
 ## Commands
 
@@ -35,16 +40,17 @@ npm run auth:hash      # generate an ADMIN_PASSWORD_HASH value for .env
 ```
 
 `npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
-`ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` to be set (`src/env.js`
-validates these at build time) — `/`, `/work`, and `/about` are Server
-Components that read from Postgres, and `/admin` needs a working NextAuth
-Credentials session. See [Local setup](#local-setup).
+`ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and `BLOB_READ_WRITE_TOKEN` to be
+set (`src/env.js` validates these at build time) — `/`, `/work`, and
+`/about` are Server Components that read from Postgres, and `/admin` needs
+a working NextAuth Credentials session. See [Local setup](#local-setup).
 
 ## Where things live
 
 ```
 src/
-  app/                route pages: /, /about, /work, /admin/**, plus
+  app/                route pages: /, /about, /work, /admin/**,
+                       /auth/login (custom Credentials sign-in), plus
                        error.tsx, not-found.tsx, robots.ts, sitemap.ts,
                        opengraph-image.tsx
   components/
@@ -52,13 +58,14 @@ src/
     features/          full page sections (HeroSection, BentoGrid,
                        CaseStudy, ContactCta, EndorsementMarquee, ...)
     layout/            structural wrappers (SiteNav, SiteFooter,
-                       SectionHeader)
-    theme/             theme provider / toggle
+                       SectionHeader, JsonLd, ThemeInitScript,
+                       SkipToContent)
     ui/                primitives — shadcn/ui + Magic UI + custom
-                       (Button, Card, Marquee, Reveal, CustomCursor)
-  lib/                site-wide config consts (nav/profile links, structured
-                       data), avatar helpers, and shared utilities (cn,
-                       use-animations-enabled)
+                       (Button, Card, Marquee, Reveal, CustomCursor,
+                       Globe, Avatar)
+  lib/                site-wide config consts (nav/profile links,
+                       structured data, theme defaults), avatar helpers,
+                       and shared utilities (cn, use-animations-enabled)
   server/
     api/routers/       tRPC routers — one per content model, plus `post`
     api/schemas/       Zod input schemas shared between routers and
@@ -67,15 +74,22 @@ src/
                        model, invalidated by admin mutations
     auth/               NextAuth v5 config (Credentials provider, JWT
                        sessions) + scrypt password helpers
+    blob.ts              rehosts pasted endorsement avatar URLs to
+                       Vercel Blob so they don't expire (see
+                       [Deploying](#deploying))
   styles/globals.css   Tailwind v4 entry point, OKLCH tokens, motion/
                        accessibility rules
 prisma/
   schema.prisma        Post/Account/Session/User/VerificationToken (auth)
                        + CaseStudy/Endorsement/CvEntry/Skill/Language (content)
-  seed.ts               one-time seed of the content that used to live in
-                       src/lib/{work-data,about-data,bento-data}.ts
+  seed.ts               per-table seed functions for the content that
+                       used to live in src/lib/{work-data,about-data,
+                       bento-data}.ts
 scripts/
   hash-password.ts      npm run auth:hash — generates ADMIN_PASSWORD_HASH
+  seed-if-empty.ts       runs prisma/seed.ts's functions per-table, only
+                       for tables that are still empty — run on every
+                       deploy via vercel-build (see [Deploying](#deploying))
 ```
 
 ## Content & admin
@@ -145,7 +159,7 @@ component inventory.
 4. `npx prisma db seed` — seeds case studies, CV entries, skills/tools, and
    a handful of real LinkedIn endorsements.
 5. `npm run auth:hash` (before first boot, if you haven't already), then
-   `npm run dev`, sign in at `/api/auth/signin` with `ADMIN_USERNAME` and
+   `npm run dev`, sign in at `/auth/login` with `ADMIN_USERNAME` and
    the password you hashed. `/admin` works immediately — no `db:studio`
    lookup, no restart-after-first-login. See "Credentials-based admin
    access" below for the full walkthrough.
@@ -164,9 +178,9 @@ OAuth app, no chicken-and-egg allowlist step:
    `ADMIN_PASSWORD_HASH`. Never put the plaintext password in `.env` —
    `src/env.js` validates the value against a `scrypt:<salt>:<key>` regex
    and fails the build if it looks like plaintext.
-3. **Sign in.** `npm run dev`, visit `/api/auth/signin` (NextAuth's
-   built-in page — this project has no custom sign-in UI by design), and
-   sign in with `ADMIN_USERNAME` and the password you just hashed.
+3. **Sign in.** `npm run dev`, visit `/auth/login` (a custom
+   branded sign-in page — `src/app/auth/login/`), and sign in with
+   `ADMIN_USERNAME` and the password you just hashed.
 4. Visit `/admin` — it renders the hub immediately.
 
 This replaces the previous Discord OAuth setup's three-restart
@@ -191,16 +205,24 @@ project env var settings (one-time, after connecting the integration):
 | `DATABASE_URL`       | `POSTGRES_PRISMA_URL`         |
 | `DIRECT_URL`         | `POSTGRES_URL_NON_POOLING`    |
 
-Also set `AUTH_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as real
-project env vars — all are required at build time (`src/env.js`). Generate
-the production hash from a *different* password than the local dev one
-(`npm run auth:hash` locally, paste the result into Vercel — never the
-plaintext). `package.json`'s `vercel-build` script (`prisma migrate deploy
-&& next build`) runs migrations before building so schema changes ship
-automatically on deploy — Vercel picks up a `vercel-build` script over
-`build` automatically, no dashboard override needed.
+Also set `AUTH_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and
+`BLOB_READ_WRITE_TOKEN` as real project env vars — all are required at
+build time (`src/env.js`). Generate the production hash from a *different*
+password than the local dev one (`npm run auth:hash` locally, paste the
+result into Vercel — never the plaintext). `BLOB_READ_WRITE_TOKEN` is
+populated automatically once a Vercel Blob store is provisioned and linked
+to the project — it's used to rehost pasted endorsement avatar URLs (e.g.
+LinkedIn CDN links, which expire) as permanent blob URLs on save (see
+`src/server/blob.ts`). `package.json`'s `vercel-build` script (`prisma
+migrate deploy && tsx scripts/seed-if-empty.ts && next build`) runs
+migrations, then seeds any content table that's still empty (per-table, so
+a partially-seeded DB never gets clobbered — see
+`scripts/seed-if-empty.ts`), before building — Vercel picks up a
+`vercel-build` script over `build` automatically, no dashboard override
+needed.
 
-`src/lib/site-links.ts`'s `siteUrl` constant feeds `metadataBase`, canonical
-URLs, `robots.ts`, and `sitemap.ts` — it's currently a placeholder domain,
-flagged with an `OWNER TODO` comment. Update it to the real production
-domain before launch.
+`src/lib/site-links.ts`'s `siteUrl` constant (`https://nicholasrios.dev`)
+feeds `metadataBase`, canonical URLs, `robots.ts`, and `sitemap.ts` — it's a
+static const rather than an env var so `npm run build` never requires a
+domain to be configured to succeed. Update it there if the production
+domain ever changes.
