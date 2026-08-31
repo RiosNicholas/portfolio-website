@@ -7,9 +7,9 @@
  *
  * Endorsements are real recommendations copy-pasted from LinkedIn (not the
  * 12 fabricated placeholders that used to live in `src/lib/endorsements.ts`
- * — those are gone for good), split into multiple single-sentence quote
- * cards per person rather than one long paragraph each. Same person can
- * legitimately have several rows sharing one `linkedinUrl`, so unlike
+ * — those are gone for good), one recommendation quoted whole as a single
+ * marquee card per person. The `linkedinUrl` column is still deliberately
+ * non-unique (a person could get a second card in the future), so unlike
  * `CaseStudy` there's no natural per-row unique key — this table falls
  * into the same "clear and reinsert" bucket as `CvEntry`/`Skill` below.
  *
@@ -100,6 +100,7 @@ const cases: SeedCaseStudy[] = [
 		title: "",
 		titleEm: "GS-LSAMP",
 		titleSuffix: " Website",
+		featured: true,
 		role: "Lead Web Developer",
 		org: "Rutgers University–Newark · National Science Foundation GS-LSAMP",
 		description:
@@ -256,6 +257,12 @@ const activities: SeedCvEntry[] = [
 type SeedSkill = { label: string; accent?: string };
 
 const skills: SeedSkill[] = [
+	// Leads the list per the Aug 2026 skills-reorder task — no existing skill
+	// label matched "UI development" closely enough to rename in place (the
+	// list already led with UI-adjacent skills), so this is a new literal
+	// entry rather than a reordering of the 14 below it. One-field revert via
+	// /admin/skills if a different label was intended.
+	{ label: "UI development" },
 	{ label: "React · Next.js", accent: "Next.js" },
 	{ label: "TypeScript" },
 	{ label: "Design systems" },
@@ -296,20 +303,12 @@ const languages: SeedLanguage[] = [
 
 // ─── Endorsements (real LinkedIn recommendations) ───────────────────────────
 
-type SeedEndorsement = {
-	name: string;
-	role: string;
-	quote: string;
-	linkedinUrl: string;
-};
-
 type SeedRecommender = {
 	name: string;
 	role: string;
 	linkedinUrl: string;
-	/** Each entry becomes its own marquee card -- split from one LinkedIn
-	 * recommendation into separate sentence-level quotes, verbatim. */
-	quotes: string[];
+	/** One LinkedIn recommendation, quoted whole -- one card per person. */
+	quote: string;
 };
 
 const recommenders: SeedRecommender[] = [
@@ -317,55 +316,24 @@ const recommenders: SeedRecommender[] = [
 		name: "Matthew Baker",
 		role: "Senior Lead Software Engineer · JPMorganChase",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
-		quotes: [
-			"Nicholas is a super smart software engineer… he was able to land a position with our front-end architecture group very early in his career… not an easy feat.",
-			"Nick has a strong work ethic and is passionate about technology.",
-			"He's also a really nice guy, easy to get along with, etc.",
-			"Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented.",
-			"He was a strong member of our architecture team at JPMorgan Chase.",
-		],
+		quote:
+			"Nicholas is a super smart software engineer — he was able to land a position with our front-end architecture group very early in his career, not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
 	},
 	{
 		name: "Steven Tejeda",
 		role: "Senior Software Engineer II · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
-		quotes: [
-			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team.",
-			"During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn.",
-			"He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles.",
-			"His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
-		],
+		quote:
+			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
 	},
 	{
 		name: "Joshua Hwang",
 		role: "Software Engineer · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/joshuaphwang/",
-		quotes: [
-			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship.",
-			"Nick came in every day ready to learn and made an effort to always deliver on tasks assigned to him.",
-			"In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular.",
-			"His ability to take on challenges, gain background knowledge through research, and then seeing tasks to their completion allows me to confidently say that Nick would be a great addition to any team as a software engineer.",
-		],
+		quote:
+			"While working on the API development team at Fiserv, I had the pleasure of working with Nick as he took on his first internship. Nick came in every day ready to learn and made an effort to always deliver on tasks assigned to him. In the span of 10 weeks, Nick quickly learned C# and TypeScript, and frameworks such as Asp.Net Core, Entity Framework, and Angular. His ability to take on challenges, gain background knowledge through research, and then seeing tasks to their completion allows me to confidently say that Nick would be a great addition to any team as a software engineer.",
 	},
 ];
-
-// Interleave round-robin across people so the marquee doesn't show the same
-// name several times in a row.
-const endorsements: SeedEndorsement[] = [];
-const maxQuotes = Math.max(...recommenders.map((r) => r.quotes.length));
-for (let i = 0; i < maxQuotes; i++) {
-	for (const r of recommenders) {
-		const quote = r.quotes[i];
-		if (quote) {
-			endorsements.push({
-				name: r.name,
-				role: r.role,
-				quote,
-				linkedinUrl: r.linkedinUrl,
-			});
-		}
-	}
-}
 
 // Exported per-table so the deploy pipeline (scripts/seed-if-empty.ts) can
 // seed only whichever tables are currently empty, instead of an all-or-
@@ -479,19 +447,19 @@ export async function seedSkills(db: PrismaClient) {
 }
 
 export async function seedEndorsements(db: PrismaClient) {
-	// Endorsements — no natural unique key once one person can have several
-	// quote cards, so same clear-and-reinsert approach as CvEntry/Skill.
+	// Endorsements — no natural unique key, so same clear-and-reinsert
+	// approach as CvEntry/Skill.
 	await db.endorsement.deleteMany({});
 	await db.endorsement.createMany({
-		data: endorsements.map((endorsement, index) => ({
-			name: endorsement.name,
-			role: endorsement.role,
-			quote: endorsement.quote,
-			linkedinUrl: endorsement.linkedinUrl,
+		data: recommenders.map((recommender, index) => ({
+			name: recommender.name,
+			role: recommender.role,
+			quote: recommender.quote,
+			linkedinUrl: recommender.linkedinUrl,
 			sortOrder: index,
 		})),
 	});
-	console.log(`Seeded ${endorsements.length} endorsements.`);
+	console.log(`Seeded ${recommenders.length} endorsements.`);
 }
 
 export async function seedLanguages(db: PrismaClient) {

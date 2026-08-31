@@ -11,6 +11,7 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
 		<a
 			className="flex w-70 shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-out hover:shadow-(--shadow-pop) md:w-80 lg:w-96"
+			draggable={false}
 			href={e.linkedinUrl}
 			rel="noopener noreferrer"
 			target="_blank"
@@ -24,6 +25,7 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 					<img
 						alt=""
 						className="h-7 w-7 shrink-0 rounded-full object-cover"
+						draggable={false}
 						loading="lazy"
 						src={e.avatarUrl}
 					/>
@@ -48,9 +50,15 @@ export function EndorsementMarquee({
 	endorsements: Endorsement[];
 }) {
 	const enabled = useAnimationsEnabled();
+
+	// Below 4 endorsements, a 2/2 row split leaves one row with a single
+	// card looping alone against a mostly-empty track. Render one row
+	// instead; the two-row split comes back automatically once there are
+	// enough cards for both rows to feel populated.
+	const singleRow = endorsements.length < 4;
 	const mid = Math.ceil(endorsements.length / 2);
-	const rowA = endorsements.slice(0, mid);
-	const rowB = endorsements.slice(mid);
+	const rowA = singleRow ? endorsements : endorsements.slice(0, mid);
+	const rowB = singleRow ? [] : endorsements.slice(mid);
 
 	return (
 		<Reveal
@@ -61,28 +69,37 @@ export function EndorsementMarquee({
 			)}
 		>
 			<Marquee
-				aria-label="Endorsements, part 1"
+				aria-label={singleRow ? "Endorsements" : "Endorsements, part 1"}
 				ariaHideDuplicates
-				className="p-0 [--duration:80s] [--gap:14px]"
+				className={cn(
+					"p-0",
+					singleRow
+						? "[--duration:35s] [--gap:14px]"
+						: "[--duration:45s] [--gap:14px] md:[--duration:65s] lg:[--duration:80s]",
+				)}
+				draggable
 				pauseOnHover
-				repeat={2}
+				repeat={singleRow ? 4 : 3}
 			>
 				{rowA.map((e) => (
 					<EndorsementCard e={e} key={e.id} />
 				))}
 			</Marquee>
-			<Marquee
-				aria-label="Endorsements, part 2"
-				ariaHideDuplicates
-				className="p-0 [--duration:70s] [--gap:14px]"
-				pauseOnHover
-				repeat={2}
-				reverse
-			>
-				{rowB.map((e) => (
-					<EndorsementCard e={e} key={e.id} />
-				))}
-			</Marquee>
+			{!singleRow && (
+				<Marquee
+					aria-label="Endorsements, part 2"
+					ariaHideDuplicates
+					className="p-0 [--duration:40s] [--gap:14px] md:[--duration:58s] lg:[--duration:70s]"
+					draggable
+					pauseOnHover
+					repeat={3}
+					reverse
+				>
+					{rowB.map((e) => (
+						<EndorsementCard e={e} key={e.id} />
+					))}
+				</Marquee>
+			)}
 		</Reveal>
 	);
 }
