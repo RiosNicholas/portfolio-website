@@ -8,13 +8,6 @@ export function ContactCta() {
 			id="contact"
 		>
 			<Reveal
-				as="p"
-				className="mb-5 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider"
-			>
-				Let&apos;s talk
-			</Reveal>
-
-			<Reveal
 				as="h2"
 				className="m-0 font-display font-semibold text-(--ink) text-5xl leading-none tracking-tighter md:text-7xl lg:text-9xl"
 				id="contact-heading"

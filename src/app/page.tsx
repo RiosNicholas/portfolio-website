@@ -30,7 +30,6 @@ export default async function HomePage() {
 				<Reveal>
 					<SectionHeader
 						meta={`${endorsements.length} endorsements.`}
-						num="Kind words"
 						title={
 							<>
 								People I&apos;ve <em className="mark">worked with</em>
