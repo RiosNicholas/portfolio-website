@@ -68,7 +68,7 @@ export async function AboutBio() {
 			>
 				I'm Nicholas — a Platform Software Engineer focused on{" "}
 				<em className="mark">UI</em> and <em className="mark">Agentic AI</em>.
-				Based in Jersey City.
+				Based in the New York City area.
 			</Reveal>
 
 			<div className="grid grid-cols-1 gap-10 md:grid-cols-[1fr_1.2fr] md:gap-12 lg:gap-16">
