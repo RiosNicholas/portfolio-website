@@ -5,7 +5,7 @@ import { WorkHero } from "~/components/features/work-hero";
 import { getCaseStudies } from "~/server/data/case-studies";
 
 const description =
-	"Selected case studies from Nicholas Rios — platform engineering, design systems, and product work across risk technology, freelance, and side projects.";
+	"Selected projects from Nicholas Rios — product engineering, platform work, and more. Built across fintech, freelance client work, and side projects.";
 
 export const metadata: Metadata = {
 	title: "Work",

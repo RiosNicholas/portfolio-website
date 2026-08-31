@@ -30,8 +30,8 @@ export async function WorkHero() {
 				as="p"
 				className="mt-6 max-w-md font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal md:text-lg"
 			>
-				UI &amp; platform engineering across agentic tooling, editorial
-				commerce, and small apps built solo.
+				Projects ranging from product &amp; platform engineering, agentic
+				systems, design systems, fintech, and small apps built solo.
 			</Reveal>
 		</section>
 	);
