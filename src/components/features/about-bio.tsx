@@ -132,7 +132,7 @@ export async function AboutBio() {
 							rel="noopener noreferrer"
 							target="_blank"
 						>
-							<span>Download full resume</span>
+							<span>View Full Resume</span>
 							<span>↗</span>
 						</a>
 					</div>

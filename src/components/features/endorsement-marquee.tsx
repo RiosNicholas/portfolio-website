@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Marquee } from "~/components/ui/marquee";
 import { Reveal } from "~/components/ui/reveal";
 import { getAvatarColor, getInitials } from "~/lib/avatar";
@@ -8,6 +9,8 @@ import { cn } from "~/lib/utils";
 import type { Endorsement } from "../../../generated/prisma";
 
 function EndorsementCard({ e }: { e: Endorsement }) {
+	const [imageFailed, setImageFailed] = useState(false);
+
 	return (
 		<a
 			className="flex min-h-112 w-70 shrink-0 flex-col justify-between gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-out hover:shadow-(--shadow-pop) md:min-h-100 md:w-80 lg:min-h-84 lg:w-96"
@@ -20,13 +23,14 @@ function EndorsementCard({ e }: { e: Endorsement }) {
 				&ldquo;{e.quote}&rdquo;
 			</p>
 			<div className="flex items-center gap-2.5 border-border border-t pt-2.5 font-sans text-xs tracking-normal">
-				{e.avatarUrl ? (
-					// biome-ignore lint/performance/noImgElement: avatarUrl is an arbitrary external host (e.g. LinkedIn CDN), not configured in next.config image domains
+				{e.avatarUrl && !imageFailed ? (
+					// biome-ignore lint/performance/noImgElement: avatarUrl is a Vercel Blob URL, not configured in next.config image domains
 					<img
 						alt=""
 						className="h-7 w-7 shrink-0 rounded-full object-cover"
 						draggable={false}
 						loading="lazy"
+						onError={() => setImageFailed(true)}
 						src={e.avatarUrl}
 					/>
 				) : (

@@ -11,7 +11,7 @@ export function ContactCta() {
 				as="p"
 				className="mb-5 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider"
 			>
-				03 — Let&apos;s talk
+				Let&apos;s talk
 			</Reveal>
 
 			<Reveal
