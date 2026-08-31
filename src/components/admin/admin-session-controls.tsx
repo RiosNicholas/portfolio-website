@@ -58,7 +58,7 @@ export function AdminSessionControls() {
 					aria-label="Account menu"
 					className="rounded-full focus-visible:outline-none focus-visible:ring-(--accent) focus-visible:ring-2 focus-visible:ring-offset-(--paper) focus-visible:ring-offset-2"
 				>
-					<Avatar>
+					<Avatar size="sm">
 						<AvatarFallback className="bg-(--accent) font-display font-semibold text-(--marker-ink)">
 							{userName.trim().charAt(0).toUpperCase()}
 						</AvatarFallback>
