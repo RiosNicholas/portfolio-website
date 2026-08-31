@@ -47,7 +47,7 @@ tRPC routers are in `src/server/api/routers/`. Two procedure types exist: `publi
 
 ### Auth
 
-NextAuth v5 with Discord OAuth provider (`src/server/auth/`). Session data flows into tRPC context via `auth()`.
+NextAuth v5 with a Credentials (username/password) provider (`src/server/auth/`), JWT sessions, no adapter. Single hardcoded admin identity (`ADMIN_USER_ID` in `src/server/auth/config.ts`) — password is scrypt-hashed via `src/server/auth/password.ts`. Session data flows into tRPC context via `auth()`.
 
 ### Styling
 
@@ -59,7 +59,7 @@ Tailwind CSS v4 via PostCSS. Global styles and CSS variables are in `src/styles/
 
 ### Environment Variables
 
-Validated at build time via `env.js` (`@t3-oss/env-nextjs`). Required vars: `AUTH_SECRET`, `AUTH_DISCORD_ID`, `AUTH_DISCORD_SECRET`, `DATABASE_URL`. Adding new env vars requires updating `env.js`.
+Validated at build time via `env.js` (`@t3-oss/env-nextjs`). Required vars: `AUTH_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, `DATABASE_URL`. Adding new env vars requires updating `env.js`.
 
 ## Code Quality
 

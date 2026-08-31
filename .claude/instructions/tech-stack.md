@@ -25,10 +25,18 @@ Tailwind v4 for styling.
 
 ## Auth
 
-- **NextAuth v5 (beta)** with the Discord OAuth provider —
-  `src/server/auth/`. Session flows into tRPC context via `auth()` in
-  `src/server/api/trpc.ts`.
-- **@auth/prisma-adapter** persists sessions/accounts via Prisma.
+- **NextAuth v5 (beta)** with a Credentials (username/password) provider —
+  `src/server/auth/`. JWT sessions (`strategy: "jwt"`), no adapter — the
+  single admin identity is a code constant (`ADMIN_USER_ID`), not a
+  database row. Password hashing/verification (scrypt via `node:crypto`)
+  lives in `src/server/auth/password.ts`. Session flows into tRPC context
+  via `auth()` in `src/server/api/trpc.ts`.
+- **@auth/prisma-adapter** is still installed but not wired into
+  `authConfig` — Credentials-provider sessions are JWT-only and Auth.js
+  never persists them to the database, so the adapter has nothing to do
+  under the current single-provider config. Kept installed (and the
+  `Account`/`Session`/`User`/`VerificationToken` Prisma models kept in the
+  schema) so re-adding an OAuth-style provider later is config-only.
 
 ## Styling & UI
 

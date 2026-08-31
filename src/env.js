@@ -9,20 +9,23 @@ export const env = createEnv({
 	server: {
 		// Required: `/`, `/work`, and `/about` are Server Components that read
 		// content from Postgres via Prisma at request/prerender time (see
-		// `src/server/data/*.ts`), and `/admin` requires a working NextAuth +
-		// Discord session. A build with these unset now fails fast instead of
-		// silently shipping a broken deploy — see README.md "Deploying".
+		// `src/server/data/*.ts`), and `/admin` requires a working NextAuth
+		// Credentials session. AUTH_SECRET now signs the session JWT itself
+		// (not just OAuth state). A build with these unset now fails fast
+		// instead of silently shipping a broken deploy — see README.md
+		// "Deploying".
 		AUTH_SECRET: z.string(),
-		AUTH_DISCORD_ID: z.string(),
-		AUTH_DISCORD_SECRET: z.string(),
+		ADMIN_USERNAME: z.string().min(1),
+		ADMIN_PASSWORD_HASH: z
+			.string()
+			.regex(
+				/^scrypt:[0-9a-f]{32}:[0-9a-f]{128}$/,
+				'must be "scrypt:<32 hex salt>:<128 hex key>" — generate with `npm run auth:hash`',
+			),
 		DATABASE_URL: z.string().url(),
 		// Direct (non-pooled) connection, used only by `prisma migrate`. Can be
 		// the same value as DATABASE_URL for local dev.
 		DIRECT_URL: z.string().url(),
-		// Comma-separated NextAuth `User.id`s allowed to use `/admin` and
-		// adminProcedure mutations. Sign in once via Discord in dev, then read
-		// the created User.id with `npm run db:studio`.
-		ADMIN_USER_IDS: z.string(),
 		NODE_ENV: z
 			.enum(["development", "test", "production"])
 			.default("development"),
@@ -43,11 +46,10 @@ export const env = createEnv({
 	 */
 	runtimeEnv: {
 		AUTH_SECRET: process.env.AUTH_SECRET,
-		AUTH_DISCORD_ID: process.env.AUTH_DISCORD_ID,
-		AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
+		ADMIN_USERNAME: process.env.ADMIN_USERNAME,
+		ADMIN_PASSWORD_HASH: process.env.ADMIN_PASSWORD_HASH,
 		DATABASE_URL: process.env.DATABASE_URL,
 		DIRECT_URL: process.env.DIRECT_URL,
-		ADMIN_USER_IDS: process.env.ADMIN_USER_IDS,
 		NODE_ENV: process.env.NODE_ENV,
 	},
 	/**

@@ -11,8 +11,8 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { env } from "~/env";
 import { auth } from "~/server/auth";
+import { ADMIN_USER_ID } from "~/server/auth/config";
 import { db } from "~/server/db";
 
 /**
@@ -138,24 +138,22 @@ export const protectedProcedure = t.procedure
 /**
  * Admin-only procedure
  *
- * Gates mutations to a hardcoded allowlist of `User.id`s (`ADMIN_USER_IDS`).
- * This is a single-owner personal site — a `role` column would be machinery
- * for a multi-admin system that will never exist here. Enforced again at the
- * page level in `src/app/admin/layout.tsx`.
+ * Gates mutations to the single credentials identity this app can ever
+ * mint (`ADMIN_USER_ID`, `src/server/auth/config.ts`). There is no `User`
+ * row behind it — Credentials sessions are JWT-only. The check still
+ * exists (rather than collapsing this into `protectedProcedure`) so that
+ * adding a second provider later can't silently promote every signed-in
+ * stranger to admin. Enforced again at the page level in
+ * `src/app/admin/layout.tsx`.
  *
  * @see https://trpc.io/docs/procedures
  */
-const adminUserIds = new Set(
-	env.ADMIN_USER_IDS.split(",")
-		.map((s) => s.trim())
-		.filter(Boolean),
-);
 
-/** Shared with `src/app/admin/layout.tsx`, which enforces the same
- * allowlist at the page level so a non-admin visitor never sees the admin
- * shell render, not just their mutations rejected. */
+/** Shared with `src/app/admin/layout.tsx`, which enforces the same check
+ * at the page level so a non-admin visitor never sees the admin shell
+ * render, not just their mutations rejected. */
 export function isAdminUserId(id: string): boolean {
-	return adminUserIds.has(id);
+	return id === ADMIN_USER_ID;
 }
 
 export const adminProcedure = protectedProcedure.use(({ ctx, next }) => {

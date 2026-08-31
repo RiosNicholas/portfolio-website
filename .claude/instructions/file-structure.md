@@ -76,3 +76,4 @@ chains.
 | New tRPC router                       | `src/server/api/routers/`, registered in the app router |
 | New static content (copy, list data)  | `src/lib/`                                   |
 | New env var                           | `.env` + `env.js` (validated schema)         |
+| New repo-level operator script (CLI, one-off) | `scripts/` (e.g. `scripts/hash-password.ts`, run via `tsx`) |

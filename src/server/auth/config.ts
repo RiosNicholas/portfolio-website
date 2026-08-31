@@ -1,8 +1,9 @@
-import { PrismaAdapter } from "@auth/prisma-adapter";
 import type { DefaultSession, NextAuthConfig } from "next-auth";
-import DiscordProvider from "next-auth/providers/discord";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { z } from "zod";
 
-import { db } from "~/server/db";
+import { env } from "~/env";
+import { verifyPassword } from "./password";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -25,6 +26,17 @@ declare module "next-auth" {
 	// }
 }
 
+/** The only identity this app can ever mint. `authorize()` returns it and
+ * `isAdminUserId()` (src/server/api/trpc.ts) checks against it — one
+ * constant, two consumers, so they cannot drift. Credentials sessions are
+ * JWT-only, so this is never a database row. */
+export const ADMIN_USER_ID = "admin";
+
+const credentialsSchema = z.object({
+	username: z.string(),
+	password: z.string(),
+});
+
 /**
  * Options for NextAuth.js used to configure adapters, providers, callbacks, etc.
  *
@@ -32,25 +44,38 @@ declare module "next-auth" {
  */
 export const authConfig = {
 	providers: [
-		DiscordProvider,
-		/**
-		 * ...add more providers here.
-		 *
-		 * Most other providers require a bit more work than the Discord provider. For example, the
-		 * GitHub provider requires you to add the `refresh_token_expires_in` field to the Account
-		 * model. Refer to the NextAuth.js docs for the provider you want to use. Example:
-		 *
-		 * @see https://next-auth.js.org/providers/github
-		 */
-	],
-	adapter: PrismaAdapter(db),
-	callbacks: {
-		session: ({ session, user }) => ({
-			...session,
-			user: {
-				...session.user,
-				id: user.id,
+		CredentialsProvider({
+			name: "Admin",
+			credentials: {
+				username: { label: "Username", type: "text" },
+				password: { label: "Password", type: "password" },
 			},
+			async authorize(credentials) {
+				const parsed = credentialsSchema.safeParse(credentials);
+				if (!parsed.success) return null;
+				const { username, password } = parsed.data;
+				// Always run the KDF, even on a username miss, so the response
+				// time doesn't distinguish the two cases.
+				const passwordOk = await verifyPassword(
+					password,
+					env.ADMIN_PASSWORD_HASH,
+				);
+				if (username !== env.ADMIN_USERNAME || !passwordOk) return null;
+				return { id: ADMIN_USER_ID, name: "Admin" };
+			},
+		}),
+	],
+	// No adapter: Auth.js does not persist Credentials logins to the database
+	// under any adapter — Credentials auth is JWT-only by design. Re-add
+	// PrismaAdapter(db) only if an OAuth-style provider comes back.
+	session: { strategy: "jwt" },
+	callbacks: {
+		// JWT strategy: `token`, not `user`. Auth.js copies authorize()'s
+		// `user.id` onto `token.sub` at sign-in. Falling back to "" rather than
+		// ADMIN_USER_ID keeps this fail-closed.
+		session: ({ session, token }) => ({
+			...session,
+			user: { ...session.user, id: token.sub ?? "" },
 		}),
 	},
 } satisfies NextAuthConfig;
