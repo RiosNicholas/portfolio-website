@@ -26,6 +26,18 @@
  * never calls `revalidateTag()` — unlike an edit made through /admin, a
  * change here won't show up on the public pages until the Next.js data
  * cache is cleared (restart `next dev` locally, or redeploy in production).
+ *
+ * 2026-08-31 (admin-instant-feedback-and-photoshop task): the `Skill` table
+ * had drifted from this file — three rows had been created by hand via
+ * /admin (an errant SKILL-kind "Adobe Photoshop", a TOOL-kind "Adobe
+ * Photoshop", and a re-added "Glove80 Keyboard" that landed at sortOrder 0
+ * instead of the end of the list) during an earlier admin-UI debugging
+ * session. Reconciled here: the SKILL-kind Photoshop entry is gone for
+ * good (never belonged in `skills` below), "Adobe Photoshop" is folded into
+ * `favoriteTools` as the last TOOL, "Glove80 Keyboard" is restored to its
+ * correct end-of-tools position, and "Photography"/"Photo editing" were
+ * added as new SKILL entries. `seedSkills()` must be re-run against the
+ * live DB to apply this and close the drift.
  */
 import { PrismaClient } from "../generated/prisma";
 
@@ -285,6 +297,13 @@ const skills: SeedSkill[] = [
 	{ label: "Observability" },
 	{ label: "CI / CD" },
 	{ label: "Animation & motion" },
+	// Aug 2026 admin-instant-feedback-and-photoshop task: grouped with the
+	// existing visual/creative entry above, deliberately NOT the
+	// de-emphasized tail slot that "SQLite · Cassandra" occupies below.
+	// Photoshop itself is a TOOL, not a SKILL (see favoriteTools). Revert
+	// path: /admin/skills.
+	{ label: "Photography" },
+	{ label: "Photo editing" },
 	{ label: "Pandas · NumPy", accent: "NumPy" },
 	{ label: "Matplotlib" },
 	{ label: "SQLite · Cassandra", accent: "Cassandra" },
@@ -301,6 +320,9 @@ const favoriteTools: string[] = [
 	"Figma",
 	"Fish Shell",
 	"Glove80 Keyboard",
+	// Aug 2026 admin-instant-feedback-and-photoshop task: intentionally last
+	// in the tools order per explicit user direction.
+	"Adobe Photoshop",
 ];
 
 // ─── Languages ────────────────────────────────────────────────────────────

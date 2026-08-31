@@ -44,15 +44,15 @@ export default function AdminSkillsPage() {
 	const invalidate = () => utils.skill.all.invalidate();
 
 	const createMutation = api.skill.create.useMutation({
-		onSuccess: () => {
-			invalidate();
+		onSuccess: async () => {
+			await invalidate();
 			setForm(emptyForm);
 		},
 		onError: (e) => setError(e.message),
 	});
 	const updateMutation = api.skill.update.useMutation({
-		onSuccess: () => {
-			invalidate();
+		onSuccess: async () => {
+			await invalidate();
 			setForm(emptyForm);
 		},
 		onError: (e) => setError(e.message),
