@@ -51,18 +51,24 @@ a working NextAuth Credentials session. See [Local setup](#local-setup).
 src/
   app/                route pages: /, /about, /work, /admin/**,
                        /auth/login (custom Credentials sign-in), plus
-                       error.tsx, not-found.tsx, robots.ts, sitemap.ts,
-                       opengraph-image.tsx
+                       error.tsx, global-error.tsx, not-found.tsx,
+                       icon.tsx, opengraph-image.tsx, robots.ts,
+                       sitemap.ts
   components/
     admin/             styled form primitives for /admin's CRUD pages
+                       (AdminUi), the sign-in form, and the avatar
+                       dropdown session control shown on /admin routes
     features/          full page sections (HeroSection, BentoGrid,
                        CaseStudy, ContactCta, EndorsementMarquee, ...)
     layout/            structural wrappers (SiteNav, SiteFooter,
                        SectionHeader, JsonLd, ThemeInitScript,
                        SkipToContent)
+    theme/             theme-toggle.tsx — light/dark toggle, persisted to
+                       localStorage
     ui/                primitives — shadcn/ui + Magic UI + custom
-                       (Button, Card, Marquee, Reveal, CustomCursor,
-                       Globe, Avatar)
+                       (Marquee, Reveal, CustomCursor, Globe, Avatar,
+                       DropdownMenu, NavigationMenu, NumberTicker,
+                       StatusDot, GeoDecoration, MotionProvider)
   lib/                site-wide config consts (nav/profile links,
                        structured data, theme defaults), avatar helpers,
                        and shared utilities (cn, use-animations-enabled)
