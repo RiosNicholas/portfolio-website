@@ -1,6 +1,7 @@
 "use client";
 
 import { GitHubLogoIcon, LinkedInLogoIcon } from "@radix-ui/react-icons";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,6 +14,17 @@ import {
 } from "~/components/ui/navigation-menu";
 import { navLinks, profileLinks } from "~/lib/site-links";
 import { cn } from "~/lib/utils";
+
+// Lazy so `next-auth/react` (and the badge/sign-out UI it powers) never
+// lands in the shared client bundle every public page loads — only
+// `/admin` routes render this. See agentWork/admin-signin-badge/02-plan.md.
+const AdminSessionControls = dynamic(
+	() =>
+		import("~/components/admin/admin-session-controls").then(
+			(m) => m.AdminSessionControls,
+		),
+	{ ssr: false },
+);
 
 const socialIconCls = "size-4 shrink-0";
 
@@ -51,6 +63,7 @@ function navItemCls(active: boolean) {
 
 export function SiteNav() {
 	const pathname = usePathname();
+	const isAdminRoute = pathname === "/admin" || pathname.startsWith("/admin/");
 
 	return (
 		<nav
@@ -111,6 +124,7 @@ export function SiteNav() {
 					className="mx-1 hidden h-4 w-px bg-border sm:block"
 				/>
 				<ThemeToggle />
+				{isAdminRoute && <AdminSessionControls />}
 			</div>
 		</nav>
 	);
