@@ -5,7 +5,7 @@ import { AboutHero } from "~/components/features/about-hero";
 import { ContactCta } from "~/components/features/contact-cta";
 
 const description =
-	"About Nicholas Rios — 3 years building software, focused on frontend platform engineering, design systems, and agentic AI. Based in Jersey City.";
+	"About Nicholas Rios — 3 years building software, focused on frontend platform engineering, design systems, and agentic AI. Based in New York City area.";
 
 export const metadata: Metadata = {
 	title: "About",
