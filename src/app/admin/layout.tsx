@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 
 import { isAdminUserId } from "~/server/api/trpc";
 import { auth } from "~/server/auth";
+import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
 	title: "Admin",
@@ -27,8 +28,10 @@ export default async function AdminLayout({
 	}
 
 	return (
-		<main className="shell min-h-screen pt-28 pb-20" id="main-content">
-			{children}
-		</main>
+		<TRPCReactProvider>
+			<main className="shell min-h-screen pt-28 pb-20" id="main-content">
+				{children}
+			</main>
+		</TRPCReactProvider>
 	);
 }
