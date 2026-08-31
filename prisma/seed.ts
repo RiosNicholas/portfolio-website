@@ -300,6 +300,7 @@ const favoriteTools: string[] = [
 	"Ghostty",
 	"Figma",
 	"Fish Shell",
+	"Glove80 Keyboard",
 ];
 
 // ─── Languages ────────────────────────────────────────────────────────────
