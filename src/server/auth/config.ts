@@ -69,6 +69,11 @@ export const authConfig = {
 	// under any adapter — Credentials auth is JWT-only by design. Re-add
 	// PrismaAdapter(db) only if an OAuth-style provider comes back.
 	session: { strategy: "jwt" },
+	// Custom-branded login page (src/app/auth/login/page.tsx) instead of
+	// Auth.js's default unstyled page. This also becomes the target Auth.js
+	// redirects to on a credentials failure (harmless here — the login form
+	// uses `redirect: false` and never navigates to it).
+	pages: { signIn: "/auth/login" },
 	callbacks: {
 		// JWT strategy: `token`, not `user`. Auth.js copies authorize()'s
 		// `user.id` onto `token.sub` at sign-in. Falling back to "" rather than

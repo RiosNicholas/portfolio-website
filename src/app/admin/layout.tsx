@@ -24,7 +24,9 @@ export default async function AdminLayout({
 	const session = await auth();
 
 	if (!session?.user || !isAdminUserId(session.user.id)) {
-		redirect("/");
+		// Route to the custom login page (rather than silently bouncing home)
+		// with a returnUrl so a successful sign-in lands back on /admin.
+		redirect("/auth/login?returnUrl=/admin");
 	}
 
 	return (
