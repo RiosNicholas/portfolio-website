@@ -185,7 +185,18 @@ export function Marquee({
 			tabIndex={enabled ? undefined : 0}
 		>
 			<div
-				className={cn("flex gap-(--gap)", vertical ? "flex-col" : "flex-row")}
+				className={cn(
+					"flex gap-(--gap)",
+					vertical ? "flex-col" : "flex-row",
+					// Centers the track when a single (reduced-motion) copy is
+					// narrower than the container — e.g. 3 endorsement cards at
+					// ~1180px inside a ~1312px .shell content box. When the track
+					// overflows (the normal animated case, or a long content list),
+					// the auto margins resolve to 0 so the scroll container still
+					// starts flush at the left edge. No-op for the vertical
+					// (skills-cell) orientation, which relies on flex-1 sizing.
+					!vertical && "mx-auto w-max",
+				)}
 				ref={trackRef}
 			>
 				{Array(repeatCount)

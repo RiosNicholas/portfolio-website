@@ -272,11 +272,22 @@ const skills: SeedSkill[] = [
 	{ label: "Agentic AI development" },
 	{ label: "Prompt engineering" },
 	{ label: "Node · Python" },
-	{ label: "Postgres" },
+	// Aug 2026 skills-expansion task: "Postgres" split into the data/backend
+	// tooling actually used in this project (Prisma, tRPC, Supabase). SQLite
+	// and Cassandra are real skills but not used in this repo, so per
+	// explicit direction they're appended at the very end of the list below
+	// instead of alongside Prisma/tRPC/Postgres, keeping them visually
+	// de-emphasized relative to what this project's stack actually runs on.
+	// Revert path for any of these: /admin/skills.
+	{ label: "Postgres · Supabase", accent: "Supabase" },
+	{ label: "Prisma · tRPC", accent: "tRPC" },
 	{ label: "Platform engineering" },
 	{ label: "Observability" },
 	{ label: "CI / CD" },
 	{ label: "Animation & motion" },
+	{ label: "Pandas · NumPy", accent: "NumPy" },
+	{ label: "Matplotlib" },
+	{ label: "SQLite · Cassandra", accent: "Cassandra" },
 ];
 
 const favoriteTools: string[] = [
@@ -311,20 +322,25 @@ type SeedRecommender = {
 	quote: string;
 };
 
+// Array index is sortOrder (see seedEndorsements below), so display order
+// (sortOrder asc) is Steven → Matthew → Joshua. Aug 2026 reorder task:
+// Matthew moved to the middle slot; Steven took slot 0 to preserve the
+// pre-existing Steven-before-Joshua relative order — the smallest change
+// that satisfies "Matthew in the middle." Quote/role/URL text untouched.
 const recommenders: SeedRecommender[] = [
-	{
-		name: "Matthew Baker",
-		role: "Senior Lead Software Engineer · JPMorganChase",
-		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
-		quote:
-			"Nicholas is a super smart software engineer — he was able to land a position with our front-end architecture group very early in his career, not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
-	},
 	{
 		name: "Steven Tejeda",
 		role: "Senior Software Engineer II · Fiserv",
 		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
 		quote:
 			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
+	},
+	{
+		name: "Matthew Baker",
+		role: "Senior Lead Software Engineer · JPMorganChase",
+		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
+		quote:
+			"Nicholas is a super smart software engineer — he was able to land a position with our front-end architecture group very early in his career, not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
 	},
 	{
 		name: "Joshua Hwang",

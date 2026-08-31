@@ -10,7 +10,7 @@ import type { Endorsement } from "../../../generated/prisma";
 function EndorsementCard({ e }: { e: Endorsement }) {
 	return (
 		<a
-			className="flex w-70 shrink-0 flex-col gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-out hover:shadow-(--shadow-pop) md:w-80 lg:w-96"
+			className="flex min-h-112 w-70 shrink-0 flex-col justify-between gap-2.5 rounded-(--r-lg) border border-border bg-card px-5 py-4.5 shadow-(--shadow-card) transition-shadow duration-300 ease-out hover:shadow-(--shadow-pop) md:min-h-100 md:w-80 lg:min-h-84 lg:w-96"
 			draggable={false}
 			href={e.linkedinUrl}
 			rel="noopener noreferrer"
