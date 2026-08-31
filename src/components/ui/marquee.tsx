@@ -1,11 +1,10 @@
 "use client";
 
-import {
-	type AnimationPlaybackControlsWithThen,
-	useAnimate,
-} from "motion/react";
-import type { ComponentPropsWithoutRef } from "react";
-import { useEffect, useRef } from "react";
+import type {
+	ComponentPropsWithoutRef,
+	PointerEvent as ReactPointerEvent,
+} from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
@@ -35,7 +34,11 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
 	 */
 	vertical?: boolean;
 	/**
-	 * Number of times to repeat the content
+	 * Number of times to repeat the content. Must satisfy
+	 * `(repeat − 1) × copySize ≥ containerSize` for a seamless loop, or, if
+	 * `draggable` is set, the tighter `(repeat − 2) × copySize ≥
+	 * containerSize` — a drag offset can shift the track by up to one full
+	 * copy in either direction before the modulo wrap kicks in.
 	 * @default 4
 	 */
 	repeat?: number;
@@ -46,6 +49,15 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
 	 * @default false
 	 */
 	ariaHideDuplicates?: boolean;
+	/**
+	 * Opt in to mouse-drag / touch-swipe control. Dragging pauses the CSS
+	 * animation (via `animation-play-state`, which resumes from wherever it
+	 * stopped) and moves the track 1:1 with the pointer, wrapping infinitely
+	 * via modulo. No-op when animations are disabled — the container is
+	 * already natively scrollable on its own axis in that state.
+	 * @default false
+	 */
+	draggable?: boolean;
 }
 
 export function Marquee({
@@ -56,45 +68,94 @@ export function Marquee({
 	vertical = false,
 	repeat = 4,
 	ariaHideDuplicates = false,
+	draggable = false,
 	...props
 }: MarqueeProps) {
-	const [scope, animate] = useAnimate<HTMLDivElement>();
-	const controlsRef = useRef<AnimationPlaybackControlsWithThen | null>(null);
 	const enabled = useAnimationsEnabled();
+	const canDrag = draggable && enabled;
 
+	const [dragging, setDragging] = useState(false);
+	const offsetRef = useRef(0);
+	const lastPosRef = useRef(0);
+	const movedDistanceRef = useRef(0);
+	const trackRef = useRef<HTMLDivElement>(null);
+	const firstGroupRef = useRef<HTMLDivElement>(null);
+
+	// Reset on disable — a leftover inline transform after a runtime
+	// motion-preference flip would open the (now-scrollable) container
+	// pre-offset and clip content. See animation-accessibility.md.
 	useEffect(() => {
-		const track = scope.current;
-
-		if (!enabled || !track) {
-			controlsRef.current?.stop();
-			controlsRef.current = null;
-			if (track) {
-				animate(track, { x: "0%", y: "0%" }, { duration: 0 });
-			}
-			return;
+		if (canDrag) return;
+		offsetRef.current = 0;
+		if (trackRef.current) {
+			trackRef.current.style.transform = "";
 		}
+	}, [canDrag]);
 
-		const duration =
+	function getPeriod() {
+		const group = firstGroupRef.current;
+		const track = trackRef.current;
+		if (!group || !track) return 0;
+		const groupSize = vertical ? group.offsetHeight : group.offsetWidth;
+		const gap =
 			Number.parseFloat(
-				getComputedStyle(track).getPropertyValue("--duration"),
-			) || 40;
-		const delta = 100 / repeat;
-		const axis = vertical ? "y" : "x";
-		const range: [string, string] = reverse
-			? [`-${delta}%`, "0%"]
-			: ["0%", `-${delta}%`];
+				getComputedStyle(track)[vertical ? "rowGap" : "columnGap"],
+			) || 0;
+		return groupSize + gap;
+	}
 
-		controlsRef.current = animate(
-			track,
-			{ [axis]: range },
-			{ duration, ease: "linear", repeat: Number.POSITIVE_INFINITY },
-		);
+	function applyTransform() {
+		const track = trackRef.current;
+		if (!track) return;
+		track.style.transform = vertical
+			? `translate3d(0, ${offsetRef.current}px, 0)`
+			: `translate3d(${offsetRef.current}px, 0, 0)`;
+	}
 
-		return () => {
-			controlsRef.current?.stop();
-			controlsRef.current = null;
-		};
-	}, [animate, enabled, repeat, reverse, scope, vertical]);
+	function handlePointerDown(e: ReactPointerEvent<HTMLDivElement>) {
+		if (e.pointerType === "mouse" && e.button !== 0) return;
+		e.currentTarget.setPointerCapture(e.pointerId);
+		lastPosRef.current = vertical ? e.clientY : e.clientX;
+		movedDistanceRef.current = 0;
+		setDragging(true);
+	}
+
+	function handlePointerMove(e: ReactPointerEvent<HTMLDivElement>) {
+		if (!dragging) return;
+		const pos = vertical ? e.clientY : e.clientX;
+		const delta = pos - lastPosRef.current;
+		lastPosRef.current = pos;
+		movedDistanceRef.current += Math.abs(delta);
+
+		let offset = offsetRef.current + delta;
+		const period = getPeriod();
+		if (period > 0) {
+			// Normalize into (-period, 0] — one copy of the content is
+			// visually identical to the next, so this makes the drag
+			// infinite in both directions instead of eventually dragging
+			// into empty space.
+			offset = ((offset % period) + period) % period;
+			offset -= period;
+		}
+		offsetRef.current = offset;
+		applyTransform();
+	}
+
+	function handlePointerUp(e: ReactPointerEvent<HTMLDivElement>) {
+		setDragging(false);
+		if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+			e.currentTarget.releasePointerCapture(e.pointerId);
+		}
+	}
+
+	function handleClickCapture(e: React.MouseEvent<HTMLDivElement>) {
+		// Without this, every swipe over a link/card inside the marquee
+		// (e.g. an endorsement card) also fires its click and navigates away.
+		if (movedDistanceRef.current > 5) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+	}
 
 	// Duplicated copies exist only to make the animated loop seamless — in
 	// the scrollable (disabled) state, render exactly one copy so a screen
@@ -102,30 +163,30 @@ export function Marquee({
 	const repeatCount = enabled ? repeat : 1;
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: mouse enter/leave only pauses a decorative animation, no keyboard/interactive semantics needed
 		<div
 			{...props}
 			className={cn(
-				"p-2 [--duration:40s] [--gap:1rem]",
+				"group p-2 [--duration:40s] [--gap:1rem]",
 				enabled
 					? "overflow-hidden"
 					: vertical
 						? "overflow-y-auto overflow-x-hidden"
 						: "overflow-x-auto overflow-y-hidden",
+				canDrag && "cursor-grab select-none active:cursor-grabbing",
+				canDrag && (vertical ? "touch-pan-x" : "touch-pan-y"),
 				className,
 			)}
-			onMouseEnter={
-				pauseOnHover && enabled ? () => controlsRef.current?.pause() : undefined
-			}
-			onMouseLeave={
-				pauseOnHover && enabled ? () => controlsRef.current?.play() : undefined
-			}
+			onClickCapture={canDrag ? handleClickCapture : undefined}
+			onPointerCancel={canDrag ? handlePointerUp : undefined}
+			onPointerDown={canDrag ? handlePointerDown : undefined}
+			onPointerMove={canDrag ? handlePointerMove : undefined}
+			onPointerUp={canDrag ? handlePointerUp : undefined}
 			role={enabled ? undefined : "group"}
 			tabIndex={enabled ? undefined : 0}
 		>
 			<div
-				className={cn("flex", vertical ? "flex-col" : "flex-row")}
-				ref={scope}
+				className={cn("flex gap-(--gap)", vertical ? "flex-col" : "flex-row")}
+				ref={trackRef}
 			>
 				{Array(repeatCount)
 					.fill(0)
@@ -134,9 +195,18 @@ export function Marquee({
 							aria-hidden={ariaHideDuplicates && i > 0 ? true : undefined}
 							className={cn(
 								"flex shrink-0 justify-around gap-(--gap)",
-								vertical ? "flex-col pb-(--gap)" : "flex-row pr-(--gap)",
+								vertical ? "flex-col" : "flex-row",
+								enabled &&
+									(vertical ? "animate-marquee-vertical" : "animate-marquee"),
+								enabled && reverse && "[animation-direction:reverse]",
+								enabled &&
+									pauseOnHover &&
+									"group-hover:[animation-play-state:paused]",
+								dragging && "[animation-play-state:paused]",
 							)}
+							data-marquee-group={enabled ? "" : undefined}
 							key={i}
+							ref={i === 0 ? firstGroupRef : undefined}
 						>
 							{children}
 						</div>

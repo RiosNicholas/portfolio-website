@@ -62,7 +62,7 @@ export function HeroSection() {
 					<em className="no-underline! font-semibold text-foreground not-italic">
 						agentic AI systems
 					</em>{" "}
-					in Risk Tech at JPMorganChase, from shared components to production
+					in Risk Tech at JPMorganChase, from shared components to production AI
 					agents.
 				</Reveal>
 
@@ -75,9 +75,6 @@ export function HeroSection() {
 						</div>
 						<div>
 							<span className="text-foreground">EST · UTC−5</span>
-						</div>
-						<div>
-							<span className="text-foreground">2026</span> · vol. vii
 						</div>
 					</div>
 

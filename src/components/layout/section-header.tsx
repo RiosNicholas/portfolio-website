@@ -6,7 +6,7 @@ type SectionHeaderProps = {
 
 export function SectionHeader({ num, title, meta }: SectionHeaderProps) {
 	return (
-		<div className="mb-6 flex items-baseline justify-between gap-6 border-border border-b pb-4 md:mb-9 lg:mb-11">
+		<div className="mb-4 flex items-baseline justify-between gap-4 border-border border-b pb-3 md:mb-9 md:gap-6 md:pb-4 lg:mb-11">
 			<span className="font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
 				{num}
 			</span>

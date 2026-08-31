@@ -16,6 +16,33 @@
 		"Apple Color Emoji", "Segoe UI Emoji";
 	--font-mono:
 		var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
+
+	/* Marquee (magicui pattern). Neither Tailwind nor tw-animate-css ships a
+	   marquee keyframe, and `ui/marquee.tsx` needs `animation-play-state` to
+	   pause/resume from wherever it stopped (a `motion`-driven animation
+	   can't resume like that) — that's why this lives here instead of as a
+	   `motion` animation. `--duration`/`--gap` are set per-instance by
+	   consumers via arbitrary-value classes (e.g. `[--duration:40s]`). */
+	--animate-marquee: marquee var(--duration, 40s) linear infinite;
+	--animate-marquee-vertical: marquee-vertical var(--duration, 40s) linear
+		infinite;
+}
+
+@keyframes marquee {
+	from {
+		transform: translateX(0);
+	}
+	to {
+		transform: translateX(calc(-100% - var(--gap, 1rem)));
+	}
+}
+@keyframes marquee-vertical {
+	from {
+		transform: translateY(0);
+	}
+	to {
+		transform: translateY(calc(-100% - var(--gap, 1rem)));
+	}
 }
 
 @theme inline {
@@ -286,6 +313,13 @@
 		animation-duration: 0.001s !important;
 		transition-duration: 80ms !important;
 	}
+	/* `[--duration]` marquees run an `infinite` CSS animation, so the
+	   `0.001s !important` rule above would turn them into a ~1000Hz strobe
+	   instead of a pause — the JS `useAnimationsEnabled()` gate only takes
+	   over post-hydration, so this covers the pre-hydration window. */
+	[data-marquee-group] {
+		animation: none !important;
+	}
 	.no-low {
 		display: none !important;
 	}
@@ -294,6 +328,9 @@
 :root[data-motion="low"] * {
 	animation-duration: 0.001s !important;
 	transition-duration: 80ms !important;
+}
+:root[data-motion="low"] [data-marquee-group] {
+	animation: none !important;
 }
 :root[data-motion="low"] .no-low {
 	display: none !important;

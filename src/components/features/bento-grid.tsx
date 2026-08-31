@@ -92,7 +92,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 				aria-label="Skills"
 				ariaHideDuplicates
 				className={cn(
-					"relative flex-1 p-0 [--duration:28s] [--gap:0px]",
+					"relative h-64 p-0 [--duration:28s] [--gap:0px] md:h-auto md:flex-1",
 					enabled &&
 						"mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]",
 				)}
@@ -201,7 +201,7 @@ export function BentoGrid({
 						</strong>{" "}
 						+{" "}
 						<strong className="font-semibold text-(--accent-text)">
-							consulting
+							contract
 						</strong>{" "}
 						opportunities
 					</div>
