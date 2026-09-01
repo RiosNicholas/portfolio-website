@@ -44,9 +44,9 @@ export function HeroSection() {
 					engineer &amp;
 					<br />
 					<em className="no-underline! inline-block -rotate-1 rounded-lg bg-(--accent) box-decoration-clone px-2 py-px text-(--marker-ink) not-italic md:px-3 lg:px-4">
-						interface
+						design
 					</em>{" "}
-					craftsman.
+					technologist.
 				</Reveal>
 
 				{/* Lead */}
