@@ -67,7 +67,6 @@ function YearsCell() {
 					</sup>
 				</div>
 			</div>
-			<CellSub>Building for the web since &apos;23</CellSub>
 		</div>
 	);
 }
@@ -206,7 +205,6 @@ export function BentoGrid({
 						opportunities
 					</div>
 				</div>
-				<CellSub>Reply within 48 hours</CellSub>
 			</div>
 
 			{/* Skills — see grid layout reference above <Reveal> */}
