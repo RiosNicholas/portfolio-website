@@ -67,14 +67,18 @@ const cases: SeedCaseStudy[] = [
 		title: "Risk Tech ",
 		titleEm: "Agents",
 		featured: true,
-		role: "UI SME · Core Developer",
-		org: "Internal agent platform · Financial services · Design system · Observability · Orchestration",
+		// 2026-08-31 (risk-agents-employer-attribution task, expanded scope):
+		// role/org/description/stats rewritten for explicit JPMorganChase
+		// employer attribution and updated impact framing. Revert path:
+		// /admin/case-studies, row "risk-agents".
+		role: "UI Subject Matter Expert · Core Developer",
+		org: "JPMorganChase · Risk Technology · Internal agent platform",
 		description:
-			"Agents that shift risk and compliance left in the SDLC for developers, product, and design — faster, less disjointed iteration. Platform engineering and UI SME: guardrails and tollgates that hold generated code to the design system and architecture, instead of re-prompting into technical debt.",
+			"Agents that shift risk and compliance checks left in the SDLC, closing the gap between developers, product, and design. Built the agents and guardrails that keep generated code aligned with the design system and architecture — cutting technical debt instead of adding to it.",
 		tags: ["MCP", "Claude Code", "GitHub Copilot", "React", "Cypress"],
 		stats: [
 			{ k: "Scope", v: "Design system & UI" },
-			{ k: "Surfaces", v: "Review & audit flows" },
+			{ k: "Impact", v: "+40% productivity" },
 			{ k: "Status", v: "Ongoing" },
 		],
 	},
