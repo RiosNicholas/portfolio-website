@@ -62,7 +62,7 @@ type SeedCaseStudy = {
 const cases: SeedCaseStudy[] = [
 	{
 		id: "risk-agents",
-		num: "001",
+		num: "1",
 		year: "2026 — Present",
 		title: "Risk Tech ",
 		titleEm: "Agents",
@@ -84,7 +84,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "accountabuddy",
-		num: "002",
+		num: "2",
 		year: "2024",
 		title: "",
 		titleEm: "Accountabuddy",
@@ -111,7 +111,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "gslsamp",
-		num: "003",
+		num: "3",
 		year: "Feb '23 — May '24",
 		title: "",
 		titleEm: "GS-LSAMP",
@@ -130,7 +130,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "groove-exchange",
-		num: "004",
+		num: "4",
 		year: "Nov '23",
 		title: "",
 		titleEm: "Groove",
@@ -157,7 +157,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "datawell",
-		num: "005",
+		num: "5",
 		year: "Sep '23",
 		title: "",
 		titleEm: "DataWell",
@@ -174,7 +174,7 @@ const cases: SeedCaseStudy[] = [
 	},
 	{
 		id: "spotify-valence",
-		num: "006",
+		num: "6",
 		year: "2023",
 		title: "Spotify ",
 		titleEm: "Valence Trends",
@@ -284,9 +284,9 @@ const skills: SeedSkill[] = [
 	{ label: "Design systems" },
 	{ label: "Tailwind · shadcn/ui", accent: "shadcn/ui" },
 	{ label: "Framer Motion" },
-	{ label: "Agents · LLM UX", accent: "LLM UX" },
-	{ label: "Agentic AI development" },
-	{ label: "Prompt engineering" },
+	{ label: "Workflow systems" },
+	{ label: "Product tooling" },
+	{ label: "Prompt design" },
 	{ label: "Node · Python" },
 	// Aug 2026 skills-expansion task: "Postgres" split into the data/backend
 	// tooling actually used in this project (Prisma, tRPC, Supabase). SQLite

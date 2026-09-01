@@ -161,7 +161,7 @@ export default function AdminCaseStudiesPage() {
 						<AdminInput
 							id="num"
 							onChange={(e) => setForm((f) => ({ ...f, num: e.target.value }))}
-							placeholder="001"
+							placeholder="1"
 							value={form.num}
 						/>
 					</AdminField>

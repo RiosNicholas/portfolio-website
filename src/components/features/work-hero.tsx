@@ -4,7 +4,7 @@ import { getCaseStudies } from "~/server/data/case-studies";
 
 export async function WorkHero() {
 	const cases = await getCaseStudies();
-	const count = String(cases.length).padStart(2, "0");
+	const count = String(cases.length);
 
 	return (
 		<section className="relative flex min-h-[42vh] flex-col justify-center pt-24 pb-8 md:pt-28 md:pb-10 lg:pt-32 lg:pb-16">
@@ -30,8 +30,8 @@ export async function WorkHero() {
 				as="p"
 				className="mt-6 max-w-md font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal md:text-lg"
 			>
-				Projects ranging from product &amp; platform engineering, agentic
-				systems, design systems, fintech, and small apps built solo.
+				Projects ranging from product &amp; platform engineering, design
+				systems, fintech, and small apps built solo.
 			</Reveal>
 		</section>
 	);

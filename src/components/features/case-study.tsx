@@ -8,6 +8,10 @@ type CaseStat = { k: string; v: string };
 
 export function CaseStudy({ study }: { study: CaseStudyData }) {
 	const stats = study.stats as unknown as CaseStat[];
+	const numberLabel = Number.parseInt(study.num, 10);
+	const displayNum = Number.isNaN(numberLabel)
+		? study.num
+		: String(numberLabel);
 
 	return (
 		<article
@@ -19,7 +23,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 				{/* Left */}
 				<div>
 					<div className="flex items-center gap-2.5 font-mono text-xs">
-						<span className="text-(--ink-4)">{study.num}</span>
+						<span className="text-(--ink-4)">{displayNum}</span>
 						<span aria-hidden className="h-3 w-px bg-(--border)" />
 						<span className="text-(--ink-3)">{study.year}</span>
 					</div>
