@@ -323,13 +323,7 @@ const favoriteTools: string[] = [
 	"Ghostty",
 	"Figma",
 	"Fish Shell",
-	// 2026-09 admin-crud-issues task: "Glove80 Keyboard" renamed to its
-	// manufacturer-qualified name, "MoErgo Glove80", per explicit user
-	// direction. "AeroSpace" (macOS tiling window manager) added as a new,
-	// separate TOOL entry — not a replacement for "Rectangle" above, which
-	// stays. Revert path: /admin/skills.
-	"MoErgo Glove80",
-	"AeroSpace",
+	"Glove80 Keyboard",
 	// Aug 2026 admin-instant-feedback-and-photoshop task: intentionally last
 	// in the tools order per explicit user direction.
 	"Adobe Photoshop",

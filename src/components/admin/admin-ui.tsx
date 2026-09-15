@@ -159,11 +159,9 @@ export function AdminButton({
 export function AdminCard({
 	children,
 	className,
-	ref,
 }: {
 	children: React.ReactNode;
 	className?: string;
-	ref?: React.Ref<HTMLDivElement>;
 }) {
 	return (
 		<div
@@ -171,7 +169,6 @@ export function AdminCard({
 				"rounded-(--r-lg) border border-border bg-(--paper-2) p-5 shadow-(--shadow-card)",
 				className,
 			)}
-			ref={ref}
 		>
 			{children}
 		</div>
@@ -263,14 +260,6 @@ export function AdminPageHeader({
 export function AdminEmptyState({ children }: { children: React.ReactNode }) {
 	return (
 		<p className="rounded-(--r-lg) border border-(--border) border-dashed p-6 text-center font-mono text-(--ink-3) text-sm">
-			{children}
-		</p>
-	);
-}
-
-export function AdminErrorState({ children }: { children: React.ReactNode }) {
-	return (
-		<p className="rounded-(--r-lg) border border-(--destructive) border-dashed p-6 text-center font-mono text-(--destructive) text-xs">
 			{children}
 		</p>
 	);

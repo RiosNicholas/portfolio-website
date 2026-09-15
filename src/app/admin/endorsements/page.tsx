@@ -1,14 +1,13 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
 	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
-	AdminErrorState,
 	AdminField,
 	AdminInput,
 	AdminList,
@@ -17,19 +16,7 @@ import {
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
-import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
-
-type EndorsementRow = {
-	id: string;
-	name: string;
-	role: string;
-	quote: string;
-	linkedinUrl: string;
-	avatarUrl: string | null;
-	published: boolean;
-	sortOrder: number;
-};
 
 type FormState = {
 	id: string | null;
@@ -55,35 +42,11 @@ const emptyForm: FormState = {
 
 export default function AdminEndorsementsPage() {
 	const utils = api.useUtils();
-	const {
-		data: endorsements,
-		isLoading,
-		isError,
-		error: queryError,
-	} = api.endorsement.all.useQuery();
+	const { data: endorsements, isLoading } = api.endorsement.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
-	const formRef = useRef<HTMLDivElement>(null);
-	const animationsEnabled = useAnimationsEnabled();
 
 	const invalidate = () => utils.endorsement.all.invalidate();
-
-	function startEdit(row: EndorsementRow) {
-		setForm({
-			id: row.id,
-			name: row.name,
-			role: row.role,
-			quote: row.quote,
-			linkedinUrl: row.linkedinUrl,
-			avatarUrl: row.avatarUrl ?? "",
-			published: row.published,
-			sortOrder: String(row.sortOrder),
-		});
-		formRef.current?.scrollIntoView({
-			behavior: animationsEnabled ? "smooth" : "auto",
-			block: "start",
-		});
-	}
 
 	const createMutation = api.endorsement.create.useMutation({
 		onSuccess: () => {
@@ -100,10 +63,7 @@ export default function AdminEndorsementsPage() {
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.endorsement.delete.useMutation({
-		onSuccess: (_data, variables) => {
-			if (variables.id === form.id) setForm(emptyForm);
-			invalidate();
-		},
+		onSuccess: () => invalidate(),
 		onError: (e) => setError(e.message),
 	});
 
@@ -119,7 +79,7 @@ export default function AdminEndorsementsPage() {
 			role: form.role.trim(),
 			quote: form.quote.trim(),
 			linkedinUrl: form.linkedinUrl.trim(),
-			avatarUrl: form.avatarUrl.trim() || null,
+			avatarUrl: form.avatarUrl.trim() || undefined,
 			published: form.published,
 			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
@@ -146,9 +106,9 @@ export default function AdminEndorsementsPage() {
 				title="Endorsements"
 			/>
 
-			<AdminCard className="mb-8" ref={formRef}>
+			<AdminCard className="mb-8">
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit endorsement — ${form.name}` : "Add endorsement"}
+					{form.id ? "Edit endorsement" : "Add endorsement"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="name" label="Name">
@@ -230,12 +190,7 @@ export default function AdminEndorsementsPage() {
 			</AdminCard>
 
 			{isLoading && <AdminLoading />}
-			{isError && (
-				<AdminErrorState>
-					Couldn't load endorsements — {queryError.message}
-				</AdminErrorState>
-			)}
-			{!isLoading && !isError && endorsements?.length === 0 && (
+			{!isLoading && endorsements?.length === 0 && (
 				<AdminEmptyState>
 					No endorsements yet — the 12 placeholder testimonials that used to
 					live in `src/lib/endorsements.ts` were deliberately not migrated. Add
@@ -243,13 +198,27 @@ export default function AdminEndorsementsPage() {
 				</AdminEmptyState>
 			)}
 
-			{!isLoading && !isError && endorsements && endorsements.length > 0 && (
+			{!isLoading && endorsements && endorsements.length > 0 && (
 				<AdminList>
 					{endorsements.map((row) => (
 						<AdminListRow
 							actions={
 								<>
-									<AdminButton onClick={() => startEdit(row)} size="sm">
+									<AdminButton
+										onClick={() =>
+											setForm({
+												id: row.id,
+												name: row.name,
+												role: row.role,
+												quote: row.quote,
+												linkedinUrl: row.linkedinUrl,
+												avatarUrl: row.avatarUrl ?? "",
+												published: row.published,
+												sortOrder: String(row.sortOrder),
+											})
+										}
+										size="sm"
+									>
 										<Pencil className="size-3.5" />
 										Edit
 									</AdminButton>

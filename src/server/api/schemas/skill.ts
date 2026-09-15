@@ -7,7 +7,7 @@ import { SkillKind } from "../../../../generated/prisma";
 export const skillInput = z.object({
 	kind: z.nativeEnum(SkillKind),
 	label: z.string().min(1),
-	accent: z.string().nullish(),
+	accent: z.string().optional(),
 	sortOrder: z.number().int().default(0),
 });
 

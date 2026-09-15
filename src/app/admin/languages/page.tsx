@@ -1,14 +1,13 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
 	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
-	AdminErrorState,
 	AdminField,
 	AdminInput,
 	AdminList,
@@ -16,16 +15,7 @@ import {
 	AdminLoading,
 	AdminPageHeader,
 } from "~/components/admin/admin-ui";
-import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
-
-type LanguageRow = {
-	id: string;
-	name: string;
-	level: string;
-	published: boolean;
-	sortOrder: number;
-};
 
 type FormState = {
 	id: string | null;
@@ -45,32 +35,11 @@ const emptyForm: FormState = {
 
 export default function AdminLanguagesPage() {
 	const utils = api.useUtils();
-	const {
-		data: languages,
-		isLoading,
-		isError,
-		error: queryError,
-	} = api.language.all.useQuery();
+	const { data: languages, isLoading } = api.language.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
-	const formRef = useRef<HTMLDivElement>(null);
-	const animationsEnabled = useAnimationsEnabled();
 
 	const invalidate = () => utils.language.all.invalidate();
-
-	function startEdit(row: LanguageRow) {
-		setForm({
-			id: row.id,
-			name: row.name,
-			level: row.level,
-			published: row.published,
-			sortOrder: String(row.sortOrder),
-		});
-		formRef.current?.scrollIntoView({
-			behavior: animationsEnabled ? "smooth" : "auto",
-			block: "start",
-		});
-	}
 
 	const createMutation = api.language.create.useMutation({
 		onSuccess: () => {
@@ -87,10 +56,7 @@ export default function AdminLanguagesPage() {
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.language.delete.useMutation({
-		onSuccess: (_data, variables) => {
-			if (variables.id === form.id) setForm(emptyForm);
-			invalidate();
-		},
+		onSuccess: () => invalidate(),
 		onError: (e) => setError(e.message),
 	});
 
@@ -125,9 +91,9 @@ export default function AdminLanguagesPage() {
 				title="Languages"
 			/>
 
-			<AdminCard className="mb-8" ref={formRef}>
+			<AdminCard className="mb-8">
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit language — ${form.name}` : "Add language"}
+					{form.id ? "Edit language" : "Add language"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="name" label="Name">
@@ -183,23 +149,28 @@ export default function AdminLanguagesPage() {
 
 			{isLoading && <AdminLoading />}
 
-			{isError && (
-				<AdminErrorState>
-					Couldn't load languages — {queryError.message}
-				</AdminErrorState>
-			)}
-
-			{!isLoading && !isError && languages?.length === 0 && (
+			{!isLoading && languages?.length === 0 && (
 				<AdminEmptyState>No languages yet.</AdminEmptyState>
 			)}
 
-			{!isLoading && !isError && languages && languages.length > 0 && (
+			{!isLoading && languages && languages.length > 0 && (
 				<AdminList>
 					{languages.map((row) => (
 						<AdminListRow
 							actions={
 								<>
-									<AdminButton onClick={() => startEdit(row)} size="sm">
+									<AdminButton
+										onClick={() =>
+											setForm({
+												id: row.id,
+												name: row.name,
+												level: row.level,
+												published: row.published,
+												sortOrder: String(row.sortOrder),
+											})
+										}
+										size="sm"
+									>
 										<Pencil className="size-3.5" />
 										Edit
 									</AdminButton>
