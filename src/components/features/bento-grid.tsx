@@ -2,10 +2,8 @@
 
 import type { Marker } from "cobe";
 import { Globe } from "~/components/ui/globe";
-import { Marquee } from "~/components/ui/marquee";
 import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
-import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 import type { Language, Skill } from "../../../generated/prisma";
 
@@ -72,8 +70,6 @@ function YearsCell() {
 }
 
 function SkillsCell({ skills }: { skills: Skill[] }) {
-	const enabled = useAnimationsEnabled();
-
 	return (
 		<div
 			className={cn(
@@ -87,28 +83,26 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 					{skills.length} / ∞
 				</span>
 			</div>
-			<Marquee
+			{/* biome-ignore lint/a11y/useSemanticElements: role="group" is the WCAG 2.1.1 pattern for a scrollable non-native region, not a form <fieldset> — mirrors Marquee's disabled-state markup */}
+			<div
 				aria-label="Skills"
-				ariaHideDuplicates
-				className={cn(
-					"relative h-64 p-0 [--duration:28s] [--gap:0px] md:h-auto md:flex-1",
-					enabled &&
-						"mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]",
-				)}
-				pauseOnHover
-				repeat={2}
-				vertical
+				className="scroll-fade-y scrollbar-hairline h-64 min-h-0 overflow-y-auto overflow-x-hidden overscroll-y-contain md:h-auto md:flex-1"
+				role="group"
+				// biome-ignore lint/a11y/noNoninteractiveTabindex: required by WCAG 2.1.1 so this scrollable region is reachable via keyboard
+				tabIndex={0}
 			>
-				{skills.map((skill) => (
-					<div
-						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl xl:text-4xl"
-						key={skill.id}
-					>
-						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
-						<SkillLabel accent={skill.accent} label={skill.label} />
-					</div>
-				))}
-			</Marquee>
+				<div className="flex flex-col py-6">
+					{skills.map((skill) => (
+						<div
+							className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl xl:text-4xl"
+							key={skill.id}
+						>
+							<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
+							<SkillLabel accent={skill.accent} label={skill.label} />
+						</div>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 }

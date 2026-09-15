@@ -1,13 +1,14 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
 	AdminBadge,
 	AdminButton,
 	AdminCard,
 	AdminCheckbox,
 	AdminEmptyState,
+	AdminErrorState,
 	AdminField,
 	AdminInput,
 	AdminList,
@@ -16,9 +17,26 @@ import {
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
+import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
 type StatForm = { k: string; v: string };
+
+type CaseStudyRow = {
+	id: string;
+	num: string;
+	year: string;
+	title: string;
+	titleEm: string | null;
+	titleSuffix: string | null;
+	role: string;
+	org: string;
+	description: string;
+	tags: string[];
+	stats: unknown;
+	featured: boolean;
+	sortOrder: number;
+};
 
 type FormState = {
 	id: string; // slug — also acts as create/edit discriminator via `originalId`
@@ -60,11 +78,46 @@ const emptyForm: FormState = {
 
 export default function AdminCaseStudiesPage() {
 	const utils = api.useUtils();
-	const { data: cases, isLoading } = api.caseStudy.all.useQuery();
+	const {
+		data: cases,
+		isLoading,
+		isError,
+		error: queryError,
+	} = api.caseStudy.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const formRef = useRef<HTMLDivElement>(null);
+	const animationsEnabled = useAnimationsEnabled();
 
 	const invalidate = () => utils.caseStudy.all.invalidate();
+
+	function startEdit(row: CaseStudyRow) {
+		const stats = row.stats as unknown as StatForm[];
+		setForm({
+			id: row.id,
+			originalId: row.id,
+			num: row.num,
+			year: row.year,
+			title: row.title,
+			titleEm: row.titleEm ?? "",
+			titleSuffix: row.titleSuffix ?? "",
+			role: row.role,
+			org: row.org,
+			description: row.description,
+			tags: row.tags.join(", "),
+			stats: [
+				stats[0] ?? { k: "", v: "" },
+				stats[1] ?? { k: "", v: "" },
+				stats[2] ?? { k: "", v: "" },
+			],
+			featured: row.featured,
+			sortOrder: String(row.sortOrder),
+		});
+		formRef.current?.scrollIntoView({
+			behavior: animationsEnabled ? "smooth" : "auto",
+			block: "start",
+		});
+	}
 
 	const createMutation = api.caseStudy.create.useMutation({
 		onSuccess: () => {
@@ -81,7 +134,10 @@ export default function AdminCaseStudiesPage() {
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.caseStudy.delete.useMutation({
-		onSuccess: () => invalidate(),
+		onSuccess: (_data, variables) => {
+			if (variables.id === form.originalId) setForm(emptyForm);
+			invalidate();
+		},
 		onError: (e) => setError(e.message),
 	});
 
@@ -105,8 +161,8 @@ export default function AdminCaseStudiesPage() {
 			num: form.num.trim(),
 			year: form.year.trim(),
 			title: form.title,
-			titleEm: form.titleEm.trim() || undefined,
-			titleSuffix: form.titleSuffix.trim() || undefined,
+			titleEm: form.titleEm.trim() || null,
+			titleSuffix: form.titleSuffix.trim() || null,
 			role: form.role.trim(),
 			org: form.org.trim(),
 			description: form.description.trim(),
@@ -140,9 +196,11 @@ export default function AdminCaseStudiesPage() {
 				title="Case studies"
 			/>
 
-			<AdminCard className="mb-8">
+			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.originalId ? "Edit case study" : "Add case study"}
+					{form.originalId
+						? `Edit case study — ${form.title}`
+						: "Add case study"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField
@@ -308,77 +366,55 @@ export default function AdminCaseStudiesPage() {
 			</AdminCard>
 
 			{isLoading && <AdminLoading />}
-			{!isLoading && cases?.length === 0 && (
+			{isError && (
+				<AdminErrorState>
+					Couldn't load case studies — {queryError.message}
+				</AdminErrorState>
+			)}
+			{!isLoading && !isError && cases?.length === 0 && (
 				<AdminEmptyState>No case studies yet.</AdminEmptyState>
 			)}
 
-			{!isLoading && cases && cases.length > 0 && (
+			{!isLoading && !isError && cases && cases.length > 0 && (
 				<AdminList>
-					{cases.map((row) => {
-						const stats = row.stats as unknown as StatForm[];
-						return (
-							<AdminListRow
-								actions={
-									<>
-										<AdminButton
-											onClick={() =>
-												setForm({
-													id: row.id,
-													originalId: row.id,
-													num: row.num,
-													year: row.year,
-													title: row.title,
-													titleEm: row.titleEm ?? "",
-													titleSuffix: row.titleSuffix ?? "",
-													role: row.role,
-													org: row.org,
-													description: row.description,
-													tags: row.tags.join(", "),
-													stats: [
-														stats[0] ?? { k: "", v: "" },
-														stats[1] ?? { k: "", v: "" },
-														stats[2] ?? { k: "", v: "" },
-													],
-													featured: row.featured,
-													sortOrder: String(row.sortOrder),
-												})
-											}
-											size="sm"
-										>
-											<Pencil className="size-3.5" />
-											Edit
-										</AdminButton>
-										<AdminButton
-											onClick={() => {
-												if (confirm(`Delete "${row.id}"?`))
-													deleteMutation.mutate({ id: row.id });
-											}}
-											size="sm"
-											variant="danger"
-										>
-											<Trash2 className="size-3.5" />
-											Delete
-										</AdminButton>
-									</>
-								}
-								key={row.id}
-							>
-								<div className="flex items-center gap-2">
-									<span className="font-display font-semibold text-foreground text-sm">
-										{row.title}
-										{row.titleEm}
-										{row.titleSuffix}
-									</span>
-									{row.featured && (
-										<AdminBadge tone="accent">Featured</AdminBadge>
-									)}
-								</div>
-								<div className="font-mono text-(--ink-3) text-xs">
-									{row.id} · {row.role}
-								</div>
-							</AdminListRow>
-						);
-					})}
+					{cases.map((row) => (
+						<AdminListRow
+							actions={
+								<>
+									<AdminButton onClick={() => startEdit(row)} size="sm">
+										<Pencil className="size-3.5" />
+										Edit
+									</AdminButton>
+									<AdminButton
+										onClick={() => {
+											if (confirm(`Delete "${row.id}"?`))
+												deleteMutation.mutate({ id: row.id });
+										}}
+										size="sm"
+										variant="danger"
+									>
+										<Trash2 className="size-3.5" />
+										Delete
+									</AdminButton>
+								</>
+							}
+							key={row.id}
+						>
+							<div className="flex items-center gap-2">
+								<span className="font-display font-semibold text-foreground text-sm">
+									{row.title}
+									{row.titleEm}
+									{row.titleSuffix}
+								</span>
+								{row.featured && (
+									<AdminBadge tone="accent">Featured</AdminBadge>
+								)}
+							</div>
+							<div className="font-mono text-(--ink-3) text-xs">
+								{row.id} · {row.role}
+							</div>
+						</AdminListRow>
+					))}
 				</AdminList>
 			)}
 		</div>

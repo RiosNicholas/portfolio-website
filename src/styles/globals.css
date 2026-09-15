@@ -426,6 +426,47 @@
 	padding: 0 clamp(24px, 4vw, 64px);
 }
 
+/* ─── Scroll container utilities ────────────────────────────────────────────── */
+
+/* Thin, theme-aware scrollbar that stays invisible until hover/focus. Standard
+   `scrollbar-width`/`scrollbar-color` only — no `::-webkit-scrollbar`
+   pseudo-elements, since declaring `scrollbar-width` disables that path in
+   Chromium anyway, and mixing the two would only diverge per browser. */
+@utility scrollbar-hairline {
+	scrollbar-width: thin;
+	scrollbar-color: transparent transparent;
+	transition: scrollbar-color 200ms ease;
+
+	&:hover,
+	&:focus-visible {
+		scrollbar-color: var(--border-2) transparent;
+	}
+}
+
+/* Static top/bottom fade for scroll containers. Not an animation mask:
+   it replaces the marquee's seam gradient with a plain edge softener.
+   Alpha-only, so it needs no theme token — the cell's own background
+   shows through in both themes. Pair it with vertical padding on the
+   inner track equal to `--scroll-fade`, so the gradient only ever dims
+   content that is mid-scroll, never content at rest. */
+@utility scroll-fade-y {
+	--scroll-fade: 1.5rem;
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		black var(--scroll-fade),
+		black calc(100% - var(--scroll-fade)),
+		transparent 100%
+	);
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0,
+		black var(--scroll-fade),
+		black calc(100% - var(--scroll-fade)),
+		transparent 100%
+	);
+}
+
 /* ─── Geometric decorations ─────────────────────────────────────────────────── */
 
 .geo {
