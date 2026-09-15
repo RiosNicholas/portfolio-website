@@ -1,11 +1,12 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
 	AdminButton,
 	AdminCard,
 	AdminEmptyState,
+	AdminErrorState,
 	AdminField,
 	AdminInput,
 	AdminList,
@@ -15,9 +16,20 @@ import {
 	AdminSectionLabel,
 	AdminSelect,
 } from "~/components/admin/admin-ui";
+import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
 type CvCategory = "EXPERIENCE" | "EDUCATION" | "ACTIVITY";
+
+type CvEntryRow = {
+	id: string;
+	category: CvCategory;
+	years: string;
+	title: string;
+	titleAccent: string[];
+	where: string;
+	sortOrder: number;
+};
 
 const categories: { value: CvCategory; label: string }[] = [
 	{ value: "EXPERIENCE", label: "Experience" },
@@ -47,11 +59,34 @@ const emptyForm: FormState = {
 
 export default function AdminCvPage() {
 	const utils = api.useUtils();
-	const { data: entries, isLoading } = api.cvEntry.all.useQuery();
+	const {
+		data: entries,
+		isLoading,
+		isError,
+		error: queryError,
+	} = api.cvEntry.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const formRef = useRef<HTMLDivElement>(null);
+	const animationsEnabled = useAnimationsEnabled();
 
 	const invalidate = () => utils.cvEntry.all.invalidate();
+
+	function startEdit(row: CvEntryRow) {
+		setForm({
+			id: row.id,
+			category: row.category,
+			years: row.years,
+			title: row.title,
+			titleAccent: row.titleAccent.join(", "),
+			where: row.where,
+			sortOrder: String(row.sortOrder),
+		});
+		formRef.current?.scrollIntoView({
+			behavior: animationsEnabled ? "smooth" : "auto",
+			block: "start",
+		});
+	}
 
 	const createMutation = api.cvEntry.create.useMutation({
 		onSuccess: () => {
@@ -68,7 +103,10 @@ export default function AdminCvPage() {
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.cvEntry.delete.useMutation({
-		onSuccess: () => invalidate(),
+		onSuccess: (_data, variables) => {
+			if (variables.id === form.id) setForm(emptyForm);
+			invalidate();
+		},
 		onError: (e) => setError(e.message),
 	});
 
@@ -108,9 +146,9 @@ export default function AdminCvPage() {
 				title="CV entries"
 			/>
 
-			<AdminCard className="mb-8">
+			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? "Edit entry" : "Add entry"}
+					{form.id ? `Edit entry — ${form.title}` : "Add entry"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="category" label="Category">
@@ -201,6 +239,11 @@ export default function AdminCvPage() {
 			</AdminCard>
 
 			{isLoading && <AdminLoading />}
+			{isError && !entries && (
+				<AdminErrorState>
+					Couldn't load CV entries — {queryError.message}
+				</AdminErrorState>
+			)}
 			{!isLoading && entries?.length === 0 && (
 				<AdminEmptyState>No CV entries yet.</AdminEmptyState>
 			)}
@@ -220,20 +263,7 @@ export default function AdminCvPage() {
 										<AdminListRow
 											actions={
 												<>
-													<AdminButton
-														onClick={() =>
-															setForm({
-																id: row.id,
-																category: row.category,
-																years: row.years,
-																title: row.title,
-																titleAccent: row.titleAccent.join(", "),
-																where: row.where,
-																sortOrder: String(row.sortOrder),
-															})
-														}
-														size="sm"
-													>
+													<AdminButton onClick={() => startEdit(row)} size="sm">
 														<Pencil className="size-3.5" />
 														Edit
 													</AdminButton>

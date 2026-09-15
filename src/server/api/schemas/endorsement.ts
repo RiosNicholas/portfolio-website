@@ -7,7 +7,7 @@ export const endorsementInput = z.object({
 	role: z.string().min(1),
 	quote: z.string().min(1),
 	linkedinUrl: z.string().url(),
-	avatarUrl: z.string().url().optional(),
+	avatarUrl: z.string().url().nullish(),
 	published: z.boolean().default(true),
 	sortOrder: z.number().int().default(0),
 });

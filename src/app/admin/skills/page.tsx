@@ -1,11 +1,12 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
 	AdminButton,
 	AdminCard,
 	AdminEmptyState,
+	AdminErrorState,
 	AdminField,
 	AdminInput,
 	AdminList,
@@ -15,6 +16,7 @@ import {
 	AdminSectionLabel,
 	AdminSelect,
 } from "~/components/admin/admin-ui";
+import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
 type SkillKind = "SKILL" | "TOOL";
@@ -37,11 +39,32 @@ const emptyForm: FormState = {
 
 export default function AdminSkillsPage() {
 	const utils = api.useUtils();
-	const { data: skills, isLoading } = api.skill.all.useQuery();
+	const {
+		data: skills,
+		isLoading,
+		isError,
+		error: queryError,
+	} = api.skill.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const formRef = useRef<HTMLDivElement>(null);
+	const animationsEnabled = useAnimationsEnabled();
 
 	const invalidate = () => utils.skill.all.invalidate();
+
+	function startEdit(row: SkillRow) {
+		setForm({
+			id: row.id,
+			kind: row.kind,
+			label: row.label,
+			accent: row.accent ?? "",
+			sortOrder: String(row.sortOrder),
+		});
+		formRef.current?.scrollIntoView({
+			behavior: animationsEnabled ? "smooth" : "auto",
+			block: "start",
+		});
+	}
 
 	const createMutation = api.skill.create.useMutation({
 		onSuccess: async () => {
@@ -58,7 +81,10 @@ export default function AdminSkillsPage() {
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.skill.delete.useMutation({
-		onSuccess: () => invalidate(),
+		onSuccess: (_data, variables) => {
+			if (variables.id === form.id) setForm(emptyForm);
+			invalidate();
+		},
 		onError: (e) => setError(e.message),
 	});
 
@@ -72,7 +98,7 @@ export default function AdminSkillsPage() {
 		const payload = {
 			kind: form.kind,
 			label: form.label.trim(),
-			accent: form.accent.trim() || undefined,
+			accent: form.accent.trim() || null,
 			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
 		if (!payload.label) {
@@ -96,9 +122,9 @@ export default function AdminSkillsPage() {
 				title="Skills & tools"
 			/>
 
-			<AdminCard className="mb-8">
+			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? "Edit skill/tool" : "Add skill/tool"}
+					{form.id ? `Edit skill/tool — ${form.label}` : "Add skill/tool"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="kind" label="Kind">
@@ -162,6 +188,12 @@ export default function AdminSkillsPage() {
 
 			{isLoading && <AdminLoading />}
 
+			{isError && !skills && (
+				<AdminErrorState>
+					Couldn't load skills/tools — {queryError.message}
+				</AdminErrorState>
+			)}
+
 			{!isLoading && skills?.length === 0 && (
 				<AdminEmptyState>No skills or tools yet.</AdminEmptyState>
 			)}
@@ -171,29 +203,13 @@ export default function AdminSkillsPage() {
 					<SkillGroup
 						label="Skills"
 						onDelete={(id) => deleteMutation.mutate({ id })}
-						onEdit={(row) =>
-							setForm({
-								id: row.id,
-								kind: row.kind,
-								label: row.label,
-								accent: row.accent ?? "",
-								sortOrder: String(row.sortOrder),
-							})
-						}
+						onEdit={startEdit}
 						rows={skillRows}
 					/>
 					<SkillGroup
 						label="Tools"
 						onDelete={(id) => deleteMutation.mutate({ id })}
-						onEdit={(row) =>
-							setForm({
-								id: row.id,
-								kind: row.kind,
-								label: row.label,
-								accent: row.accent ?? "",
-								sortOrder: String(row.sortOrder),
-							})
-						}
+						onEdit={startEdit}
 						rows={toolRows}
 					/>
 				</div>
