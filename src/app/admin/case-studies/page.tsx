@@ -192,7 +192,7 @@ export default function AdminCaseStudiesPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="/work case studies and the home page's featured teaser. `id` is the slug used as /work#<id> — keep it stable once a case study is live."
+				description="/projects case studies. `id` is the slug used as /projects#<id> — keep it stable once a case study is live."
 				title="Case studies"
 			/>
 
@@ -204,7 +204,7 @@ export default function AdminCaseStudiesPage() {
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField
-						hint="Slug — load-bearing as /work#<id>, e.g. risk-agents"
+						hint="Slug — load-bearing as /projects#<id>, e.g. accountabuddy"
 						htmlFor="id"
 						label="ID"
 					>

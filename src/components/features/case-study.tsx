@@ -1,70 +1,53 @@
+import { MediaFigure } from "~/components/ui/media-figure";
 import { Reveal } from "~/components/ui/reveal";
+import { caseTitle, keyFigure } from "~/lib/case-study";
+import { projectMedia } from "~/lib/media";
 import type { CaseStudy as CaseStudyData } from "../../../generated/prisma";
 
-/** Shape of `CaseStudy.stats` (Prisma `Json`) — the exactly-3 invariant is
- * enforced by Zod in the router input, not the DB, so this is a display-time
- * assumption about already-validated data. */
-type CaseStat = { k: string; v: string };
-
 export function CaseStudy({ study }: { study: CaseStudyData }) {
-	const stats = study.stats as unknown as CaseStat[];
-	const numberLabel = Number.parseInt(study.num, 10);
-	const displayNum = Number.isNaN(numberLabel)
-		? study.num
-		: String(numberLabel);
+	const media = projectMedia[study.id];
+	const figure = keyFigure(study);
 
 	return (
 		<article
 			aria-labelledby={`${study.id}-title`}
-			className="scroll-mt-28 border-border border-t py-10 md:py-16 lg:py-20"
+			className="scroll-mt-12"
 			id={study.id}
 		>
-			<Reveal className="grid grid-cols-1 gap-9 md:grid-cols-[0.8fr_1.2fr]">
-				{/* Left */}
-				<div>
-					<div className="flex items-center gap-2.5 font-mono text-xs">
-						<span className="text-(--ink-4)">{displayNum}</span>
-						<span aria-hidden className="h-3 w-px bg-(--border)" />
-						<span className="text-(--ink-3)">{study.year}</span>
-					</div>
-					<h2
-						className="mt-3 font-display font-semibold text-3xl text-foreground leading-none tracking-tighter md:text-4xl lg:text-5xl"
-						id={`${study.id}-title`}
-					>
-						{study.title}
-						<em className="text-(--accent-text) not-italic">{study.titleEm}</em>
-						{study.titleSuffix}
+			{media && (
+				<Reveal className="mb-10 md:mb-14">
+					<MediaFigure
+						media={media}
+						sizes="(min-width: 1440px) 1312px, 100vw"
+					/>
+				</Reveal>
+			)}
+			<div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-10">
+				<Reveal className="lg:col-span-5">
+					<h2 className="m-0 font-semibold text-title" id={`${study.id}-title`}>
+						{caseTitle(study)}
 					</h2>
-					<div className="mt-4 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
-						{study.role}
-					</div>
-					<div className="mt-1 font-mono text-(--ink-3) text-xs">
-						{study.org}
-					</div>
-				</div>
-
-				{/* Right */}
-				<div>
-					<p className="font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
-						{study.description}
+					<p className="mt-5 text-body">
+						<span className="block font-medium">{study.role}</span>
+						<span className="block text-ink-muted">{study.org}</span>
+						<span className="block text-ink-muted">{study.year}</span>
 					</p>
-					<div className="mt-5 font-mono text-(--ink-3) text-xs">
-						{study.tags.join(", ")}
-					</div>
-					<div className="mt-8 grid grid-cols-1 gap-4 border-(--border) border-t pt-6 sm:grid-cols-3">
-						{stats.map((stat) => (
-							<div key={stat.k}>
-								<div className="font-medium font-mono text-(--ink-3) text-xs uppercase tracking-wider">
-									{stat.k}
-								</div>
-								<div className="mt-1 font-display font-semibold text-foreground text-lg md:text-xl">
-									{stat.v}
-								</div>
-							</div>
-						))}
-					</div>
-				</div>
-			</Reveal>
+				</Reveal>
+				<Reveal className="lg:col-span-7" delay={0.08}>
+					<p className="m-0 max-w-[34em] text-lead">{study.description}</p>
+					{figure && (
+						<p className="mt-10 mb-0">
+							<span className="block font-semibold text-statement">
+								{figure.v}
+							</span>
+							<span className="text-body text-ink-muted">{figure.k}</span>
+						</p>
+					)}
+					<p className="mt-10 mb-0 max-w-[34em] text-body text-ink-muted">
+						Built with {study.tags.join(", ")}.
+					</p>
+				</Reveal>
+			</div>
 		</article>
 	);
 }

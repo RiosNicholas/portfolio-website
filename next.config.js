@@ -5,6 +5,11 @@
 import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
-const config = {};
+const config = {
+	// The Work page became Projects; keep old links and /work#<id> anchors alive.
+	async redirects() {
+		return [{ source: "/work", destination: "/projects", permanent: true }];
+	},
+};
 
 export default config;

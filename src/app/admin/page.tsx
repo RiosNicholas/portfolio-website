@@ -4,7 +4,7 @@ const sections = [
 	{
 		href: "/admin/case-studies",
 		title: "Case studies",
-		description: "Work page projects — /work and the home page teaser.",
+		description: "Projects page — /projects.",
 	},
 	{
 		href: "/admin/endorsements",
