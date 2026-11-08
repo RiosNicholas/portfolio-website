@@ -61,28 +61,6 @@ type SeedCaseStudy = {
 
 const cases: SeedCaseStudy[] = [
 	{
-		id: "risk-agents",
-		num: "1",
-		year: "2026 — Present",
-		title: "Risk Tech ",
-		titleEm: "Agents",
-		featured: true,
-		// 2026-08-31 (risk-agents-employer-attribution task, expanded scope):
-		// role/org/description/stats rewritten for explicit JPMorganChase
-		// employer attribution and updated impact framing. Revert path:
-		// /admin/case-studies, row "risk-agents".
-		role: "UI Subject Matter Expert · Core Developer",
-		org: "JPMorganChase · Risk Technology · Internal agent platform",
-		description:
-			"Agents that shift risk and compliance checks left in the SDLC, closing the gap between developers, product, and design. Built the agents and guardrails that keep generated code aligned with the design system and architecture — cutting technical debt instead of adding to it.",
-		tags: ["MCP", "Claude Code", "GitHub Copilot", "React", "Cypress"],
-		stats: [
-			{ k: "Scope", v: "Design system & UI" },
-			{ k: "Impact", v: "+40% productivity" },
-			{ k: "Status", v: "Ongoing" },
-		],
-	},
-	{
 		id: "accountabuddy",
 		num: "2",
 		year: "2024",
@@ -228,6 +206,11 @@ const experience: SeedCvEntry[] = [
 		years: "Jun '23 — Aug '23",
 		title: "Software Engineer Intern",
 		where: "Fiserv · Berkeley Heights, NJ",
+	},
+	{
+		years: "Aug '22 — Dec '22",
+		title: "Computer Science Education Facilitator",
+		where: "Apple Community Education Initiative",
 	},
 ];
 

@@ -21,7 +21,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
 	return (
-		<main className="shell" id="main-content">
+		<main id="main-content">
 			<AboutHero />
 			<AboutBio />
 			<ContactCta />

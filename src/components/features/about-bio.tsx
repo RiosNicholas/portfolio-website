@@ -1,57 +1,23 @@
 import { Reveal } from "~/components/ui/reveal";
-import { profileLinks } from "~/lib/site-links";
 import { getCvEntriesByCategory } from "~/server/data/cv-entries";
 import type { CvEntry } from "../../../generated/prisma";
 
-function AccentedTitle({
-	title,
-	accents,
-}: {
-	title: string;
-	accents: string[];
-}) {
-	const pattern = new RegExp(
-		`(${accents.map((accent) => accent.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`,
-	);
+function CvList({ entries }: { entries: CvEntry[] }) {
 	return (
-		<>
-			{title.split(pattern).map((part, index) =>
-				accents.includes(part) ? (
-					<em
-						className="text-(--accent-text) not-italic"
-						// parts are derived from a static string; order never changes, so
-						// the index is a stable key
-						key={index}
-					>
-						{part}
-					</em>
-				) : (
-					part
-				),
-			)}
-		</>
+		<ul className="m-0 mt-6 flex list-none flex-col gap-6 p-0">
+			{entries.map(({ id, years, title, where }) => (
+				<li key={id}>
+					<span className="block font-semibold text-lead">{title}</span>
+					<span className="block text-body text-ink-muted">
+						{where} · <span className="tabular-nums">{years}</span>
+					</span>
+				</li>
+			))}
+		</ul>
 	);
 }
 
-function CvRow({ years, title, titleAccent, where }: CvEntry) {
-	return (
-		<div className="flex @md:flex-row flex-col @md:gap-4 gap-1 border-border border-b py-3.5">
-			<div className="@md:w-32 shrink-0 font-mono text-(--ink-3) text-xs">
-				{years}
-			</div>
-			<div className="grow">
-				<div className="font-display font-semibold @lg:text-xl text-foreground text-lg">
-					{titleAccent.length ? (
-						<AccentedTitle accents={titleAccent} title={title} />
-					) : (
-						title
-					)}
-				</div>
-				<div className="font-mono text-(--ink-3) text-base">{where}</div>
-			</div>
-		</div>
-	);
-}
+const sectionHeading = "m-0 font-semibold text-statement";
 
 export async function AboutBio() {
 	const [experience, education, activities] = await Promise.all([
@@ -61,81 +27,48 @@ export async function AboutBio() {
 	]);
 
 	return (
-		<section className="relative flex flex-col gap-8">
-			<Reveal
-				as="p"
-				className="max-w-2xl font-display font-semibold text-3xl text-foreground leading-none md:text-5xl"
-			>
-				I'm Nicholas — a Platform Software Engineer focused on{" "}
-				<em className="mark">UI</em> and <em className="mark">Agentic AI</em>.
-				Based in the NYC area.
-			</Reveal>
-
-			<div className="grid grid-cols-1 gap-10 md:grid-cols-[1fr_1.2fr] md:gap-12 lg:gap-16">
-				{/* Gist */}
-				<Reveal className="max-w-prose">
-					<h2 className="font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
+		<section aria-labelledby="summary" className="shell pt-24 md:pt-40">
+			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-10">
+				<Reveal className="lg:col-span-5">
+					<h2 className={sectionHeading} id="summary">
 						Summary
 					</h2>
-					<p className="mt-4 font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
-						I specialize in frontend development and platform engineering —
-						design systems, developer tooling, and scalable frontend
-						architecture. I enjoy building systems that improve developer
-						experience and enable teams to move faster.
-					</p>
-					<p className="mt-4 font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
-						I'm currently in risk technology at JPMorganChase, where I build
-						platform infrastructure on two fronts: the shared UI foundation
-						(component libraries, design systems, architecture, and tooling)
-						that product teams build on, and the agentic AI platform that's
-						making AI a core part of how we ship.
-					</p>
-					<p className="mt-4 font-normal font-sans text-(--ink-2) text-base leading-relaxed tracking-normal">
-						Outside of engineering, I enjoy street photography and occasionally
-						publish my work.
-					</p>
+					<div className="mt-6 flex max-w-[34em] flex-col gap-5 text-lead">
+						<p className="m-0">
+							I specialize in frontend development and platform engineering —
+							design systems, developer tooling, and scalable frontend
+							architecture. I enjoy building systems that improve developer
+							experience and enable teams to move faster.
+						</p>
+						<p className="m-0">
+							I'm currently in risk technology at JPMorganChase, where I build
+							platform infrastructure on two fronts: the shared UI foundation
+							(component libraries, design systems, architecture, and tooling)
+							that product teams build on, and the agentic AI platform that's
+							making AI a core part of how we ship.
+						</p>
+						<p className="m-0">
+							Outside of engineering, I enjoy street photography and
+							occasionally publish my work.
+						</p>
+					</div>
 				</Reveal>
 
-				{/* CV */}
-				<Reveal className="@container">
-					<h2 className="font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
-						Experience
-					</h2>
-					<div className="mt-4">
-						{experience.map((entry) => (
-							<CvRow key={entry.id} {...entry} />
-						))}
+				<Reveal className="flex flex-col gap-14 lg:col-span-7" delay={0.08}>
+					<div>
+						<h2 className={sectionHeading}>Relevant work experience</h2>
+						<CvList entries={experience} />
 					</div>
-
-					<h2 className="mt-8 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
-						Education
-					</h2>
-					<div className="mt-4">
-						{education.map((entry) => (
-							<CvRow key={entry.id} {...entry} />
-						))}
+					<div>
+						<h2 className={sectionHeading}>Education</h2>
+						<CvList entries={education} />
 					</div>
-
-					<h2 className="mt-8 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
-						Activities
-					</h2>
-					<div className="mt-4">
-						{activities.map((entry) => (
-							<CvRow key={entry.id} {...entry} />
-						))}
-					</div>
-
-					<div className="mt-6">
-						<a
-							className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-4 py-2.5 font-display font-semibold text-(--cta-ink) text-xs tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
-							href={profileLinks.resume}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							<span>View Full Resume</span>
-							<span>↗</span>
-						</a>
-					</div>
+					{activities.length > 0 && (
+						<div>
+							<h2 className={sectionHeading}>Activities</h2>
+							<CvList entries={activities} />
+						</div>
+					)}
 				</Reveal>
 			</div>
 		</section>
