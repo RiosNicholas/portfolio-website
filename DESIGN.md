@@ -107,7 +107,7 @@ JS gate.
   (`src/server/data/languages.ts`), edited via `/admin/languages`.
 - **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
   shows the featured `CaseStudy` rows (`src/server/data/case-studies.ts`);
-  `/work` renders every case in full (two-column: meta rail +
+  `/projects` renders every case in full (two-column: meta rail +
   description/tags/stats). Edited via `/admin/case-studies`.
 - **Endorsement marquee** (`EndorsementMarquee`) — two opposing-direction
   rows built on the shared `Marquee` primitive (`src/components/ui/marquee.tsx`),

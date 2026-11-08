@@ -41,7 +41,7 @@ npm run auth:hash      # generate an ADMIN_PASSWORD_HASH value for .env
 
 `npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
 `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and `BLOB_READ_WRITE_TOKEN` to be
-set (`src/env.js` validates these at build time) — `/`, `/work`, and
+set (`src/env.js` validates these at build time) — `/`, `/projects`, and
 `/about` are Server Components that read from Postgres, and `/admin` needs
 a working NextAuth Credentials session. See [Local setup](#local-setup).
 
@@ -49,7 +49,7 @@ a working NextAuth Credentials session. See [Local setup](#local-setup).
 
 ```
 src/
-  app/                route pages: /, /about, /work, /admin/**,
+  app/                route pages: /, /about, /projects, /admin/**,
                        /auth/login (custom Credentials sign-in), plus
                        error.tsx, global-error.tsx, not-found.tsx,
                        icon.tsx, opengraph-image.tsx, robots.ts,
@@ -107,7 +107,7 @@ edited through `/admin`:
 
 | Section                | Public page(s)              |
 |-------------------------|------------------------------|
-| `/admin/case-studies`   | `/work`, home page teaser    |
+| `/admin/case-studies`   | `/projects`, home page teaser    |
 | `/admin/endorsements`   | home page recommendation reel |
 | `/admin/cv`             | `/about` Experience/Education/Activities |
 | `/admin/skills`         | home page bento grid Skills reel & tools list |

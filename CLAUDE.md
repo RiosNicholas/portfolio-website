@@ -24,7 +24,7 @@ This is a **T3 Stack** portfolio site (Next.js 15 App Router, tRPC, Prisma, Next
 
 ### Routing & Pages
 
-Pages live in `src/app/` and follow Next.js App Router conventions. The site has routes for `/`, `/about`, `/work`, and `/photography`.
+Pages live in `src/app/` and follow Next.js App Router conventions. The site has routes for `/`, `/about`, and `/projects` (`/work` redirects there).
 
 ### Component Hierarchy
 
