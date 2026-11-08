@@ -23,7 +23,7 @@ const schibstedGrotesk = Schibsted_Grotesk({
 });
 
 const description =
-	"Nicholas Rios is a software engineer building web applications, component libraries, developer tools and agentic AI tooling at JPMorganChase.";
+	"Nicholas Rios is a New York City area software engineer building web applications, component libraries, developer tools, and agentic AI tooling at JPMorganChase.";
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
@@ -36,10 +36,14 @@ export const metadata: Metadata = {
 	keywords: [
 		"Nicholas Rios",
 		"software engineer",
+		"software engineer New York City",
 		"frontend engineer",
-		"platform engineering",
+		"web applications",
+		"component libraries",
+		"developer tools",
 		"design systems",
 		"agentic AI",
+		"JPMorganChase",
 	],
 	alternates: { canonical: "/" },
 	openGraph: {

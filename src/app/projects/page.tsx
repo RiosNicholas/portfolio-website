@@ -6,7 +6,7 @@ import { ProjectsHero } from "~/components/features/projects-hero";
 import { getCaseStudies } from "~/server/data/case-studies";
 
 const description =
-	"Projects by Nicholas Rios: web apps, sites and experiments designed and built outside the day job.";
+	"Projects by Nicholas Rios, a New York City area software engineer: web apps, sites, and experiments designed and built outside the day job.";
 
 export const metadata: Metadata = {
 	title: "Projects",
