@@ -34,7 +34,10 @@ function YearsCell() {
 		<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
-				<div className="font-semibold text-display text-ink">
+				{/* Phones: the cell is half width and as tall as the globe cell
+				    beside it, so the number scales with the viewport to fill it
+				    instead of sitting small in empty space. */}
+				<div className="font-semibold text-display text-ink max-md:text-[clamp(4.5rem,24vw,7rem)] max-md:leading-none">
 					<NumberTicker value={3} />
 					<sup className="ml-1 align-super font-medium text-ink-muted text-statement">
 						yrs
