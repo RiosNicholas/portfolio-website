@@ -8,6 +8,6 @@ export const getSkillsByKind = unstable_cache(
 			where: { kind },
 			orderBy: { sortOrder: "asc" },
 		}),
-	["skills:by-kind"],
+	["skills:by-kind:v2"],
 	{ tags: ["skills"] },
 );

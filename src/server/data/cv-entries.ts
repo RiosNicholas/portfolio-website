@@ -8,6 +8,6 @@ export const getCvEntriesByCategory = unstable_cache(
 			where: { category },
 			orderBy: { sortOrder: "asc" },
 		}),
-	["cv-entries:by-category"],
+	["cv-entries:by-category:v2"],
 	{ tags: ["cv-entries"] },
 );

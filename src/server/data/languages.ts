@@ -7,6 +7,6 @@ export const getPublishedLanguages = unstable_cache(
 			where: { published: true },
 			orderBy: { sortOrder: "asc" },
 		}),
-	["languages:published"],
+	["languages:published:v2"],
 	{ tags: ["languages"] },
 );

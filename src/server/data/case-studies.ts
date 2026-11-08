@@ -3,7 +3,7 @@ import { db } from "~/server/db";
 
 export const getCaseStudies = unstable_cache(
 	() => db.caseStudy.findMany({ orderBy: { sortOrder: "asc" } }),
-	["case-studies:all"],
+	["case-studies:all:v2"],
 	{ tags: ["case-studies"] },
 );
 
@@ -13,6 +13,6 @@ export const getFeaturedCaseStudies = unstable_cache(
 			where: { featured: true },
 			orderBy: { sortOrder: "asc" },
 		}),
-	["case-studies:featured"],
+	["case-studies:featured:v2"],
 	{ tags: ["case-studies"] },
 );

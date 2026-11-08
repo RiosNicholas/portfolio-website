@@ -7,6 +7,6 @@ export const getPublishedEndorsements = unstable_cache(
 			where: { published: true },
 			orderBy: { sortOrder: "asc" },
 		}),
-	["endorsements:published"],
+	["endorsements:published:v2"],
 	{ tags: ["endorsements"] },
 );
