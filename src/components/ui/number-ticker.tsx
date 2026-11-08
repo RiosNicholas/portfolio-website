@@ -23,7 +23,7 @@ type NumberTickerProps = {
  * interaction with `LazyMotion strict`.
  *
  * Initial render shows `value` itself (not `0`) so a visitor with JS
- * disabled — who never hydrates, so the effect below never runs — sees the
+ * disabled - who never hydrates, so the effect below never runs - sees the
  * real number instead of a permanent zero. Never re-render this span with
  * different `value` props, since React would clobber the imperatively
  * written `textContent` mid-animation.

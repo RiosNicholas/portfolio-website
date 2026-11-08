@@ -148,7 +148,7 @@ export default function AdminCvPage() {
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit entry — ${form.title}` : "Add entry"}
+					{form.id ? `Edit entry - ${form.title}` : "Add entry"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="category" label="Category">
@@ -170,7 +170,7 @@ export default function AdminCvPage() {
 						</AdminSelect>
 					</AdminField>
 					<AdminField
-						hint="Mono display range, e.g. Feb '25 — Present"
+						hint="Mono display range, e.g. Feb '25 - Present"
 						htmlFor="years"
 						label="Years"
 					>
@@ -241,7 +241,7 @@ export default function AdminCvPage() {
 			{isLoading && <AdminLoading />}
 			{isError && !entries && (
 				<AdminErrorState>
-					Couldn't load CV entries — {queryError.message}
+					Couldn't load CV entries - {queryError.message}
 				</AdminErrorState>
 			)}
 			{!isLoading && entries?.length === 0 && (

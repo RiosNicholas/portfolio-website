@@ -14,7 +14,7 @@ import {
 
 /** Rendered only on `/admin` routes (see `SiteNav`). Resolves its own
  * session client-side rather than receiving it as a prop from the root
- * layout — see `agentWork/admin-signin-badge/02-plan.md` for why: a
+ * layout - see `agentWork/admin-signin-badge/02-plan.md` for why: a
  * root-layout `auth()` call would de-static-ify `/`, `/about`, and `/projects`. */
 export function AdminSessionControls() {
 	const [userName, setUserName] = useState<string | null>(null);

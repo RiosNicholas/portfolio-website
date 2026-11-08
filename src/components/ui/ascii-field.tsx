@@ -14,7 +14,7 @@ const LENS_RADIUS = 190;
 /**
  * Live ASCII texture for the hero field.
  *
- * Performance: every glyph is pre-rendered once per colour and alpha level
+ * Performance: every glyph is pre-rendered once per color and alpha level
  * into an offscreen atlas, so a frame is a run of `drawImage` copies rather
  * than thousands of `fillText` calls. The wave field is split into
  * per-column and per-row terms (sin(a+b) = sin a·cos b + cos a·sin b), so
@@ -22,7 +22,7 @@ const LENS_RADIUS = 190;
  * radial distance table is built once per resize. The loop runs at 30fps,
  * and stops entirely when the canvas is off-screen or the tab is hidden.
  *
- * Colour: two semantic tokens only — `--hero-glyph` (a tint of the brand
+ * Color: two semantic tokens only - `--hero-glyph` (a tint of the brand
  * blue) for the field and `--pop` for the pointer lens.
  *
  * Reduced motion: one still frame, no loop, no pointer tracking.
@@ -53,24 +53,24 @@ export function AsciiField({ className }: { className?: string }) {
 		const atlas = document.createElement("canvas");
 		const pointer = { x: -1e4, y: -1e4, tx: -1e4, ty: -1e4 };
 
-		// Atlas layout: row = colour (0 field, 1 lens) × alpha level, column = glyph.
+		// Atlas layout: row = color (0 field, 1 lens) × alpha level, column = glyph.
 		const buildAtlas = () => {
 			const styles = getComputedStyle(canvas);
-			const colours = [
+			const colors = [
 				styles.getPropertyValue("--hero-glyph").trim() || "#93c5fd",
 				styles.getPropertyValue("--pop").trim() || "#fcd34d",
 			];
 			const tileW = Math.ceil(cell * dpr);
 			const tileH = Math.ceil(rowHeight * dpr);
 			atlas.width = tileW * GLYPHS.length;
-			atlas.height = tileH * ALPHA_LEVELS * colours.length;
+			atlas.height = tileH * ALPHA_LEVELS * colors.length;
 			const actx = atlas.getContext("2d");
 			if (!actx) return;
 			actx.clearRect(0, 0, atlas.width, atlas.height);
 			actx.font = `500 ${Math.round(cell * dpr)}px ui-monospace, "SF Mono", Menlo, monospace`;
 			actx.textBaseline = "top";
-			colours.forEach((colour, c) => {
-				actx.fillStyle = colour;
+			colors.forEach((color, c) => {
+				actx.fillStyle = color;
 				for (let a = 0; a < ALPHA_LEVELS; a++) {
 					actx.globalAlpha = (a + 1) / ALPHA_LEVELS;
 					for (let g = 1; g < GLYPHS.length; g++) {
@@ -176,12 +176,12 @@ export function AsciiField({ className }: { className?: string }) {
 					);
 					const level = Math.round(alpha * ALPHA_LEVELS) - 1;
 					if (level < 0) continue;
-					const colour = lens > 0.2 ? 1 : 0;
+					const color = lens > 0.2 ? 1 : 0;
 
 					ctx.drawImage(
 						atlas,
 						glyph * tileW,
-						(colour * ALPHA_LEVELS + level) * tileH,
+						(color * ALPHA_LEVELS + level) * tileH,
 						tileW,
 						tileH,
 						Math.round(px * dpr),

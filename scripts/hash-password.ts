@@ -10,7 +10,7 @@ import { hashPassword } from "../src/server/auth/password";
 async function main() {
 	const rl = createInterface({ input: process.stdin, output: process.stdout });
 	console.log(
-		"Note: your input will echo on screen — make sure nobody's watching.",
+		"Note: your input will echo on screen - make sure nobody's watching.",
 	);
 	const password = await rl.question("Admin password: ");
 	rl.close();
@@ -24,7 +24,7 @@ async function main() {
 	console.log("\nPaste this into .env (and your Vercel project env vars):\n");
 	console.log(`ADMIN_PASSWORD_HASH="${hash}"`);
 	console.log(
-		"\nRemember: .env is gitignored — this hash must also be set as a",
+		"\nRemember: .env is gitignored - this hash must also be set as a",
 		"Vercel project environment variable separately before deploying.",
 	);
 }

@@ -39,7 +39,7 @@ type CaseStudyRow = {
 };
 
 type FormState = {
-	id: string; // slug — also acts as create/edit discriminator via `originalId`
+	id: string; // slug - also acts as create/edit discriminator via `originalId`
 	originalId: string | null;
 	num: string;
 	year: string;
@@ -192,19 +192,19 @@ export default function AdminCaseStudiesPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="/projects case studies. `id` is the slug used as /projects#<id> — keep it stable once a case study is live."
+				description="/projects case studies. `id` is the slug used as /projects#<id> - keep it stable once a case study is live."
 				title="Case studies"
 			/>
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
 					{form.originalId
-						? `Edit case study — ${form.title}`
+						? `Edit case study - ${form.title}`
 						: "Add case study"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField
-						hint="Slug — load-bearing as /projects#<id>, e.g. accountabuddy"
+						hint="Slug - load-bearing as /projects#<id>, e.g. accountabuddy"
 						htmlFor="id"
 						label="ID"
 					>
@@ -227,7 +227,7 @@ export default function AdminCaseStudiesPage() {
 						<AdminInput
 							id="year"
 							onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-							placeholder="2025 —"
+							placeholder="2025 -"
 							value={form.year}
 						/>
 					</AdminField>
@@ -368,7 +368,7 @@ export default function AdminCaseStudiesPage() {
 			{isLoading && <AdminLoading />}
 			{isError && !cases && (
 				<AdminErrorState>
-					Couldn't load case studies — {queryError.message}
+					Couldn't load case studies - {queryError.message}
 				</AdminErrorState>
 			)}
 			{!isLoading && cases?.length === 0 && (

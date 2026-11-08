@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 /**
  * Auth + allowlist gate for `/admin`. Enforced again per-mutation by
- * `adminProcedure` (`src/server/api/trpc.ts`) — this layer's job is purely
+ * `adminProcedure` (`src/server/api/trpc.ts`) - this layer's job is purely
  * to keep a non-admin visitor from ever seeing the admin shell render, not
  * just having their mutations rejected.
  */
@@ -36,7 +36,7 @@ export default async function AdminLayout({
 				    (globals.css) is unlayered CSS and its `padding: 0 clamp(...)`
 				    shorthand beats any Tailwind `pt-*`/`pb-*` utility, which Tailwind
 				    emits inside `@layer utilities`. Unlayered always wins over layered,
-				    regardless of specificity — so `pt-28` on the `.shell` element
+				    regardless of specificity - so `pt-28` on the `.shell` element
 				    computes to 0px. Same split every public page uses (see
 				    about/page.tsx + about-hero.tsx). */}
 				<div className="mx-auto w-full max-w-5xl pt-24 pb-16 md:pt-28 md:pb-20">

@@ -10,9 +10,9 @@ export const themeStorageKeys = {
 } as const;
 
 /**
- * SSR seed values only — what the server renders on `<html>` before any
+ * SSR seed values only - what the server renders on `<html>` before any
  * client script runs. On the client, an absent stored `theme` resolves via
- * `prefers-color-scheme`, NOT via `themeDefaults.theme` — see
+ * `prefers-color-scheme`, NOT via `themeDefaults.theme` - see
  * `ThemeInitScript`. Do not "simplify" that away.
  */
 export const themeDefaults = {

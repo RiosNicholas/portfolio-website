@@ -9,7 +9,7 @@ import { navLinks } from "~/lib/site-links";
 import { cn } from "~/lib/utils";
 
 // Lazy so `next-auth/react` (and the badge/sign-out UI it powers) never
-// lands in the shared client bundle every public page loads — only
+// lands in the shared client bundle every public page loads - only
 // `/admin` routes render this. See agentWork/admin-signin-badge/02-plan.md.
 const AdminSessionControls = dynamic(
 	() =>

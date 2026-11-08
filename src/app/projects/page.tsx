@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 	openGraph: {
 		type: "website",
 		url: "/projects",
-		title: "Projects — Nicholas Rios",
+		title: "Projects - Nicholas Rios",
 		description,
 	},
 };

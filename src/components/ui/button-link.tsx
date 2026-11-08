@@ -29,7 +29,7 @@ export const buttonVariants = cva(
 	},
 );
 
-/** Inline text link: underlined in the brand colour. */
+/** Inline text link: underlined in the brand color. */
 export const textLinkClass =
 	"font-medium underline decoration-2 decoration-brand underline-offset-[0.25em] transition-colors duration-200 hover:text-brand-strong";
 

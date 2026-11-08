@@ -3,7 +3,7 @@ import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 const KEY_LENGTH = 64;
 const SALT_LENGTH = 16;
 /**
- * Changing these invalidates every existing `ADMIN_PASSWORD_HASH` —
+ * Changing these invalidates every existing `ADMIN_PASSWORD_HASH` -
  * regenerate with `npm run auth:hash`. `maxmem` must exceed `128 * N * r`
  * (Node's 32MB default is not enough if `N` is raised to 32768).
  */
@@ -30,8 +30,8 @@ export async function hashPassword(password: string): Promise<string> {
 
 /**
  * Verifies a plaintext password against a stored `scrypt:<salt>:<key>`
- * hash using a constant-time comparison. Never throws on malformed input —
- * always resolves `false` — so a corrupt/truncated hash can't surface as a
+ * hash using a constant-time comparison. Never throws on malformed input -
+ * always resolves `false` - so a corrupt/truncated hash can't surface as a
  * 500 instead of a failed login.
  */
 export async function verifyPassword(
@@ -46,7 +46,7 @@ export async function verifyPassword(
 
 	const expected = Buffer.from(keyHex, "hex");
 	// `Buffer.from(x, "hex")` truncates silently on malformed hex, and
-	// `timingSafeEqual` throws on a length mismatch — guard first.
+	// `timingSafeEqual` throws on a length mismatch - guard first.
 	if (expected.length !== KEY_LENGTH) return false;
 
 	const salt = Buffer.from(saltHex, "hex");

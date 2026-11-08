@@ -145,7 +145,7 @@ export function isAdminUserId(id: string): boolean {
 /**
  * Gates mutations to the single credentials identity this app can ever
  * mint (`ADMIN_USER_ID`, `src/server/auth/config.ts`). There is no
- * `User` row behind it — Credentials sessions are JWT-only. The check
+ * `User` row behind it - Credentials sessions are JWT-only. The check
  * stays separate from `protectedProcedure` so that adding a second
  * provider later can't silently promote every signed-in stranger to
  * admin.

@@ -12,7 +12,7 @@ export const env = createEnv({
 		// `src/server/data/*.ts`), and `/admin` requires a working NextAuth
 		// Credentials session. AUTH_SECRET now signs the session JWT itself
 		// (not just OAuth state). A build with these unset now fails fast
-		// instead of silently shipping a broken deploy — see README.md
+		// instead of silently shipping a broken deploy - see README.md
 		// "Deploying".
 		AUTH_SECRET: z.string(),
 		ADMIN_USERNAME: z.string().min(1),
@@ -20,7 +20,7 @@ export const env = createEnv({
 			.string()
 			.regex(
 				/^scrypt:[0-9a-f]{32}:[0-9a-f]{128}$/,
-				'must be "scrypt:<32 hex salt>:<128 hex key>" — generate with `npm run auth:hash`',
+				'must be "scrypt:<32 hex salt>:<128 hex key>" - generate with `npm run auth:hash`',
 			),
 		DATABASE_URL: z.string().url(),
 		// Direct (non-pooled) connection, used only by `prisma migrate`. Can be

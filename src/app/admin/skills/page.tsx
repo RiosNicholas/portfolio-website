@@ -124,7 +124,7 @@ export default function AdminSkillsPage() {
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit skill/tool — ${form.label}` : "Add skill/tool"}
+					{form.id ? `Edit skill/tool - ${form.label}` : "Add skill/tool"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="kind" label="Kind">
@@ -160,7 +160,7 @@ export default function AdminSkillsPage() {
 						/>
 					</AdminField>
 					<AdminField
-						hint="Optional — substring of the label to accent, e.g. Next.js"
+						hint="Optional - substring of the label to accent, e.g. Next.js"
 						htmlFor="accent"
 						label="Accent"
 					>
@@ -190,7 +190,7 @@ export default function AdminSkillsPage() {
 
 			{isError && !skills && (
 				<AdminErrorState>
-					Couldn't load skills/tools — {queryError.message}
+					Couldn't load skills/tools - {queryError.message}
 				</AdminErrorState>
 			)}
 

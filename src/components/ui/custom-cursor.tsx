@@ -62,7 +62,7 @@ const DOT_TRANSITION = { opacity: { duration: 0.2 } } as const;
 const DOT_TRANSITION_REDUCED = { opacity: { duration: 0 } } as const;
 
 // Single combined selector so hit-testing is one tree walk instead of three
-// — classify the returned element afterwards by inspecting it.
+// - classify the returned element afterwards by inspecting it.
 const HIT_TARGET_SELECTOR =
 	"a, button, [role=button], [data-cursor=photo], p, h1, h2, h3, h4, h5, h6";
 
@@ -105,7 +105,7 @@ export function CustomCursor() {
 	// so it's only ever applied once this component has actually confirmed a
 	// real pointer device and is rendering the replacement. Without this, a
 	// user with JS disabled (or on first paint before hydration) would get a
-	// hidden native cursor and no fake one to replace it — an invisible
+	// hidden native cursor and no fake one to replace it - an invisible
 	// pointer. Only `supportsHover` gates this, not `enabled`: the cursor
 	// still renders under reduced motion (see the guard below), so the
 	// native cursor must stay suppressed in that state too.
@@ -118,7 +118,7 @@ export function CustomCursor() {
 	}, [supportsHover]);
 
 	useEffect(() => {
-		// Skip attaching listeners entirely on devices without a real pointer —
+		// Skip attaching listeners entirely on devices without a real pointer -
 		// there's nothing to track. `enabled` (motion preference) does NOT gate
 		// this: the cursor still exists under reduced motion, it just degrades
 		// how it moves (see the render below), so listeners must stay attached
@@ -142,7 +142,7 @@ export function CustomCursor() {
 		};
 
 		const onMove = (e: MouseEvent) => {
-			// Motion values are cheap and must stay responsive — set them
+			// Motion values are cheap and must stay responsive - set them
 			// directly on every event.
 			mouseX.set(e.clientX);
 			mouseY.set(e.clientY);
@@ -172,7 +172,7 @@ export function CustomCursor() {
 
 	// Only devices without a real pointer (touch/coarse) skip the custom
 	// cursor entirely (see globals.css `cursor: auto` fallback for that case).
-	// Reduced/low motion still renders the cursor — `enabled` only controls
+	// Reduced/low motion still renders the cursor - `enabled` only controls
 	// spring-vs-raw ring position and animated-vs-instant transitions below.
 	if (!supportsHover) return null;
 
@@ -180,7 +180,7 @@ export function CustomCursor() {
 
 	return (
 		<>
-			{/* Dot — tracks the raw pointer position, no LERP/spring */}
+			{/* Dot - tracks the raw pointer position, no LERP/spring */}
 			<m.div
 				className="pointer-events-none fixed top-0 left-0 z-9999"
 				style={{ x: mouseX, y: mouseY }}
@@ -192,7 +192,7 @@ export function CustomCursor() {
 				/>
 			</m.div>
 
-			{/* Ring — soft-follows via spring when motion is enabled; tracks the
+			{/* Ring - soft-follows via spring when motion is enabled; tracks the
 			    raw pointer position with no lag under reduced/low motion. */}
 			<m.div
 				className="pointer-events-none fixed top-0 left-0 z-9999"

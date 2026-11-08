@@ -142,13 +142,13 @@ export default function AdminEndorsementsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="Home page recommendation cards. Paste in real LinkedIn recommendations — leave `published` off to stage one before it goes live."
+				description="Home page recommendation cards. Paste in real LinkedIn recommendations - leave `published` off to stage one before it goes live."
 				title="Endorsements"
 			/>
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit endorsement — ${form.name}` : "Add endorsement"}
+					{form.id ? `Edit endorsement - ${form.name}` : "Add endorsement"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="name" label="Name">
@@ -186,7 +186,7 @@ export default function AdminEndorsementsPage() {
 						/>
 					</AdminField>
 					<AdminField
-						hint="Optional — falls back to initials"
+						hint="Optional - falls back to initials"
 						htmlFor="avatarUrl"
 						label="Avatar URL"
 					>
@@ -232,12 +232,12 @@ export default function AdminEndorsementsPage() {
 			{isLoading && <AdminLoading />}
 			{isError && !endorsements && (
 				<AdminErrorState>
-					Couldn't load endorsements — {queryError.message}
+					Couldn't load endorsements - {queryError.message}
 				</AdminErrorState>
 			)}
 			{!isLoading && endorsements?.length === 0 && (
 				<AdminEmptyState>
-					No endorsements yet — the 12 placeholder testimonials that used to
+					No endorsements yet - the 12 placeholder testimonials that used to
 					live in `src/lib/endorsements.ts` were deliberately not migrated. Add
 					real ones here.
 				</AdminEmptyState>
@@ -275,7 +275,7 @@ export default function AdminEndorsementsPage() {
 								{!row.published && <AdminBadge>Draft</AdminBadge>}
 							</div>
 							<div className="max-w-md truncate font-mono text-(--ink-3) text-xs">
-								{row.role} — &ldquo;{row.quote}&rdquo;
+								{row.role} - &ldquo;{row.quote}&rdquo;
 							</div>
 						</AdminListRow>
 					))}

@@ -4,7 +4,7 @@ const themeInitScript = `(function(){try{var t=localStorage.getItem('${themeStor
 
 /**
  * Runs before paint to avoid FOUC. Must stay a Server Component rendered as
- * the first child of `<body>` — no `"use client"`, no `next/script`. A
+ * the first child of `<body>` - no `"use client"`, no `next/script`. A
  * hydrated client component or a deferred script tag would run after first
  * paint, reintroducing the flash this exists to prevent.
  */

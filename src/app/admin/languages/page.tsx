@@ -127,7 +127,7 @@ export default function AdminLanguagesPage() {
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit language — ${form.name}` : "Add language"}
+					{form.id ? `Edit language - ${form.name}` : "Add language"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="name" label="Name">
@@ -185,7 +185,7 @@ export default function AdminLanguagesPage() {
 
 			{isError && !languages && (
 				<AdminErrorState>
-					Couldn't load languages — {queryError.message}
+					Couldn't load languages - {queryError.message}
 				</AdminErrorState>
 			)}
 

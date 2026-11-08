@@ -5,7 +5,7 @@ import { createContext, useEffect, useState } from "react";
 
 /**
  * Context backing `useAnimationsEnabled` (`~/lib/use-animations-enabled`).
- * Seeded `true` to match the server's "assume motion is on" render — every
+ * Seeded `true` to match the server's "assume motion is on" render - every
  * consumer must stay hydration-safe against that seed, so don't change it.
  */
 export const AnimationsEnabledContext = createContext(true);
@@ -13,7 +13,7 @@ export const AnimationsEnabledContext = createContext(true);
 /**
  * One `matchMedia` + `MutationObserver` pair for the whole tree. Every
  * `Reveal`/`GeoDecoration`/`Marquee`/`CustomCursor` consumer reads the
- * result through context rather than subscribing itself — there are 20+
+ * result through context rather than subscribing itself - there are 20+
  * such consumers on a page, and per-instance subscriptions would be torn
  * down and recreated on every navigation. `MotionProvider` already wraps
  * the entire app, so this is the right level to own it.
@@ -51,12 +51,12 @@ function useAnimationsEnabledValue(): boolean {
 
 /**
  * Loads only the `domAnimation` feature bundle (variants, gestures,
- * exit animations) instead of the full `motion` package — keeps the
+ * exit animations) instead of the full `motion` package - keeps the
  * animation runtime small. `strict` forces every animated element in the
  * tree to use `m.*` (never `motion.*`), matching the project's
  * bundle-size goals for this migration.
  *
- * Also provides `AnimationsEnabledContext` — the single accessibility-motion
+ * Also provides `AnimationsEnabledContext` - the single accessibility-motion
  * subscription every `useAnimationsEnabled()` call site reads from.
  */
 export function MotionProvider({ children }: { children: React.ReactNode }) {

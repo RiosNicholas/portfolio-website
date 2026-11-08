@@ -1,4 +1,4 @@
-/** One quiet, centred line. The contact section above holds the links. */
+/** One quiet, centered line. The contact section above holds the links. */
 export function SiteFooter() {
 	return (
 		<footer className="shell pt-24 pb-10 md:pt-32 md:pb-12">

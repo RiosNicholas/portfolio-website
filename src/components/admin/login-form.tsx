@@ -12,7 +12,7 @@ import {
 } from "~/components/admin/admin-ui";
 
 type LoginFormProps = {
-	/** Already sanitized server-side (src/app/auth/login/page.tsx) — do not
+	/** Already sanitized server-side (src/app/auth/login/page.tsx) - do not
 	 * re-derive this from the URL here. */
 	returnUrl: string;
 };
@@ -35,7 +35,7 @@ export function LoginForm({ returnUrl }: LoginFormProps) {
 				redirect: false,
 			});
 			// NextAuth returns HTTP 200 with `ok: true` even on a wrong
-			// password when `redirect: false` is used — `error` is the only
+			// password when `redirect: false` is used - `error` is the only
 			// reliable failure signal here, never `ok`.
 			if (!result || result.error) {
 				setError("Invalid username or password.");

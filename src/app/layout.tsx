@@ -28,8 +28,8 @@ const description =
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
 	title: {
-		default: "Nicholas Rios — Software Engineer",
-		template: "%s — Nicholas Rios",
+		default: "Nicholas Rios - Software Engineer",
+		template: "%s - Nicholas Rios",
 	},
 	description,
 	authors: [{ name: "Nicholas Rios", url: profileLinks.github }],
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
 		type: "website",
 		url: "/",
 		siteName: "Nicholas Rios",
-		title: "Nicholas Rios — Software Engineer",
+		title: "Nicholas Rios - Software Engineer",
 		description,
 		locale: "en_US",
 	},
 	twitter: {
 		card: "summary_large_image",
-		title: "Nicholas Rios — Software Engineer",
+		title: "Nicholas Rios - Software Engineer",
 		description,
 	},
 	robots: { index: true, follow: true },

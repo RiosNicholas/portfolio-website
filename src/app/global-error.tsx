@@ -3,11 +3,11 @@
 import { useEffect } from "react";
 
 /**
- * Fires only when the root layout itself throws — Next.js requires this file
+ * Fires only when the root layout itself throws - Next.js requires this file
  * render its own `<html>`/`<body>` since it replaces the layout entirely.
  * Deliberately dependency-free (no Reveal, no CustomCursor, no next/font):
  * if the layout failed, don't assume anything above this component works.
- * Inline styles are the one place in this codebase that's the right call —
+ * Inline styles are the one place in this codebase that's the right call -
  * there's no guarantee the Tailwind-processed stylesheet or the design
  * tokens it depends on are safe to reach for here.
  */

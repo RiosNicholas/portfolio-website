@@ -4,7 +4,7 @@ const sections = [
 	{
 		href: "/admin/case-studies",
 		title: "Case studies",
-		description: "Projects page — /projects.",
+		description: "Projects page - /projects.",
 	},
 	{
 		href: "/admin/endorsements",
@@ -35,7 +35,7 @@ export default function AdminPage() {
 				Admin
 			</h1>
 			<p className="mt-3 max-w-prose font-normal font-sans text-(--ink-2) text-base leading-relaxed">
-				Content lives in Postgres now — edits here show up on the public site on
+				Content lives in Postgres now - edits here show up on the public site on
 				the next request, no redeploy needed.
 			</p>
 

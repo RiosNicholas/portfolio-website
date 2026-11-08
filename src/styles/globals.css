@@ -16,7 +16,7 @@
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 	--font-mono: ui-monospace, "Cascadia Code", monospace;
 
-	/* Public-page type scale — five sizes, nothing in between. Admin keeps
+	/* Public-page type scale - five sizes, nothing in between. Admin keeps
 	   Tailwind's default steps. */
 	--text-display: clamp(2rem, 0.6rem + 6.6vw, 7.5rem);
 	--text-display--line-height: 0.95;
@@ -35,7 +35,7 @@
 	/* Marquee (magicui pattern). Neither Tailwind nor tw-animate-css ships a
 	   marquee keyframe, and `ui/marquee.tsx` needs `animation-play-state` to
 	   pause/resume from wherever it stopped (a `motion`-driven animation
-	   can't resume like that) — that's why this lives here instead of as a
+	   can't resume like that) - that's why this lives here instead of as a
 	   `motion` animation. `--duration`/`--gap` are set per-instance by
 	   consumers via arbitrary-value classes (e.g. `[--duration:40s]`). */
 	--animate-marquee: marquee var(--duration, 40s) linear infinite;
@@ -61,7 +61,7 @@
 }
 
 @theme inline {
-	/* Semantic colours → utilities (bg-surface, text-ink-muted, bg-brand …) */
+	/* Semantic colors → utilities (bg-surface, text-ink-muted, bg-brand …) */
 	--color-ground: var(--ground);
 	--color-surface: var(--surface);
 	--color-surface-hover: var(--surface-hover);
@@ -121,20 +121,20 @@
 /*
    Three layers, each referencing only the one below it.
 
-   1. Primitives — Tailwind's swatch scales (--color-zinc-50 … 950,
+   1. Primitives - Tailwind's swatch scales (--color-zinc-50 … 950,
       --color-blue-*, --color-amber-*). Defined by Tailwind in OKLCH, a
-      colour space where equal lightness steps look equal, so neighbouring
-      shades always belong together. Nothing here invents a colour.
+      color space where equal lightness steps look equal, so neighboring
+      shades always belong together. Nothing here invents a color.
 
-   2. Mode scale — numbered steps that pick a swatch per theme. Step 1 is
+   2. Mode scale - numbered steps that pick a swatch per theme. Step 1 is
       the page, step 12 is the strongest text; light and dark mirror the
       same scale, so "one step off the ground" means the same thing in both.
 
-   3. Semantic — names a job (ground, surface, ink, brand, hero…) and
+   3. Semantic - names a job (ground, surface, ink, brand, hero…) and
       points at a step. Components use only these, through the utilities
       registered in `@theme inline` (bg-surface, text-ink-muted, bg-brand…).
 
-   Colour roles: blue = the brand mark and anything interactive; amber =
+   Color roles: blue = the brand mark and anything interactive; amber =
    the hero's live word and its button, nowhere else.
 */
 
@@ -316,7 +316,7 @@
 	}
 
 	/* Site-wide keyboard focus ring. `site-nav.tsx`'s own nav-item ring stays
-	   as-is (already `--accent`-based) — this just covers everything else
+	   as-is (already `--accent`-based) - this just covers everything else
 	   that didn't have one (skip link, CTAs, theme toggle, case-study links,
 	   etc.) without hand-adding `focus-visible:` classes everywhere. */
 	:focus-visible {
@@ -327,7 +327,7 @@
 
 /* ─── Motion ────────────────────────────────────────────────────────────────── */
 /* Declared after `@layer base` (lower-specificity `*` selectors) so
-   selector specificity ascends in source order — fixes Biome's
+   selector specificity ascends in source order - fixes Biome's
    noDescendingSpecificity against `*, *::before, *::after` above. The OS-level
    `prefers-reduced-motion` block is declared first, ahead of the site's own
    `data-motion="low"` toggle, for the same reason (its bare `.no-low`
@@ -340,7 +340,7 @@
 	}
 	/* `[--duration]` marquees run an `infinite` CSS animation, so the
 	   `0.001s !important` rule above would turn them into a ~1000Hz strobe
-	   instead of a pause — the JS `useAnimationsEnabled()` gate only takes
+	   instead of a pause - the JS `useAnimationsEnabled()` gate only takes
 	   over post-hydration, so this covers the pre-hydration window. */
 	[data-marquee-group] {
 		animation: none !important;
@@ -362,8 +362,8 @@
 }
 
 /* Custom cursor only takes over once `custom-cursor.tsx` confirms a real
-   pointer device and actually mounts. Until then — no JS, first paint
-   before hydration, or a touch/coarse pointer — every element keeps its
+   pointer device and actually mounts. Until then - no JS, first paint
+   before hydration, or a touch/coarse pointer - every element keeps its
    native cursor affordance (arrow on body, pointer-hand on links/buttons).
    `cursor: inherit` on interactive elements makes body's policy the single
    source of truth instead of scattered per-element `cursor-none` utilities;
@@ -423,7 +423,7 @@
 	}
 }
 
-/* Reduced motion: words are simply there — no delayed entrance. */
+/* Reduced motion: words are simply there - no delayed entrance. */
 @media (prefers-reduced-motion: reduce) {
 	.word-rise {
 		animation: none;

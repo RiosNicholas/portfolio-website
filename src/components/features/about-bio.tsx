@@ -35,7 +35,7 @@ export async function AboutBio() {
 					</h2>
 					<div className="mt-6 flex max-w-[34em] flex-col gap-5 text-lead">
 						<p className="m-0">
-							I specialize in frontend development and platform engineering —
+							I specialize in frontend development and platform engineering -
 							design systems, developer tooling, and scalable frontend
 							architecture. I enjoy building systems that improve developer
 							experience and enable teams to move faster.

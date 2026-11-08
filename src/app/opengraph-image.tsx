@@ -4,7 +4,7 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 /**
- * Deliberately uses the system sans stack, not next/font — ImageResponse
+ * Deliberately uses the system sans stack, not next/font - ImageResponse
  * needs fonts loaded as raw buffers, and fighting that isn't worth the
  * complexity for a social-card generator. Colors are the light-theme
  * `--paper`/`--ink`/`--accent` values hardcoded, since CSS custom properties
