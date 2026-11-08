@@ -64,10 +64,8 @@ export function HeroSection() {
 				    line is frozen on its first phrase. */}
 				<div className="mt-8 flex flex-col gap-8 md:mt-16 md:flex-row md:items-end md:justify-between md:gap-10">
 					<p className="motion-fallback m-0 max-w-[36rem] text-hero-muted text-lead">
-						I&apos;m Nicholas — a Software Engineer specializing in UI platform
-						engineering, building infrastructure and agentic AI systems in Risk
-						Tech at JPMorganChase, from shared components to production AI
-						agents.
+						I&apos;m Nicholas. I build web applications, component libraries,
+						developer tools, and agentic AI tooling.
 					</p>
 
 					<Reveal className="shrink-0" delay={0.5}>

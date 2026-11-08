@@ -36,7 +36,20 @@ export function RotatingPhrase({
 		return () => window.clearTimeout(id);
 	}, [enabled, index, phrases.length]);
 
-	const phrase = enabled ? phrases[index] : still;
+	// Reduced motion: a plain, fixed phrase. Without this, the switch from
+	// the first phrase to `still` after hydration plays one exit animation.
+	if (!enabled) {
+		return (
+			<span
+				aria-hidden
+				className="relative block whitespace-nowrap pb-[0.08em] text-pop"
+			>
+				{still}
+			</span>
+		);
+	}
+
+	const phrase = phrases[index];
 
 	return (
 		<span
