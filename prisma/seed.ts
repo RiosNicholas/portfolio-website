@@ -7,28 +7,28 @@
  *
  * Endorsements are real recommendations copy-pasted from LinkedIn (not the
  * 12 fabricated placeholders that used to live in `src/lib/endorsements.ts`
- * — those are gone for good), one recommendation quoted whole as a single
+ * - those are gone for good), one recommendation quoted whole as a single
  * marquee card per person. The `linkedinUrl` column is still deliberately
  * non-unique (a person could get a second card in the future), so unlike
- * `CaseStudy` there's no natural per-row unique key — this table falls
+ * `CaseStudy` there's no natural per-row unique key - this table falls
  * into the same "clear and reinsert" bucket as `CvEntry`/`Skill` below.
  *
  * `CaseStudy` and `Language` rows are upserted by their natural key (slug
  * `id`, load-bearing as `/work#<id>` anchors, and `name` respectively) so
  * re-running this script is safe for those two. `CvEntry`, `Skill`, and
  * `Endorsement` have no natural unique key from the source data, so this
- * script clears and re-inserts those three tables on every run — fine for
+ * script clears and re-inserts those three tables on every run - fine for
  * the initial migration, but don't re-run it after you've started editing
  * CV entries, skills, or endorsements by hand via /admin, or those edits
  * will be wiped.
  *
  * IMPORTANT: this script writes to Postgres directly, bypassing tRPC, so it
- * never calls `revalidateTag()` — unlike an edit made through /admin, a
+ * never calls `revalidateTag()` - unlike an edit made through /admin, a
  * change here won't show up on the public pages until the Next.js data
  * cache is cleared (restart `next dev` locally, or redeploy in production).
  *
  * 2026-08-31 (admin-instant-feedback-and-photoshop task): the `Skill` table
- * had drifted from this file — three rows had been created by hand via
+ * had drifted from this file - three rows had been created by hand via
  * /admin (an errant SKILL-kind "Adobe Photoshop", a TOOL-kind "Adobe
  * Photoshop", and a re-added "Glove80 Keyboard" that landed at sortOrder 0
  * instead of the end of the list) during an earlier admin-UI debugging
@@ -61,28 +61,6 @@ type SeedCaseStudy = {
 
 const cases: SeedCaseStudy[] = [
 	{
-		id: "risk-agents",
-		num: "1",
-		year: "2026 — Present",
-		title: "Risk Tech ",
-		titleEm: "Agents",
-		featured: true,
-		// 2026-08-31 (risk-agents-employer-attribution task, expanded scope):
-		// role/org/description/stats rewritten for explicit JPMorganChase
-		// employer attribution and updated impact framing. Revert path:
-		// /admin/case-studies, row "risk-agents".
-		role: "UI Subject Matter Expert · Core Developer",
-		org: "JPMorganChase · Risk Technology · Internal agent platform",
-		description:
-			"Agents that shift risk and compliance checks left in the SDLC, closing the gap between developers, product, and design. Built the agents and guardrails that keep generated code aligned with the design system and architecture — cutting technical debt instead of adding to it.",
-		tags: ["MCP", "Claude Code", "GitHub Copilot", "React", "Cypress"],
-		stats: [
-			{ k: "Scope", v: "Design system & UI" },
-			{ k: "Impact", v: "+40% productivity" },
-			{ k: "Status", v: "Ongoing" },
-		],
-	},
-	{
 		id: "accountabuddy",
 		num: "2",
 		year: "2024",
@@ -92,7 +70,7 @@ const cases: SeedCaseStudy[] = [
 		role: "Solo · Capstone",
 		org: "Habit pairing app · React · Supabase",
 		description:
-			"Accountability app pairing you with exactly one other person — not a feed, not a streak machine. You set a thing, they set a thing, the app handles nudges. Designed, built, shipped in 8 weeks.",
+			"Accountability app pairing you with exactly one other person - not a feed, not a streak machine. You set a thing, they set a thing, the app handles nudges. Designed, built, shipped in 8 weeks.",
 		tags: [
 			"React",
 			"Next.js",
@@ -112,7 +90,7 @@ const cases: SeedCaseStudy[] = [
 	{
 		id: "gslsamp",
 		num: "3",
-		year: "Feb '23 — May '24",
+		year: "Feb '23 - May '24",
 		title: "",
 		titleEm: "GS-LSAMP",
 		titleSuffix: " Website",
@@ -138,7 +116,7 @@ const cases: SeedCaseStudy[] = [
 		role: "Solo · Full-stack",
 		org: "Anonymous music forum · React · Node · Express",
 		description:
-			"Full-stack music forum built in the spirit of Reddit and RateYourMusic — a collaborative space for talking about records without a username attached. Anonymous threads, posts, and critique on whatever's in rotation. Built and deployed end to end as a CodePath capstone.",
+			"Full-stack music forum built in the spirit of Reddit and RateYourMusic - a collaborative space for talking about records without a username attached. Anonymous threads, posts, and critique on whatever's in rotation. Built and deployed end to end as a CodePath capstone.",
 		tags: [
 			"React",
 			"JavaScript",
@@ -181,7 +159,7 @@ const cases: SeedCaseStudy[] = [
 		role: "Data Analysis · Data Wrangling",
 		org: "Rutgers University · Data Science minor · Spotify Web API · Python",
 		description:
-			"Study of valence — the musical-positivity measure of how happy or somber a track sounds — across 44,894 US tracks, 1960s through 2010s. Pulled with Spotipy, deduplicated, split into hits and flops by popularity, then banded happy vs. somber. Delivered as a Jupyter notebook and presentation.",
+			"Study of valence - the musical-positivity measure of how happy or somber a track sounds - across 44,894 US tracks, 1960s through 2010s. Pulled with Spotipy, deduplicated, split into hits and flops by popularity, then banded happy vs. somber. Delivered as a Jupyter notebook and presentation.",
 		tags: [
 			"Python",
 			"Pandas",
@@ -210,36 +188,41 @@ type SeedCvEntry = {
 
 const experience: SeedCvEntry[] = [
 	{
-		years: "Feb '25 — Present",
+		years: "Feb '25 - Present",
 		title: "Software Engineer",
 		where: "JPMorgan Chase & Co. · Jersey City, NJ",
 	},
 	{
-		years: "Jun '24 — Aug '24",
+		years: "Jun '24 - Aug '24",
 		title: "Software Engineer Intern",
 		where: "JPMorgan Chase & Co. · Jersey City, NJ",
 	},
 	{
-		years: "Feb '23 — May '24",
+		years: "Feb '23 - May '24",
 		title: "Lead Web Developer",
 		where: "Rutgers University–Newark GS-LSAMP · Newark, NJ",
 	},
 	{
-		years: "Jun '23 — Aug '23",
+		years: "Jun '23 - Aug '23",
 		title: "Software Engineer Intern",
 		where: "Fiserv · Berkeley Heights, NJ",
+	},
+	{
+		years: "Aug '22 - Dec '22",
+		title: "Computer Science Education Facilitator",
+		where: "Apple Community Education Initiative",
 	},
 ];
 
 const education: SeedCvEntry[] = [
 	{
-		years: "Sep '21 — Dec '24",
+		years: "Sep '21 - Dec '24",
 		title: "B.A. Computer Science, Minor in Data Science",
 		titleAccent: ["Computer Science"],
 		where: "Rutgers University · Magna Cum Laude",
 	},
 	{
-		years: "Feb '23 — Nov '23",
+		years: "Feb '23 - Nov '23",
 		title: "Certificate in Web Development",
 		where: "CodePath",
 	},
@@ -247,17 +230,17 @@ const education: SeedCvEntry[] = [
 
 const activities: SeedCvEntry[] = [
 	{
-		years: "Apr '23 — Dec '24",
+		years: "Apr '23 - Dec '24",
 		title: "Co-Founder & President",
 		where: "ColorStack Chapter @ Rutgers University–Newark",
 	},
 	{
-		years: "Oct '24 — Dec '24",
+		years: "Oct '24 - Dec '24",
 		title: "Chapter Ambassador",
 		where: "ColorStack",
 	},
 	{
-		years: "Oct '24 — Dec '24",
+		years: "Oct '24 - Dec '24",
 		title: "Fellow",
 		where: "Braven",
 	},
@@ -273,7 +256,7 @@ const activities: SeedCvEntry[] = [
 type SeedSkill = { label: string; accent?: string };
 
 const skills: SeedSkill[] = [
-	// Leads the list per the Aug 2026 skills-reorder task — no existing skill
+	// Leads the list per the Aug 2026 skills-reorder task - no existing skill
 	// label matched "UI development" closely enough to rename in place (the
 	// list already led with UI-adjacent skills), so this is a new literal
 	// entry rather than a reordering of the 14 below it. One-field revert via
@@ -326,7 +309,7 @@ const favoriteTools: string[] = [
 	// 2026-09 admin-crud-issues task: "Glove80 Keyboard" renamed to its
 	// manufacturer-qualified name, "MoErgo Glove80", per explicit user
 	// direction. "AeroSpace" (macOS tiling window manager) added as a new,
-	// separate TOOL entry — not a replacement for "Rectangle" above, which
+	// separate TOOL entry - not a replacement for "Rectangle" above, which
 	// stays. Revert path: /admin/skills.
 	"MoErgo Glove80",
 	"AeroSpace",
@@ -356,24 +339,22 @@ type SeedRecommender = {
 };
 
 // Array index is sortOrder (see seedEndorsements below), so display order
-// (sortOrder asc) is Steven → Matthew → Joshua. Aug 2026 reorder task:
-// Matthew moved to the middle slot; Steven took slot 0 to preserve the
-// pre-existing Steven-before-Joshua relative order — the smallest change
-// that satisfies "Matthew in the middle." Quote/role/URL text untouched.
+// (sortOrder asc) is Matthew → Steven → Joshua: the JPMorganChase
+// endorsement leads, since it's the current role. Quote/role/URL text untouched.
 const recommenders: SeedRecommender[] = [
-	{
-		name: "Steven Tejeda",
-		role: "Senior Software Engineer II · Fiserv",
-		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
-		quote:
-			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
-	},
 	{
 		name: "Matthew Baker",
 		role: "Senior Lead Software Engineer · JPMorganChase",
 		linkedinUrl: "https://www.linkedin.com/in/matthew-baker-a339063/",
 		quote:
 			"Nicholas is a super smart software engineer — he was able to land a position with our front-end architecture group very early in his career, not an easy feat. Nick has a strong work ethic and is passionate about technology. He's also a really nice guy, easy to get along with. Nicholas is one of the rare people who is both highly technical but also aesthetically / design oriented. He was a strong member of our architecture team at JPMorgan Chase.",
+	},
+	{
+		name: "Steven Tejeda",
+		role: "Senior Software Engineer II · Fiserv",
+		linkedinUrl: "https://www.linkedin.com/in/steventejeda/",
+		quote:
+			"Nick consistently demonstrated a high level of dedication, technical prowess, and professionalism that greatly impressed the team. During his internship, Nick consistently stood out for his strong work ethic and eagerness to learn. He quickly adapted to our development environment and showcased a deep understanding of our software engineering principles. His ability to grasp complex concepts and apply them effectively was evident in the projects he undertook.",
 	},
 	{
 		name: "Joshua Hwang",
@@ -386,21 +367,21 @@ const recommenders: SeedRecommender[] = [
 
 // Exported per-table so the deploy pipeline (scripts/seed-if-empty.ts) can
 // seed only whichever tables are currently empty, instead of an all-or-
-// nothing run — a DB can legitimately have some tables populated (by a
+// nothing run - a DB can legitimately have some tables populated (by a
 // prior seed, or by hand via /admin) and others still empty.
 
 export async function seedCaseStudies(db: PrismaClient) {
 	// One-time: the "acountabuddy" → "accountabuddy" rename (Aug 2026)
-	// changes a primary key, which upsert can't do — it would leave the
+	// changes a primary key, which upsert can't do - it would leave the
 	// old row orphaned. Idempotent no-op on a DB that never had it.
 	await db.caseStudy.deleteMany({ where: { id: "acountabuddy" } });
 
-	// One-time: Evangeliu Coffee pulled from the site (Aug 2026) — not
+	// One-time: Evangeliu Coffee pulled from the site (Aug 2026) - not
 	// enough shipped yet to show. Upsert can't delete a dropped row, so
 	// remove it explicitly. Idempotent no-op once applied.
 	await db.caseStudy.deleteMany({ where: { id: "evangeliu" } });
 
-	// Case studies — upsert by slug id.
+	// Case studies - upsert by slug id.
 	for (const [index, study] of cases.entries()) {
 		await db.caseStudy.upsert({
 			where: { id: study.id },
@@ -439,7 +420,7 @@ export async function seedCaseStudies(db: PrismaClient) {
 }
 
 export async function seedCvEntries(db: PrismaClient) {
-	// CV entries — no natural unique key in the source data, so clear + reinsert.
+	// CV entries - no natural unique key in the source data, so clear + reinsert.
 	await db.cvEntry.deleteMany({});
 	await db.cvEntry.createMany({
 		data: [
@@ -475,7 +456,7 @@ export async function seedCvEntries(db: PrismaClient) {
 }
 
 export async function seedSkills(db: PrismaClient) {
-	// Skills & tools — same "no natural key" situation as CV entries.
+	// Skills & tools - same "no natural key" situation as CV entries.
 	await db.skill.deleteMany({});
 	await db.skill.createMany({
 		data: [
@@ -496,7 +477,7 @@ export async function seedSkills(db: PrismaClient) {
 }
 
 export async function seedEndorsements(db: PrismaClient) {
-	// Endorsements — no natural unique key, so same clear-and-reinsert
+	// Endorsements - no natural unique key, so same clear-and-reinsert
 	// approach as CvEntry/Skill.
 	await db.endorsement.deleteMany({});
 	await db.endorsement.createMany({
@@ -512,7 +493,7 @@ export async function seedEndorsements(db: PrismaClient) {
 }
 
 export async function seedLanguages(db: PrismaClient) {
-	// Languages — upsert by name (natural key), same approach as CaseStudy.
+	// Languages - upsert by name (natural key), same approach as CaseStudy.
 	for (const [index, language] of languages.entries()) {
 		await db.language.upsert({
 			where: { name: language.name },

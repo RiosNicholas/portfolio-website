@@ -11,7 +11,7 @@ import type {
 import { cn } from "~/lib/utils";
 
 /** Small set of styled form primitives for `/admin`'s CRUD pages. Not a
- * general-purpose library — built to match the site's existing design
+ * general-purpose library - built to match the site's existing design
  * tokens (`--paper-2`/`--border`/`--r-md`/`--cta-bg`, `font-mono` labels)
  * rather than pulling in an unstyled default form kit. */
 

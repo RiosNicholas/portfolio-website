@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect } from "react";
+import { buttonVariants, textLinkClass } from "~/components/ui/button-link";
 
 export default function RouteError({
 	error,
@@ -16,30 +17,22 @@ export default function RouteError({
 
 	return (
 		<main
-			className="shell flex min-h-[70vh] flex-col items-center justify-center gap-6 py-24 text-center"
+			className="shell flex min-h-[60vh] flex-col justify-center gap-8 py-24"
 			id="main-content"
 		>
-			<span className="font-medium font-mono text-(--ink-4) text-xs uppercase tracking-wider">
-				Something broke
-			</span>
-			<h1 className="font-display font-semibold text-4xl text-foreground leading-none tracking-tighter md:text-6xl">
-				<em className="mark">Unexpected</em> error
-			</h1>
-			<p className="max-w-md font-sans text-(--ink-2) text-base leading-relaxed">
-				This page hit a runtime error. You can try again, or head back home.
+			<h1 className="m-0 font-semibold text-display">Something broke</h1>
+			<p className="m-0 max-w-[32rem] text-lead">
+				This page hit an unexpected error. You can try again, or head back home.
 			</p>
-			<div className="flex flex-wrap items-center justify-center gap-3">
+			<div className="flex flex-wrap items-center gap-x-8 gap-y-4">
 				<button
-					className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
+					className={buttonVariants()}
 					onClick={() => reset()}
 					type="button"
 				>
 					Try again
 				</button>
-				<Link
-					className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) border border-(--border-2) px-5 py-3 font-display font-semibold text-foreground text-sm tracking-tight no-underline transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--frosted)"
-					href="/"
-				>
+				<Link className={`${textLinkClass} text-body`} href="/">
 					Go home
 				</Link>
 			</div>

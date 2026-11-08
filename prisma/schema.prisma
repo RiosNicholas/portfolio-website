@@ -13,13 +13,12 @@ datasource db {
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
     // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
-    // Vercel Postgres (Neon-backed): the pooled connection above is used at
-    // runtime; migrations need a direct (non-pooled) connection. Locally
-    // both env vars can point at the same start-database.sh Postgres. On
-    // Vercel, set DATABASE_URL = POSTGRES_PRISMA_URL and DIRECT_URL =
-    // POSTGRES_URL_NON_POOLING after connecting the Vercel Postgres
+    // Neon Postgres: the pooled connection above is used at runtime;
+    // migrations need a direct (non-pooled) connection. Locally both env
+    // vars can point at the same start-database.sh Postgres. On Vercel,
+    // set DIRECT_URL = DATABASE_URL_UNPOOLED after connecting the Neon
     // integration (one-time manual mapping in the project's env var
-    // settings — see README.md "Deploying").
+    // settings - see README.md "Deploying").
     directUrl = env("DIRECT_URL")
 }
 
@@ -94,7 +93,7 @@ enum SkillKind {
 }
 
 model CaseStudy {
-    id          String   @id // reuse existing slugs verbatim ("risk-agents", "evangeliu", ...) —
+    id          String   @id // reuse existing slugs verbatim ("risk-agents", "evangeliu", ...) -
     // load-bearing as /work#<id> anchors in case-study.tsx / work-teaser.tsx
     num         String
     year        String
@@ -157,7 +156,7 @@ model Skill {
 
 model Language {
     id        String   @id @default(cuid())
-    name      String   @unique // natural key — seed upserts by this
+    name      String   @unique // natural key - seed upserts by this
     level     String
     published Boolean  @default(true)
     sortOrder Int      @default(0)

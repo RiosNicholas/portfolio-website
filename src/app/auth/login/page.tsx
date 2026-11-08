@@ -45,7 +45,7 @@ export default async function LoginPage({
 			    (globals.css) is unlayered CSS and its `padding: 0 clamp(...)`
 			    shorthand beats any Tailwind `pt-*`/`pb-*` utility, which Tailwind
 			    emits inside `@layer utilities`. Unlayered always wins over layered,
-			    regardless of specificity — so `pt-28` on the `.shell` element
+			    regardless of specificity - so `pt-28` on the `.shell` element
 			    computes to 0px. Same split every public page uses (see
 			    admin/layout.tsx). */}
 			<div className="mx-auto w-full max-w-md pt-24 pb-16 md:pt-28 md:pb-20">

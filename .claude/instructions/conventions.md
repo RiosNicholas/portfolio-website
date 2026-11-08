@@ -2,19 +2,19 @@
 
 ## Formatting & linting
 
-Biome is the only formatter/linter — never suggest ESLint or Prettier
+Biome is the only formatter/linter - never suggest ESLint or Prettier
 config. Run `npm run check:write` before considering work done; don't
 hand-format around what Biome would rewrite.
 
 Tailwind classes inside `cn()`, `clsx()`, and `cva()` calls must be in the
-order Biome's `useSortedClasses` rule expects — let `check:write` sort them
+order Biome's `useSortedClasses` rule expects - let `check:write` sort them
 rather than hand-ordering.
 
 ## Components
 
 - Function components, no class components.
 - Before building a component (especially anything animated or
-  decorative — marquees, reveals, hover effects, spotlight/glow
+  decorative - marquees, reveals, hover effects, spotlight/glow
   treatments), check shadcn/ui and Magic UI first. Don't hand-roll what
   either library already solves.
 - Co-locate variants with `cva()` when a component has more than a couple
@@ -29,7 +29,7 @@ rather than hand-ordering.
 
 - Tailwind utility classes are the default for layout, spacing, color,
   and sizing. Inline `style={{}}` and hardcoded px values (including
-  `clamp()` strings) are a last resort, not a convenience — if Tailwind's
+  `clamp()` strings) are a last resort, not a convenience - if Tailwind's
   spacing/sizing/typography scale can express it, use the class, not the
   inline style.
 - **Mobile-first, always.** Base (unprefixed) classes target mobile;
@@ -43,12 +43,12 @@ rather than hand-ordering.
   (pulse, spin, bounce). Don't add a new `@keyframes` block to
   `globals.css` if an existing utility or the `Reveal` pattern already
   covers it. Every `motion`-driven component must stay accessible when
-  animations are disabled — see
+  animations are disabled - see
   `.claude/instructions/animation-accessibility.md`.
 
 ## Imports
 
-- Always use the `~/` path alias for internal imports — no `../../../`
+- Always use the `~/` path alias for internal imports - no `../../../`
   chains.
 - Group imports: external packages, then `~/` internal, then relative
   (rare). Biome's import sorting handles ordering within groups.
@@ -57,7 +57,7 @@ rather than hand-ordering.
 
 - Components: `PascalCase` filenames matching the export
   (`HeroSection.tsx` → `export function HeroSection`), except existing
-  kebab-case files in this repo (`hero-section.tsx`) — match whatever the
+  kebab-case files in this repo (`hero-section.tsx`) - match whatever the
   surrounding directory already does rather than mixing conventions in the
   same folder.
 - tRPC routers: `camelCase` procedure names, router file named after the
@@ -77,7 +77,7 @@ rather than hand-ordering.
 ## tRPC
 
 - Mutations that change data the user doesn't own, or that require a
-  session, use `protectedProcedure` — never gate that check inside the
+  session, use `protectedProcedure` - never gate that check inside the
   handler body with a manual `if (!session)`.
 - Validate all procedure input with `zod` schemas; don't accept untyped
   `input` and trust the client.
@@ -90,10 +90,10 @@ rather than hand-ordering.
 
 ## Things to avoid
 
-- CSS Modules — don't add `*.module.css` files.
+- CSS Modules - don't add `*.module.css` files.
 - New API routes under `src/app/api/` for things a tRPC procedure could
   do instead.
-- Hand-authored SVG icons or a new icon package — `lucide-react` and
+- Hand-authored SVG icons or a new icon package - `lucide-react` and
   `@radix-ui/react-icons` cover it. Don't use `@hugeicons/react`.
 - Inline `style={{}}` or hardcoded px/`clamp()` values where a Tailwind
   utility class already expresses the same thing.
@@ -101,6 +101,6 @@ rather than hand-ordering.
   utility or the `motion`-based `Reveal` pattern.
 - Building a component from scratch (especially animated/decorative
   ones) before checking whether shadcn/ui or Magic UI already has it.
-- Desktop-first styling — always start from the mobile/base styles and
+- Desktop-first styling - always start from the mobile/base styles and
   layer up with `sm:`/`md:`/`lg:`/`xl:`.
 - Hardcoding content that belongs in `src/lib/` as static data.

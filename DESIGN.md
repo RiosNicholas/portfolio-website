@@ -1,4 +1,4 @@
-# DESIGN.md — Nicholas Rios · Portfolio
+# DESIGN.md - Nicholas Rios · Portfolio
 
 Design direction and token reference for the portfolio site. Implementation
 lives in `src/styles/globals.css` (Tailwind v4 + OKLCH tokens) and
@@ -8,131 +8,209 @@ lives in `src/styles/globals.css` (Tailwind v4 + OKLCH tokens) and
 
 ## 1. Direction
 
-Warm paper with bold accent pops. Soft warm cream paper (light) or warm
-espresso/stone (dark) with a low-contrast graph-paper grid running edge to
-edge. Confident display type (Schibsted Grotesk), a swappable accent
-(cobalt/pink/lime/grape — cobalt is the current default), geometric shapes
-(rings, triangles, dots) floating in whitespace, marker-highlight emphasis
-on one word per headline, yellow CTA buttons.
+Clean and minimal, with some flair. It should read as a frontend engineer's
+site, not a template. Every page opens on a full-width hero band with a
+live ASCII field; below it, flat zinc surfaces, one typeface, rounded cards
+and pill buttons. Blue is the brand. Amber shows up only in the hero.
 
-Primary goal: sell technical skills in UI + platform engineering. Clean,
-minimal, no filler. Voice: confident, plain-spoken, dry wit allowed.
+The site used to be maximalist (graph-paper grid, floating geometric
+shapes, marker highlights, a swappable accent, yellow CTAs, monospace
+labels). All of that is gone. Don't bring it back.
+
+Primary goal: sell frontend engineering - web apps, component libraries,
+developer tools, and agentic AI tooling (agents, tools, MCPs, chat). Voice:
+confident, plain-spoken, dry wit allowed.
 
 ## 2. Copy rules
 
-- One `<em className="mark">` per headline — never two, never zero. The
-  marker highlight lands on a single 1-word concept.
-- Numbers: show them when real. Don't invent metrics — the seeded
-  `CaseStudy` stats and `Endorsement` quotes are both real (see README.md
-  "Content & admin"), never invented placeholders.
+- Headlines are plain sentences. No highlighted or marked-up words.
+- Numbers: show them when real. Don't invent metrics. The seeded
+  `CaseStudy` stats and `Endorsement` quotes are real (see README.md
+  "Content & admin").
 - No gerunds as sentence-starting nouns ("Building", "Shipping"). Lead with
   a verb or a statement.
-- Avoid clichés: "passionate", "drives results", "craft at scale".
+- Avoid clichés: "passionate", "drives results", "craft at scale". Don't
+  describe the work as "UI platforms" in the hero.
+- "resume", no accents.
+- Emphasis in running text is plain italic (`<em>`); key terms can carry
+  `font-semibold text-ink` against muted surrounding text (see the Status
+  cell).
 
 ## 3. Tokens (`src/styles/globals.css`)
 
-All colors are OKLCH via Tailwind v4's `@theme` + CSS custom properties, not
-hex. The values below are the underlying Tailwind palette names each token
-resolves to — read `globals.css` for the actual `:root` block, don't
-hand-copy hex here.
+All colors are OKLCH. Nothing invents a color: every value is a Tailwind
+swatch or a `color-mix` of two tokens. Three layers, each referencing only
+the one below it:
 
-**Light** — `--paper: amber-50`, `--paper-2: white`, `--paper-3: amber-100`,
-`--ink: stone-900`, `--ink-2: stone-700`, `--ink-3: stone-600`,
-`--ink-4:` a stone-500/600 mix (footer/meta text — contrast-checked against
-`--paper`, ~5.7:1, passes WCAG AA).
+1. **Primitives** - Tailwind's own scales (`--color-zinc-*`,
+   `--color-blue-*`, `--color-amber-*`).
+2. **Mode scale** - numbered steps that pick a swatch per theme
+   (`--neutral-1` page … `--neutral-12` strongest text, plus `--blue-*` and
+   `--amber-*` roles). Dark mode only redefines this layer.
+3. **Semantic** - names a job and points at a step. Components use only
+   these, through utilities registered in `@theme inline`.
 
-**Dark** (`:root[data-theme="dark"]`) — `--paper: stone-950`,
-`--paper-2: stone-900`, `--paper-3: stone-800`, `--ink: amber-50`,
-`--ink-2/3/4: stone-200/300/400`. Never cold black — always warm stone.
+| Semantic token     | Utility                | Light                | Dark                          |
+|--------------------|------------------------|----------------------|-------------------------------|
+| `--ground`         | `bg-ground`            | zinc-50              | zinc-950                      |
+| `--surface`        | `bg-surface`           | zinc-100             | zinc-900                      |
+| `--surface-hover`  | `bg-surface-hover`     | zinc-200             | zinc-800                      |
+| `--surface-raised` | `bg-surface-raised`    | white                | zinc-800                      |
+| `--ink`            | `text-ink`             | zinc-950             | zinc-100                      |
+| `--ink-muted`      | `text-ink-muted`       | zinc-600             | zinc-400                      |
+| `--brand`          | `bg-brand`             | blue-600             | blue-500                      |
+| `--brand-hover`    | `bg-brand-hover`       | blue-700             | blue-400                      |
+| `--brand-strong`   | `text-brand-strong`    | blue-700             | blue-300                      |
+| `--brand-soft`     | `bg-brand-soft`        | blue-100             | blue-950                      |
+| `--on-brand`       | `text-on-brand`        | white                | white                         |
+| `--hero`           | `bg-hero`              | blue-700             | zinc-950 → 900, 25% mix       |
+| `--hero-ink`       | `text-hero-ink`        | white                | zinc-100                      |
+| `--hero-muted`     | `text-hero-muted`      | blue-100             | zinc-400                      |
+| `--hero-subtle`    | `text-hero-subtle`     | blue-200             | slate-400                     |
+| `--hero-glyph`     | (canvas only)          | blue-300             | blue-400                      |
+| `--pop`            | `bg-pop` / `text-pop`  | amber-300            | amber-300                     |
+| `--pop-hover`      | `bg-pop-hover`         | amber-200            | amber-200                     |
+| `--pop-ink`        | `text-pop-ink`         | zinc-950             | zinc-950                      |
+| `--focus`          | (focus ring)           | blue-600             | blue-500                      |
 
-**Accent** (`data-accent` on `<html>`: `cobalt` default, plus `pink`,
-`lime`, `grape`) — each sets `--accent`, `--accent-text` (readable on
-`--paper`, distinct light/dark values), `--accent-glow`, `--marker-ink`.
+**Color roles** - blue is the brand mark and anything interactive. Amber
+(`pop`) is the hero's rotating phrase, its button, and the ASCII pointer
+lens, nowhere else. In dark mode the hero is charcoal barely lifted off the
+page, not a blue slab; the blue lives in the glyphs.
 
-**Secondary palette** (decorative only — geo shapes, status dots; never UI
-surfaces) — `--c-pink`, `--c-lime`, `--c-cobalt`, `--c-yellow`, `--c-grape`,
-`--c-clay`.
+**Legacy aliases** - `--paper*`, `--ink-2/3/4`, `--accent*`, `--cta-*`,
+`--frosted*`, `--border*` and `--shadow-*` still exist, mapped onto the
+semantic tokens, for `/admin`, the login page, the OG image and shadcn
+primitives. Don't use them in public pages.
 
-**CTA** — always yellow regardless of accent: `--cta-bg` (amber-300),
-`--cta-bg-hover` (amber-400), `--cta-ink` (stone-950).
+**Type** - one typeface: Schibsted Grotesk (`next/font`, `--font-schibsted`)
+for display, headings and body. Mono is the system stack, rarely used.
+Public pages use a five-step scale and nothing in between (admin keeps
+Tailwind's defaults):
 
-**Type** — Display/heading: Schibsted Grotesk (`font-display`/`font-heading`),
-tight tracking, used for hero/section titles/bento values/case titles.
-`<em className="mark">` renders as a tilted accent marker block. Body:
-Hanken Grotesk (`font-sans`). Mono: JetBrains Mono (`font-mono`) for
-meta/labels/CV years, small size, no forced uppercase (components opt in
-with `uppercase tracking-wider` where wanted).
+| Utility          | Size                               | Used for                          |
+|------------------|------------------------------------|-----------------------------------|
+| `text-display`   | `clamp(2rem, …, 7.5rem)`, lh 0.95  | page hero headlines, Experience number |
+| `text-title`     | `clamp(2rem, …, 4rem)`, lh 1       | section headings, case study titles |
+| `text-statement` | `clamp(1.5rem, …, 2.25rem)`, lh 1.2| hero subcopy, bento values, About headings |
+| `text-lead`      | 1.25rem, lh 1.5                    | intro paragraphs, case descriptions |
+| `text-body`      | 1.0625rem, lh 1.55                 | everything else                   |
 
-**Radii** — `--r-sm 4 / --r-md 6 / --r-lg 10 / --r-xl 16 / --r-pill 999`.
-Cards use `--r-lg`, buttons/chips use `--r-pill` or `--r-md`.
+Headlines are `font-semibold` with tight negative tracking baked into the
+scale.
 
-**Shadows** — `--shadow-card` (subtle lift), `--shadow-pop` (hover
-elevation), `--shadow-hard` (strong depth), `--shadow-float` (frosted
-panels like the nav).
+**Radii** - cards and media are `rounded-3xl`; buttons, chips and avatars
+are `rounded-full`. The `--r-*` vars are legacy.
 
-**Grid background** (`.paper-bg`) — two-layer graph-paper grid, minor lines
-every 28px, major every 140px, plus a soft accent radial halo above the
-hero. `data-grid="on" | "subtle" | "off"` on `<html>` controls opacity
-(defaults to `subtle`).
+**Shadows** - none on public pages. Depth comes from surface steps and a
+small `hover:-translate-y-1` on cards.
 
-**Theme** — defaults to OS `prefers-color-scheme` on first load, toggled via
-`src/components/theme/theme-toggle.tsx`, persisted to `localStorage`. An
-inline script in `layout.tsx` sets `data-theme`/`data-accent`/`data-grid`/
-`data-motion` before paint to avoid a flash of the wrong theme.
+**Layout** - `.shell` is the page container: max 1440px, gutter
+`clamp(20px, 4vw, 64px)`. Sections are spaced with `pt-24 md:pt-40` (or
+`pt-32 md:pt-48` for endorsements and contact). Two-column layouts use a
+12-col grid at `lg` (5 + 7 or 6 + 6). Mobile first, always.
+
+**Sizing to a card** - when something on phones has to fill its card, size
+it with container query units (`cqw`) off a `@container` parent, not with
+`vw` guesses or fixed pixels. Bento cells are containers for this reason.
+Derive related values from one variable instead of repeating numbers (the
+globe's insets are `calc(var(--globe) / 2)`).
+
+**Theme** - follows OS `prefers-color-scheme` on first load, toggled via
+`src/components/theme/theme-toggle.tsx`, persisted to `localStorage`.
+`ThemeInitScript` sets `data-theme` and `data-motion` on `<html>` before
+paint so there's no flash of the wrong theme. The `dark:` variant keys off
+`[data-theme="dark"]`.
 
 ## 4. Motion
 
-`useAnimationsEnabled()` (`src/lib/use-animations-enabled.ts`) is the single
-gate for all `motion`-driven animation — `false` when OS
-`prefers-reduced-motion: reduce` is set or the site's `data-motion="low"`
-toggle is active. Every animated component must render a complete,
-non-animated resting state when it's `false` — see
-`.claude/instructions/animation-accessibility.md` for the required pattern
-and worked examples (`StatusDot`, `NumberTicker`, `Marquee`'s
-scrollable-fallback behavior).
+`useAnimationsEnabled()` (`src/lib/use-animations-enabled.ts`) is the
+single gate for all `motion`-driven animation - `false` when OS
+`prefers-reduced-motion: reduce` is set or `data-motion="low"` is on
+`<html>`. Every animated component must render a complete, non-animated
+resting state when it's `false` - see
+`.claude/instructions/animation-accessibility.md` for the pattern.
 
-Plain CSS animations (not JS/`motion`-driven) are throttled separately via
-`:root[data-motion="low"] * { animation-duration: 0.001s !important; ... }`
-in `globals.css` — reserved for simple looping effects that don't need the
-JS gate.
+- **Reveal** (`ui/reveal.tsx`) - fade + 18px rise on scroll, only for
+  elements that start below the fold. Server HTML always ships visible.
+- **Word rise** (`.word-rise`, `RisingWords`) - pure-CSS word-by-word
+  entrance on hero headlines, staggered 90ms. Off under reduced motion.
+- **Rotating phrase** - swaps every 2.4s (last phrase holds 3.6s); frozen
+  on a complete phrase under reduced motion.
+- **Motion fallback** (`.motion-fallback`) - content that only shows when
+  motion is reduced, e.g. the hero description that stands in for the
+  rotating line.
+- **Marquee** - CSS keyframes (`animate-marquee-vertical`), not `motion`,
+  so it can pause and resume in place. Degrades to a static, scrollable
+  list when motion is off.
+
+Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
+`prefers-reduced-motion` block in `globals.css`. Easing is
+`cubic-bezier(0.2, 0.7, 0.2, 1)` throughout.
 
 ## 5. Signature components
 
-- **Bento grid** (`BentoGrid`) — 6-col grid, 168px auto rows. Cells:
-  location (animated pin + ping ring), years (in-view count-up via
-  `NumberTicker`), status, skills (vertical `Marquee` reel), favorite
-  tools (chip cloud), currently, languages. Skills/tools data comes from the
-  `Skill` model (`src/server/data/skills.ts`), edited via `/admin/skills`;
-  languages come from the `Language` model
-  (`src/server/data/languages.ts`), edited via `/admin/languages`.
-- **Work teaser / case studies** (`WorkTeaser`, `CaseStudy`) — home page
-  shows the featured `CaseStudy` rows (`src/server/data/case-studies.ts`);
-  `/work` renders every case in full (two-column: meta rail +
-  description/tags/stats). Edited via `/admin/case-studies`.
-- **Endorsement marquee** (`EndorsementMarquee`) — two opposing-direction
-  rows built on the shared `Marquee` primitive (`src/components/ui/marquee.tsx`),
-  which degrades to a single-copy, keyboard-scrollable container (not an
-  animated one) when motion is disabled.
-- **Contact CTA + footer** (`ContactCta`, `SiteFooter`) — oversized display
-  headline with one tilted accent marker, email as a big linked word,
-  social pill links. The CTA renders per-page (currently `/about`); the
-  footer is global, rendered once in the root layout.
-- **Custom cursor** (`CustomCursor`) — dot + spring-follow ring, states for
-  link/text/photo hover. Only takes over (`data-custom-cursor="on"` on
-  `<html>`) once it confirms a real pointer device and has mounted — native
-  cursor is used on touch devices and whenever JavaScript hasn't run.
-- **Geometric shapes** (`GeoDecoration`) — decorative circles/rings/
-  triangles/dotted-squares in whitespace. `aria-hidden`, `pointer-events: none`,
-  `float`/`spin` variants, `.no-low` to hide entirely under low motion.
+- **Hero field** (`layout/hero-field.tsx` + `ui/ascii-field.tsx`) - the
+  full-width band every page opens on. A canvas draws a drifting ASCII wave
+  (` .·:-=+*#%@`) in `--hero-glyph`, with an amber lens that follows the
+  pointer. 30fps from a pre-rendered glyph atlas, paused off-screen; one
+  still frame under reduced motion. Inner pages share `pageHeroClass` so
+  every hero is the same height.
+- **Home hero** (`HeroSection`) - one sentence across four lines:
+  *Software Engineer / building / [rotating phrase] / @JPMorganChase.* The
+  phrase is amber, the employer line is `hero-subtle`, and the only button
+  is a `pop` "See my experience" linking to About.
+- **At a glance** (`BentoGrid`) - 6-col grid of `bg-surface` cards that
+  share one label/value rhythm (muted label on top, value in
+  `text-statement` below). Cells: Based in (with a `cobe` globe peeking off
+  the corner), Experience (`NumberTicker`), Status, Skills (vertical
+  marquee), Favorite tools (pill chips on `surface-raised`), Currently,
+  Languages. Skills, tools and languages come from the database, edited via
+  `/admin`. On phones it's 2 columns: Based in takes the first row, then
+  Experience and Status sit side by side, then one cell per row. The globe
+  keeps the desktop framing at every size (centered on the card's corner,
+  `--globe` sets the size). On phones the Experience number and the Status
+  sentence scale with the card (`cqw`) so they fill it without wrapping
+  "opportunities".
+- **Endorsements** (`Endorsements` + `TestimonialCard`) - up to three
+  static cards: quote first, then avatar, name (links to LinkedIn) and
+  role. A three-column grid at `lg`; below that, a swipeable snap row with
+  the next card peeking in.
+- **Case studies** (`CaseStudy`) - on `/projects`, one per row: optional
+  large screenshot, then a 5 + 7 split with title/role/org/year on the left
+  and the description, one key stat and a muted "Built with …" line on the
+  right.
+- **Buttons** (`ui/button-link.tsx`) - the site's one button, `rounded-full`
+  and `h-12`. Variants: `primary` (brand), `secondary` (surface), `pop`
+  (amber, hero only), `on-hero` (translucent white). External links get an
+  up-right arrow that nudges on hover. Inline links use `textLinkClass`: a
+  2px brand-colored underline.
+- **Nav** (`SiteNav`) - wordmark with a small blue square that rotates on
+  hover, then **About · Projects** and the theme toggle. The current page
+  gets a brand underline.
+- **Contact + footer** (`ContactCta`, `SiteFooter`) - "Let's build
+  something good." with LinkedIn and email; the footer is one centered
+  muted line: © 2026 Nicholas Rios · New York City Metropolitan Area.
+- **Custom cursor** (`CustomCursor`) - dot + spring-follow ring, states for
+  link/text/photo hover. Only takes over (`data-custom-cursor="on"`) once
+  it confirms a real pointer device and has mounted.
 
 ## 6. Don'ts
 
+- Don't bring back the old system: no graph-paper grid, geometric shapes,
+  marker highlights, swappable accents, yellow CTAs or monospace labels.
+- Don't use amber outside the hero, and don't add a third accent color.
+- Don't hard-code colors or reach for Tailwind palette classes in
+  components - use the semantic utilities.
+- Don't add type sizes outside the five-step scale on public pages.
+- Don't add gradients or drop shadows. The only gradient is the fade mask
+  on the skills marquee.
 - Don't add a profile photo. The site stays about the work.
-- Don't introduce gradients beyond the one accent halo on the hero.
-- Don't use the secondary palette (`--c-*`) for UI surfaces — accents,
-  dots, and geo shapes only, never buttons/borders/backgrounds/large fills.
-- Don't add more than ~24 skills to the reel — past that it's decoration,
+- Don't add stand-in images. `src/lib/media.ts` stays empty until there's a
+  real photo or screenshot.
+- Don't add more than ~24 skills to the reel - past that it's decoration,
   not communication.
-- Don't emoji. The accent color is the only loud thing on the page.
+- Don't use emoji.
+- Don't duplicate links or accents within a section.
 - Don't ship placeholder endorsements or invented metrics as if they were
-  real — see the copy rules above.
+  real.

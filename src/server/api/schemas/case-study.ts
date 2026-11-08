@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /** Shared between `case-study.ts` (server mutation input) and the
  * `/admin/case-studies` form (client-side validation) so the two can't
- * drift. Only depends on `zod` — safe to import from a Client Component. */
+ * drift. Only depends on `zod` - safe to import from a Client Component. */
 export const caseStatInput = z.object({
 	k: z.string().min(1),
 	v: z.string().min(1),

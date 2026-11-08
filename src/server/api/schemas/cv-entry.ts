@@ -4,7 +4,7 @@ import { CvCategory } from "../../../../generated/prisma";
 
 /** Shared between `cv-entry.ts` (server mutation input) and the
  * `/admin/cv` form (client-side validation). `CvCategory` is a plain enum
- * object from the generated Prisma client's browser build — no query
+ * object from the generated Prisma client's browser build - no query
  * engine, safe to import from a Client Component. */
 export const cvEntryInput = z.object({
 	category: z.nativeEnum(CvCategory),

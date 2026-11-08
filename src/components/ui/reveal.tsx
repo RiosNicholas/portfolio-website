@@ -19,7 +19,7 @@ type RevealProps = {
 	className?: string;
 	children: React.ReactNode;
 	delay?: number;
-	/** Forwarded to the rendered element — e.g. for `aria-labelledby` targets. */
+	/** Forwarded to the rendered element - e.g. for `aria-labelledby` targets. */
 	id?: string;
 };
 
@@ -30,14 +30,14 @@ const variants = {
 
 /**
  * Polymorphic scroll-reveal. Each `<Reveal>` owns its own `useInView`, so
- * it re-arms on every mount, including client-side route transitions — a
+ * it re-arms on every mount, including client-side route transitions - a
  * single shared observer scanned once at root-layout mount would not.
  *
  * Renders the `show` variant by default so prerendered/server HTML never
- * ships `opacity:0` — content is readable immediately and with JS disabled.
+ * ships `opacity:0` - content is readable immediately and with JS disabled.
  * A layout effect checks, once per mount, whether the element started
  * off-screen (`getBoundingClientRect().top > innerHeight`); only then does
- * it "arm" the reveal, snapping to `hidden` (duration 0 — this happens
+ * it "arm" the reveal, snapping to `hidden` (duration 0 - this happens
  * before the browser's first paint of that state, and only ever for
  * elements that are off-screen to begin with, so it's never visible) and
  * letting `useInView` animate it back to `show` once scrolled into view.
@@ -60,7 +60,7 @@ export function Reveal({
 	const enabled = useAnimationsEnabled();
 
 	// Runs once per mount, synchronously before paint. Only elements that
-	// start below the fold get armed — above-the-fold content never enters
+	// start below the fold get armed - above-the-fold content never enters
 	// the hidden state at all.
 	useLayoutEffect(() => {
 		const el = ref.current as HTMLElement | null;

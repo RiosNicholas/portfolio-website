@@ -118,13 +118,13 @@ export default function AdminSkillsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The home page bento grid's Skills marquee and Favorite tools chip list. `accent` marks a substring of the label rendered as an accented word."
+				description="The home page grid's Skills list and Favorite tools chips. The `accent` field is kept but not shown on the public site."
 				title="Skills & tools"
 			/>
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit skill/tool — ${form.label}` : "Add skill/tool"}
+					{form.id ? `Edit skill/tool - ${form.label}` : "Add skill/tool"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
 					<AdminField htmlFor="kind" label="Kind">
@@ -160,7 +160,7 @@ export default function AdminSkillsPage() {
 						/>
 					</AdminField>
 					<AdminField
-						hint="Optional — substring of the label to accent, e.g. Next.js"
+						hint="Optional - substring of the label to accent, e.g. Next.js"
 						htmlFor="accent"
 						label="Accent"
 					>
@@ -190,7 +190,7 @@ export default function AdminSkillsPage() {
 
 			{isError && !skills && (
 				<AdminErrorState>
-					Couldn't load skills/tools — {queryError.message}
+					Couldn't load skills/tools - {queryError.message}
 				</AdminErrorState>
 			)}
 

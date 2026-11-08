@@ -1,7 +1,7 @@
 import { BentoGrid } from "~/components/features/bento-grid";
-import { EndorsementMarquee } from "~/components/features/endorsement-marquee";
+import { ContactCta } from "~/components/features/contact-cta";
+import { Endorsements } from "~/components/features/endorsements";
 import { HeroSection } from "~/components/features/hero-section";
-import { SectionHeader } from "~/components/layout/section-header";
 import { Reveal } from "~/components/ui/reveal";
 import { getPublishedEndorsements } from "~/server/data/endorsements";
 import { getPublishedLanguages } from "~/server/data/languages";
@@ -16,29 +16,22 @@ export default async function HomePage() {
 	]);
 
 	return (
-		<main className="shell" id="main-content">
-			{/* Hero */}
+		<main id="main-content">
 			<HeroSection />
 
-			{/* Bento */}
-			<section aria-label="Quick facts">
+			<section aria-labelledby="at-a-glance" className="shell pt-24 md:pt-40">
+				<Reveal
+					as="h2"
+					className="m-0 font-semibold text-title"
+					id="at-a-glance"
+				>
+					At a glance
+				</Reveal>
 				<BentoGrid languages={languages} skills={skills} tools={tools} />
 			</section>
 
-			{/* Endorsements */}
-			<section aria-label="Endorsements" className="pt-14 sm:pt-20 lg:pt-28">
-				<Reveal>
-					<SectionHeader
-						meta={`${endorsements.length} endorsements.`}
-						title={
-							<>
-								People I&apos;ve <em className="mark">worked with</em>
-							</>
-						}
-					/>
-				</Reveal>
-				<EndorsementMarquee endorsements={endorsements} />
-			</section>
+			<Endorsements endorsements={endorsements} />
+			<ContactCta />
 		</main>
 	);
 }

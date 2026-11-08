@@ -1,6 +1,6 @@
 /**
  * 2026-09 admin-crud-issues task: one-off, targeted content update for the
- * favorite-tools list — NOT a re-seed. `seedSkills()` in `prisma/seed.ts`
+ * favorite-tools list - NOT a re-seed. `seedSkills()` in `prisma/seed.ts`
  * opens with `db.skill.deleteMany({})`, which would wipe every admin-created
  * row beyond the original seed batch; running it against the live DB is
  * exactly the kind of data loss this script exists to avoid. This script
@@ -10,14 +10,14 @@
  *      "MoErgo Glove80" (its manufacturer-qualified name), keeping the
  *      row's id, sortOrder, and everything else untouched.
  *   2. Adds a new TOOL row labeled "AeroSpace" (macOS tiling window
- *      manager) if one doesn't already exist — this is a pure addition,
+ *      manager) if one doesn't already exist - this is a pure addition,
  *      NOT a replacement for the existing "Rectangle" TOOL row, which is
  *      left alone.
  *
  * Idempotent: safe to run more than once. If the rename matches zero rows,
  * that's a strong signal this ran against the wrong database (see the two
  * diverged DBs documented in agentWork/admin-crud-issues/03-implementation.md)
- * — it does NOT create a new "MoErgo Glove80" row in that case.
+ * - it does NOT create a new "MoErgo Glove80" row in that case.
  *
  * Run with: npx tsx scripts/update-favorite-tools.ts
  *
@@ -53,7 +53,7 @@ async function main() {
 	});
 	if (renamed.count === 0) {
 		console.log(
-			`\nNo TOOL row labeled "${OLD_LABEL}" found — 0 rows renamed. This ` +
+			`\nNo TOOL row labeled "${OLD_LABEL}" found - 0 rows renamed. This ` +
 				"almost certainly means this ran against a DB that never had that " +
 				"row (e.g. the stale local Postgres snapshot, not Neon/production). " +
 				"Not creating a new row on a guess.",
@@ -70,7 +70,7 @@ async function main() {
 		where: { kind: "TOOL", label: NEW_TOOL_LABEL },
 	});
 	if (existingAeroSpace) {
-		console.log(`\n"${NEW_TOOL_LABEL}" already exists — skipping create.`);
+		console.log(`\n"${NEW_TOOL_LABEL}" already exists - skipping create.`);
 	} else {
 		const toolRows = await db.skill.findMany({
 			where: { kind: "TOOL" },
@@ -100,7 +100,7 @@ async function main() {
 	console.log("\nTOOL rows after:", after);
 
 	console.log(
-		"\nReminder: this bypassed tRPC, so revalidateTag() never ran — the " +
+		"\nReminder: this bypassed tRPC, so revalidateTag() never ran - the " +
 			"public site will keep serving the old tools list from the Next.js " +
 			"data cache until it's cleared (restart `next dev` locally, or " +
 			"redeploy in production).",

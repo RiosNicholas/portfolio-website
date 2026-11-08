@@ -7,13 +7,14 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import {
-	getCaseStudies,
-	getFeaturedCaseStudies,
-} from "~/server/data/case-studies";
+import { getFeaturedCaseStudies } from "~/server/data/case-studies";
 
 export const caseStudyRouter = createTRPCRouter({
-	all: publicProcedure.query(() => getCaseStudies()),
+	// Read straight from the database, not the data cache, so /admin never
+	// lists a row that is already gone.
+	all: publicProcedure.query(({ ctx }) =>
+		ctx.db.caseStudy.findMany({ orderBy: { sortOrder: "asc" } }),
+	),
 	featured: publicProcedure.query(() => getFeaturedCaseStudies()),
 
 	create: adminProcedure
@@ -35,7 +36,9 @@ export const caseStudyRouter = createTRPCRouter({
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			await ctx.db.caseStudy.delete({ where: { id: input.id } });
+			// deleteMany, not delete: a row that is already gone is not an error,
+			// and the cache below still gets cleared.
+			await ctx.db.caseStudy.deleteMany({ where: { id: input.id } });
 			revalidateTag("case-studies");
 		}),
 });

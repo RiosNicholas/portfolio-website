@@ -1,26 +1,33 @@
+import {
+	HeroField,
+	pageHeroClass,
+	RisingWords,
+} from "~/components/layout/hero-field";
+import { ButtonLink } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
-import { StatusDot } from "~/components/ui/status-dot";
+import { profileLinks } from "~/lib/site-links";
 
 export function AboutHero() {
 	return (
-		<section className="relative flex flex-col pt-24 pb-8 md:pt-28 md:pb-10 lg:pt-32 lg:pb-16">
-			{/* Eyebrow */}
-			<Reveal className="mb-8 inline-flex w-max items-center gap-2.5 rounded-full border border-(--border-2) bg-card px-4 py-2 font-medium font-mono text-(--ink-2) text-xs tracking-normal shadow-(--shadow-card)">
-				<StatusDot />
-				About · 3 years building software
-			</Reveal>
-
-			{/* Headline */}
-			<Reveal
-				as="h1"
-				className="m-0 font-display font-semibold text-5xl text-foreground leading-none tracking-tighter md:text-7xl lg:text-9xl"
-			>
-				A short{" "}
-				<em className="no-underline! inline-block -rotate-1 rounded-lg bg-(--accent) box-decoration-clone px-2 py-px text-(--marker-ink) not-italic md:px-3 lg:px-4">
-					bio
-				</em>
-				.
-			</Reveal>
-		</section>
+		<HeroField className={pageHeroClass} labelledBy="about-title">
+			<h1 className="m-0 font-semibold text-display" id="about-title">
+				<RisingWords text="About me" />
+			</h1>
+			<div className="mt-6 grid grid-cols-1 gap-8 md:mt-14 md:grid-cols-12 md:items-end md:gap-10">
+				<Reveal
+					as="p"
+					className="m-0 max-w-[30em] font-medium text-statement md:col-span-8"
+					delay={0.3}
+				>
+					I&apos;m Nicholas - a Platform Software Engineer based in the NYC
+					area, focused on web development and agentic AI.
+				</Reveal>
+				<Reveal className="md:col-span-4 md:flex md:justify-end" delay={0.4}>
+					<ButtonLink external href={profileLinks.resume} variant="pop">
+						View full resume
+					</ButtonLink>
+				</Reveal>
+			</div>
+		</HeroField>
 	);
 }

@@ -37,14 +37,14 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
 	 * Number of times to repeat the content. Must satisfy
 	 * `(repeat − 1) × copySize ≥ containerSize` for a seamless loop, or, if
 	 * `draggable` is set, the tighter `(repeat − 2) × copySize ≥
-	 * containerSize` — a drag offset can shift the track by up to one full
+	 * containerSize` - a drag offset can shift the track by up to one full
 	 * copy in either direction before the modulo wrap kicks in.
 	 * @default 4
 	 */
 	repeat?: number;
 	/**
 	 * `aria-hidden` the duplicated copies so screen readers announce the
-	 * content once. Only safe when `children` contain no focusable elements —
+	 * content once. Only safe when `children` contain no focusable elements -
 	 * a focusable node inside `aria-hidden` is itself an a11y violation.
 	 * @default false
 	 */
@@ -53,7 +53,7 @@ interface MarqueeProps extends ComponentPropsWithoutRef<"div"> {
 	 * Opt in to mouse-drag / touch-swipe control. Dragging pauses the CSS
 	 * animation (via `animation-play-state`, which resumes from wherever it
 	 * stopped) and moves the track 1:1 with the pointer, wrapping infinitely
-	 * via modulo. No-op when animations are disabled — the container is
+	 * via modulo. No-op when animations are disabled - the container is
 	 * already natively scrollable on its own axis in that state.
 	 * @default false
 	 */
@@ -81,7 +81,7 @@ export function Marquee({
 	const trackRef = useRef<HTMLDivElement>(null);
 	const firstGroupRef = useRef<HTMLDivElement>(null);
 
-	// Reset on disable — a leftover inline transform after a runtime
+	// Reset on disable - a leftover inline transform after a runtime
 	// motion-preference flip would open the (now-scrollable) container
 	// pre-offset and clip content. See animation-accessibility.md.
 	useEffect(() => {
@@ -130,7 +130,7 @@ export function Marquee({
 		let offset = offsetRef.current + delta;
 		const period = getPeriod();
 		if (period > 0) {
-			// Normalize into (-period, 0] — one copy of the content is
+			// Normalize into (-period, 0] - one copy of the content is
 			// visually identical to the next, so this makes the drag
 			// infinite in both directions instead of eventually dragging
 			// into empty space.
@@ -157,7 +157,7 @@ export function Marquee({
 		}
 	}
 
-	// Duplicated copies exist only to make the animated loop seamless — in
+	// Duplicated copies exist only to make the animated loop seamless - in
 	// the scrollable (disabled) state, render exactly one copy so a screen
 	// reader (and a scrolling user) doesn't encounter the same content twice.
 	const repeatCount = enabled ? repeat : 1;
@@ -189,7 +189,7 @@ export function Marquee({
 					"flex gap-(--gap)",
 					vertical ? "flex-col" : "flex-row",
 					// Centers the track when a single (reduced-motion) copy is
-					// narrower than the container — e.g. 3 endorsement cards at
+					// narrower than the container - e.g. 3 endorsement cards at
 					// ~1180px inside a ~1312px .shell content box. When the track
 					// overflows (the normal animated case, or a long content list),
 					// the auto margins resolve to 0 so the scroll container still

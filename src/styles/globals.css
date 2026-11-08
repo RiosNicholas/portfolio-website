@@ -12,15 +12,30 @@
 		var(--font-schibsted), "Schibsted Grotesk", ui-sans-serif, system-ui,
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 	--font-sans:
-		var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji";
-	--font-mono:
-		var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", monospace;
+		var(--font-schibsted), "Schibsted Grotesk", ui-sans-serif, system-ui,
+		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+	--font-mono: ui-monospace, "Cascadia Code", monospace;
+
+	/* Public-page type scale - five sizes, nothing in between. Admin keeps
+	   Tailwind's default steps. */
+	--text-display: clamp(2rem, 0.6rem + 6.6vw, 7.5rem);
+	--text-display--line-height: 0.95;
+	--text-display--letter-spacing: -0.045em;
+	--text-title: clamp(2rem, 1.2rem + 3vw, 4rem);
+	--text-title--line-height: 1;
+	--text-title--letter-spacing: -0.035em;
+	--text-statement: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
+	--text-statement--line-height: 1.2;
+	--text-statement--letter-spacing: -0.02em;
+	--text-lead: 1.25rem;
+	--text-lead--line-height: 1.5;
+	--text-body: 1.0625rem;
+	--text-body--line-height: 1.55;
 
 	/* Marquee (magicui pattern). Neither Tailwind nor tw-animate-css ships a
 	   marquee keyframe, and `ui/marquee.tsx` needs `animation-play-state` to
 	   pause/resume from wherever it stopped (a `motion`-driven animation
-	   can't resume like that) — that's why this lives here instead of as a
+	   can't resume like that) - that's why this lives here instead of as a
 	   `motion` animation. `--duration`/`--gap` are set per-instance by
 	   consumers via arbitrary-value classes (e.g. `[--duration:40s]`). */
 	--animate-marquee: marquee var(--duration, 40s) linear infinite;
@@ -46,6 +61,26 @@
 }
 
 @theme inline {
+	/* Semantic colors → utilities (bg-surface, text-ink-muted, bg-brand …) */
+	--color-ground: var(--ground);
+	--color-surface: var(--surface);
+	--color-surface-hover: var(--surface-hover);
+	--color-surface-raised: var(--surface-raised);
+	--color-ink: var(--ink);
+	--color-ink-muted: var(--ink-muted);
+	--color-brand: var(--brand);
+	--color-brand-strong: var(--brand-strong);
+	--color-brand-hover: var(--brand-hover);
+	--color-brand-soft: var(--brand-soft);
+	--color-on-brand: var(--on-brand);
+	--color-hero: var(--hero);
+	--color-hero-ink: var(--hero-ink);
+	--color-hero-muted: var(--hero-muted);
+	--color-hero-subtle: var(--hero-subtle);
+	--color-pop: var(--pop);
+	--color-pop-hover: var(--pop-hover);
+	--color-pop-ink: var(--pop-ink);
+
 	--color-sidebar-ring: var(--sidebar-ring);
 	--color-sidebar-border: var(--sidebar-border);
 	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -82,44 +117,72 @@
 	--radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* ─── Streamtime Design Tokens ──────────────────────────────────────────────── */
+/* ─── Design tokens ─────────────────────────────────────────────────────────── */
+/*
+   Three layers, each referencing only the one below it.
+
+   1. Primitives - Tailwind's swatch scales (--color-zinc-50 … 950,
+      --color-blue-*, --color-amber-*). Defined by Tailwind in OKLCH, a
+      color space where equal lightness steps look equal, so neighboring
+      shades always belong together. Nothing here invents a color.
+
+   2. Mode scale - numbered steps that pick a swatch per theme. Step 1 is
+      the page, step 12 is the strongest text; light and dark mirror the
+      same scale, so "one step off the ground" means the same thing in both.
+
+   3. Semantic - names a job (ground, surface, ink, brand, hero…) and
+      points at a step. Components use only these, through the utilities
+      registered in `@theme inline` (bg-surface, text-ink-muted, bg-brand…).
+
+   Color roles: blue = the brand mark and anything interactive; amber =
+   the hero's live word and its button, nowhere else.
+*/
 
 :root {
-	/* Surfaces — warm cream paper (light) */
-	--paper: var(--color-amber-50);
-	--paper-2: var(--color-white);
-	--paper-3: var(--color-amber-100);
-	--ink: var(--color-stone-900);
-	--ink-2: var(--color-stone-700);
-	--ink-3: var(--color-stone-600);
-	--ink-4: color-mix(
-		in oklab,
-		var(--color-stone-500) 55%,
-		var(--color-stone-600) 45%
-	);
-	--border: color-mix(in oklab, var(--color-stone-900) 13%, transparent);
-	--border-2: color-mix(in oklab, var(--color-stone-900) 45%, transparent);
-	--frosted: color-mix(in oklab, var(--color-stone-900) 5%, transparent);
-	--frosted-2: color-mix(in oklab, var(--color-stone-900) 9%, transparent);
+	/* ── 2. Mode scale: light ── */
+	--neutral-1: var(--color-zinc-50);
+	--neutral-2: var(--color-zinc-100);
+	--neutral-3: var(--color-zinc-200);
+	--neutral-4: var(--color-white);
+	--neutral-11: var(--color-zinc-600);
+	--neutral-12: var(--color-zinc-950);
 
-	/* Decoration palette */
-	--c-pink: var(--color-pink-400);
-	--c-lime: var(--color-lime-600);
-	--c-cobalt: var(--color-blue-400);
-	--c-yellow: var(--color-amber-300);
-	--c-grape: var(--color-violet-400);
-	--c-clay: var(--color-orange-400);
+	--blue-solid: var(--color-blue-600);
+	--blue-solid-hover: var(--color-blue-700);
+	--blue-text: var(--color-blue-700);
+	--blue-subtle: var(--color-blue-100);
+	--blue-field: var(--color-blue-700);
+	--blue-field-text: var(--color-blue-100);
+	--blue-glyph: var(--color-blue-300);
 
-	/* Default accent = cobalt */
-	--accent: var(--color-blue-600);
-	--accent-text: var(--color-blue-700);
-	--accent-glow: color-mix(in oklab, var(--color-blue-400) 22%, transparent);
-	--marker-ink: var(--color-white);
+	--amber-solid: var(--color-amber-300);
+	--amber-solid-hover: var(--color-amber-200);
 
-	/* CTA — always yellow */
-	--cta-bg: var(--color-amber-300);
-	--cta-bg-hover: var(--color-amber-400);
-	--cta-ink: var(--color-stone-950);
+	/* ── 3. Semantic ── */
+	--ground: var(--neutral-1);
+	--surface: var(--neutral-2);
+	--surface-hover: var(--neutral-3);
+	--surface-raised: var(--neutral-4);
+	--ink: var(--neutral-12);
+	--ink-muted: var(--neutral-11);
+
+	--brand: var(--blue-solid);
+	--brand-strong: var(--blue-text);
+	--brand-hover: var(--blue-solid-hover);
+	--brand-soft: var(--blue-subtle);
+	--on-brand: var(--color-white);
+
+	--hero: var(--blue-field);
+	--hero-ink: var(--color-white);
+	--hero-muted: var(--blue-field-text);
+	/* One step quieter than muted: the employer line closing the headline. */
+	--hero-subtle: var(--color-blue-200);
+	--hero-glyph: var(--blue-glyph);
+	--pop: var(--amber-solid);
+	--pop-hover: var(--amber-solid-hover);
+	--pop-ink: var(--color-zinc-950);
+
+	--focus: var(--blue-solid);
 
 	/* Radii */
 	--r-sm: 4px;
@@ -129,123 +192,85 @@
 	--r-pill: 999px;
 	--radius: var(--r-md);
 
-	/* Shadows */
-	--shadow-card: color-mix(in oklab, var(--color-stone-900) 5%, transparent) 0
-		1px 2px 0;
-	--shadow-pop:
-		color-mix(in oklab, var(--color-stone-900) 13%, transparent) 1px 0 5px 0,
-		color-mix(in oklab, var(--color-stone-900) 10%, transparent) 2px 6px 16px
-		1px;
-	--shadow-hard: color-mix(in oklab, var(--color-stone-900) 16%, transparent) 0
-		14px 38px -8px;
-	--shadow-float:
-		color-mix(in oklab, var(--color-stone-900) 4%, transparent) 0 0.5px 0 0.5px,
-		color-mix(in oklab, var(--color-stone-900) 20%, transparent) 0 14px 40px
-		-8px;
+	/* ── Legacy aliases (admin screens and shadcn primitives) ── */
+	--paper: var(--ground);
+	--paper-2: var(--surface-raised);
+	--paper-3: var(--surface);
+	--ink-2: var(--ink);
+	--ink-3: var(--ink-muted);
+	--ink-4: var(--ink-muted);
+	--border: color-mix(in oklab, var(--ink) 12%, transparent);
+	--border-2: color-mix(in oklab, var(--ink) 40%, transparent);
+	--frosted: color-mix(in oklab, var(--ink) 5%, transparent);
+	--frosted-2: color-mix(in oklab, var(--ink) 9%, transparent);
+	--accent: var(--brand);
+	--accent-text: var(--brand-strong);
+	--accent-glow: color-mix(in oklab, var(--brand) 18%, transparent);
+	--marker-ink: var(--on-brand);
+	--cta-bg: var(--brand);
+	--cta-bg-hover: var(--brand-hover);
+	--cta-ink: var(--on-brand);
+	--shadow-card: 0 1px 2px 0 color-mix(in oklab, var(--ink) 5%, transparent);
+	--shadow-pop: 0 6px 20px -4px color-mix(in oklab, var(--ink) 16%, transparent);
+	--shadow-hard: 0 14px 38px -8px
+		color-mix(in oklab, var(--ink) 18%, transparent);
+	--shadow-float: 0 14px 40px -8px
+		color-mix(in oklab, var(--ink) 20%, transparent);
 
-	/* Grid lines */
-	--grid-minor: color-mix(in oklab, var(--color-stone-900) 5.5%, transparent);
-	--grid-major: color-mix(in oklab, var(--color-stone-900) 10%, transparent);
-
-	/* Shadcn aliases */
-	--background: var(--paper);
+	/* shadcn */
+	--background: var(--ground);
 	--foreground: var(--ink);
-	--card: var(--paper-2);
+	--card: var(--surface-raised);
 	--card-foreground: var(--ink);
-	--popover: var(--paper-2);
+	--popover: var(--surface-raised);
 	--popover-foreground: var(--ink);
 	--primary: var(--ink);
-	--primary-foreground: var(--paper);
-	--secondary: var(--paper-3);
+	--primary-foreground: var(--ground);
+	--secondary: var(--surface);
 	--secondary-foreground: var(--ink);
-	--muted: var(--paper-3);
-	--muted-foreground: var(--ink-3);
-	--accent-foreground: var(--paper);
+	--muted: var(--surface);
+	--muted-foreground: var(--ink-muted);
+	--accent-foreground: var(--on-brand);
 	--destructive: var(--color-red-600);
 	--destructive-foreground: var(--color-white);
 	--input: var(--frosted);
-	--ring: var(--accent);
-
-	/* Sidebar */
-	--sidebar: var(--paper-2);
+	--ring: var(--focus);
+	--sidebar: var(--surface-raised);
 	--sidebar-foreground: var(--ink);
 	--sidebar-primary: var(--ink);
-	--sidebar-primary-foreground: var(--paper);
+	--sidebar-primary-foreground: var(--ground);
 	--sidebar-accent: var(--frosted);
 	--sidebar-accent-foreground: var(--ink);
 	--sidebar-border: var(--border);
-	--sidebar-ring: var(--accent);
+	--sidebar-ring: var(--focus);
 }
 
-/* ─── Dark theme ────────────────────────────────────────────────────────────── */
+/* ─── Dark theme: only the mode scale changes ───────────────────────────────── */
 
 :root[data-theme="dark"] {
-	--paper: var(--color-stone-950);
-	--paper-2: var(--color-stone-900);
-	--paper-3: var(--color-stone-800);
-	--ink: var(--color-amber-50);
-	--ink-2: var(--color-stone-200);
-	--ink-3: var(--color-stone-300);
-	--ink-4: var(--color-stone-400);
-	--border: color-mix(in oklab, var(--color-amber-50) 12%, transparent);
-	--border-2: color-mix(in oklab, var(--color-amber-50) 35%, transparent);
-	--frosted: color-mix(in oklab, var(--color-amber-50) 7%, transparent);
-	--frosted-2: color-mix(in oklab, var(--color-amber-50) 13%, transparent);
+	--neutral-1: var(--color-zinc-950);
+	--neutral-2: var(--color-zinc-900);
+	--neutral-3: var(--color-zinc-800);
+	--neutral-4: var(--color-zinc-800);
+	--neutral-11: var(--color-zinc-400);
+	--neutral-12: var(--color-zinc-100);
 
-	--accent-glow: color-mix(in oklab, var(--color-blue-400) 26%, transparent);
+	--blue-solid: var(--color-blue-500);
+	--blue-solid-hover: var(--color-blue-400);
+	--blue-text: var(--color-blue-300);
+	--blue-subtle: var(--color-blue-950);
+	/* The hero is charcoal barely lifted off the page: a quarter of the way
+	   from the ground to the first surface step (Tailwind has no swatch in
+	   between).
+	   Blue stays in the glyphs, not in a slab. */
+	--blue-field: color-mix(in oklab, var(--neutral-1), var(--neutral-2) 25%);
+	--blue-field-text: var(--neutral-11);
+	--blue-glyph: var(--color-blue-400);
 
-	--shadow-card: color-mix(in oklab, var(--color-black) 30%, transparent) 0 1px
-		2px 0;
-	--shadow-pop: color-mix(in oklab, var(--color-black) 40%, transparent) 0 6px
-		20px -4px;
-	--shadow-hard: color-mix(in oklab, var(--color-black) 55%, transparent) 0 16px
-		44px -10px;
-	--shadow-float:
-		color-mix(in oklab, var(--color-amber-50) 6%, transparent) 0 0.5px 0 0.5px,
-		color-mix(in oklab, var(--color-black) 55%, transparent) 0 14px 44px -8px;
-
-	--grid-minor: color-mix(in oklab, var(--color-amber-50) 4.5%, transparent);
-	--grid-major: color-mix(in oklab, var(--color-amber-50) 8%, transparent);
-}
-
-/* ─── Accent presets ────────────────────────────────────────────────────────── */
-
-:root[data-accent="pink"] {
-	--accent: var(--color-pink-500);
-	--accent-text: var(--color-pink-700);
-	--accent-glow: color-mix(in oklab, var(--color-pink-400) 20%, transparent);
-	--marker-ink: var(--color-stone-950);
-}
-:root[data-accent="cobalt"] {
-	--accent: var(--color-blue-600);
-	--accent-text: var(--color-blue-700);
-	--accent-glow: color-mix(in oklab, var(--color-blue-400) 22%, transparent);
-	--marker-ink: var(--color-white);
-}
-:root[data-accent="lime"] {
-	--accent: var(--color-lime-300);
-	--accent-text: var(--color-lime-800);
-	--accent-glow: color-mix(in oklab, var(--color-lime-400) 26%, transparent);
-	--marker-ink: var(--color-stone-950);
-}
-:root[data-accent="grape"] {
-	--accent: var(--color-violet-600);
-	--accent-text: var(--color-violet-700);
-	--accent-glow: color-mix(in oklab, var(--color-violet-400) 22%, transparent);
-	--marker-ink: var(--color-white);
-}
-
-:root[data-theme="dark"][data-accent="pink"] {
-	--accent-text: var(--color-pink-300);
-}
-:root[data-theme="dark"][data-accent="cobalt"] {
-	--accent-text: var(--color-blue-300);
-}
-:root[data-theme="dark"][data-accent="lime"] {
-	--accent-text: var(--color-lime-300);
-}
-:root[data-theme="dark"][data-accent="grape"] {
-	--accent-text: var(--color-violet-300);
+	--hero-ink: var(--neutral-12);
+	/* Bluish grey, so the employer line keeps the light-mode blue cast
+	   without becoming a third accent next to the amber. */
+	--hero-subtle: var(--color-slate-400);
 }
 
 /* ─── Base ──────────────────────────────────────────────────────────────────── */
@@ -269,7 +294,7 @@
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
 		overflow-x: hidden;
-		letter-spacing: -0.005em;
+		letter-spacing: -0.01em;
 		transition:
 			background-color 450ms ease,
 			color 450ms ease;
@@ -291,18 +316,18 @@
 	}
 
 	/* Site-wide keyboard focus ring. `site-nav.tsx`'s own nav-item ring stays
-	   as-is (already `--accent`-based) — this just covers everything else
+	   as-is (already `--accent`-based) - this just covers everything else
 	   that didn't have one (skip link, CTAs, theme toggle, case-study links,
 	   etc.) without hand-adding `focus-visible:` classes everywhere. */
 	:focus-visible {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--focus);
 		outline-offset: 2px;
 	}
 }
 
 /* ─── Motion ────────────────────────────────────────────────────────────────── */
 /* Declared after `@layer base` (lower-specificity `*` selectors) so
-   selector specificity ascends in source order — fixes Biome's
+   selector specificity ascends in source order - fixes Biome's
    noDescendingSpecificity against `*, *::before, *::after` above. The OS-level
    `prefers-reduced-motion` block is declared first, ahead of the site's own
    `data-motion="low"` toggle, for the same reason (its bare `.no-low`
@@ -315,7 +340,7 @@
 	}
 	/* `[--duration]` marquees run an `infinite` CSS animation, so the
 	   `0.001s !important` rule above would turn them into a ~1000Hz strobe
-	   instead of a pause — the JS `useAnimationsEnabled()` gate only takes
+	   instead of a pause - the JS `useAnimationsEnabled()` gate only takes
 	   over post-hydration, so this covers the pre-hydration window. */
 	[data-marquee-group] {
 		animation: none !important;
@@ -336,75 +361,9 @@
 	display: none !important;
 }
 
-/* ─── Paper background ──────────────────────────────────────────────────────── */
-
-.paper-bg {
-	position: fixed;
-	inset: -2px;
-	z-index: 0;
-	pointer-events: none;
-	background-color: var(--paper);
-	background-image:
-		linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
-		linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
-		linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
-		linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
-	background-size:
-		140px 140px,
-		140px 140px,
-		28px 28px,
-		28px 28px;
-	background-position: 0 0;
-	transition: opacity 300ms ease;
-	opacity: 1;
-}
-
-:root[data-grid="off"] .paper-bg {
-	opacity: 0;
-}
-:root[data-grid="subtle"] .paper-bg {
-	opacity: 0.5;
-}
-
-/* soft accent halo above the hero */
-.paper-bg::after {
-	content: "";
-	position: absolute;
-	top: 6%;
-	left: 50%;
-	transform: translateX(-50%);
-	width: min(1000px, 86vw);
-	aspect-ratio: 1.4 / 1;
-	background: radial-gradient(
-		ellipse at center,
-		var(--accent-glow) 0%,
-		var(--accent-glow) 30%,
-		transparent 78%
-	);
-	pointer-events: none;
-	opacity: 0.85;
-}
-:root[data-theme="dark"] .paper-bg::after {
-	opacity: 1;
-}
-
-/* ─── Grain ─────────────────────────────────────────────────────────────────── */
-
-.grain {
-	position: fixed;
-	inset: 0;
-	z-index: 1;
-	pointer-events: none;
-	opacity: 0.035;
-	background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-}
-:root[data-theme="dark"] .grain {
-	opacity: 0.03;
-}
-
 /* Custom cursor only takes over once `custom-cursor.tsx` confirms a real
-   pointer device and actually mounts. Until then — no JS, first paint
-   before hydration, or a touch/coarse pointer — every element keeps its
+   pointer device and actually mounts. Until then - no JS, first paint
+   before hydration, or a touch/coarse pointer - every element keeps its
    native cursor affordance (arrow on body, pointer-hand on links/buttons).
    `cursor: inherit` on interactive elements makes body's policy the single
    source of truth instead of scattered per-element `cursor-none` utilities;
@@ -418,68 +377,72 @@
 
 /* ─── Layout shell ──────────────────────────────────────────────────────────── */
 
-.shell {
-	position: relative;
-	z-index: 2;
-	max-width: 1440px;
-	margin: 0 auto;
-	padding: 0 clamp(24px, 4vw, 64px);
+/* Layered and inline-only so Tailwind's pt-/pb- utilities still apply to
+   elements that also carry `.shell`. */
+@layer components {
+	.shell {
+		position: relative;
+		z-index: 2;
+		max-width: 1440px;
+		margin-inline: auto;
+		padding-inline: clamp(20px, 4vw, 64px);
+	}
 }
 
-/* ─── Geometric decorations ─────────────────────────────────────────────────── */
-
-.geo {
-	position: absolute;
-	z-index: 0;
-	pointer-events: none;
-}
-.geo-circle {
-	border-radius: 50%;
-}
-.geo-ring {
-	border-radius: 50%;
-	background: transparent !important;
-	border: 3px solid currentColor;
-}
-.geo-tri {
-	width: 0 !important;
-	height: 0 !important;
-	background: transparent !important;
-	border-left: 0.5em solid transparent;
-	border-right: 0.5em solid transparent;
-	border-bottom: 0.86em solid currentColor;
-}
-.geo-dotsq {
-	border-radius: 6px;
-	background-color: transparent !important;
-	background-image: radial-gradient(currentColor 1.5px, transparent 1.6px);
-	background-size: 9px 9px;
-}
-.geo.fill {
-	background: currentColor;
+/* Emphasis in running text is plain italic. Layered so utilities such as
+   `not-italic` still win. */
+@layer base {
+	em {
+		font-style: italic;
+	}
 }
 
-/* ─── Marker highlight ──────────────────────────────────────────────────────── */
+/* ─── Hero field ────────────────────────────────────────────────────────────── */
 
-/* default <em> in body copy — declared before `em.mark`/`.marker` below so
-   specificity descends in source order (fixes Biome's noDescendingSpecificity). */
-em {
-	font-style: normal;
-	font-weight: 600;
-	color: var(--ink);
-	text-decoration: underline;
-	text-decoration-color: var(--accent);
-	text-decoration-thickness: 2px;
-	text-underline-offset: 3px;
+.hero-field {
+	background-color: var(--hero);
+	color: var(--hero-ink);
 }
 
-em.mark,
-.marker {
-	font-style: normal;
-	background: var(--accent);
-	color: var(--marker-ink);
-	padding: 0.02em 0.22em;
-	border-radius: 4px;
-	box-decoration-break: clone;
-	-webkit-box-decoration-break: clone;
+/* Word-by-word entrance for hero headlines. Pure CSS, so the words are in
+   the server HTML and end visible even without script. */
+.word-rise {
+	display: inline-block;
+	animation: word-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+	animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+}
+
+@keyframes word-rise {
+	from {
+		opacity: 0;
+		transform: translateY(0.45em);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+/* Reduced motion: words are simply there - no delayed entrance. */
+@media (prefers-reduced-motion: reduce) {
+	.word-rise {
+		animation: none;
+	}
+}
+:root[data-motion="low"] .word-rise {
+	animation: none;
+}
+
+/* Content that stands in for an animation: hidden while motion plays,
+   shown when the visitor (or the site's motion toggle) reduces it. */
+.motion-fallback {
+	display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.motion-fallback {
+		display: block;
+	}
+}
+:root[data-motion="low"] .motion-fallback {
+	display: block;
 }

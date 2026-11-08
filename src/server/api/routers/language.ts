@@ -6,10 +6,13 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import { getLanguages } from "~/server/data/languages";
 
 export const languageRouter = createTRPCRouter({
-	all: publicProcedure.query(() => getLanguages()),
+	// Read straight from the database, not the data cache, so /admin never
+	// lists a row that is already gone.
+	all: publicProcedure.query(({ ctx }) =>
+		ctx.db.language.findMany({ orderBy: { sortOrder: "asc" } }),
+	),
 
 	create: adminProcedure
 		.input(languageInput)
@@ -30,7 +33,9 @@ export const languageRouter = createTRPCRouter({
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			await ctx.db.language.delete({ where: { id: input.id } });
+			// deleteMany, not delete: a row that is already gone is not an error,
+			// and the cache below still gets cleared.
+			await ctx.db.language.deleteMany({ where: { id: input.id } });
 			revalidateTag("languages");
 		}),
 });

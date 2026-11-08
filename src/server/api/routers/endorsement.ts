@@ -7,13 +7,14 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import {
-	getEndorsements,
-	getPublishedEndorsements,
-} from "~/server/data/endorsements";
+import { getPublishedEndorsements } from "~/server/data/endorsements";
 
 export const endorsementRouter = createTRPCRouter({
-	all: publicProcedure.query(() => getEndorsements()),
+	// Read straight from the database, not the data cache, so /admin never
+	// lists a row that is already gone.
+	all: publicProcedure.query(({ ctx }) =>
+		ctx.db.endorsement.findMany({ orderBy: { sortOrder: "asc" } }),
+	),
 	published: publicProcedure.query(() => getPublishedEndorsements()),
 
 	create: adminProcedure
@@ -38,7 +39,9 @@ export const endorsementRouter = createTRPCRouter({
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			await ctx.db.endorsement.delete({ where: { id: input.id } });
+			// deleteMany, not delete: a row that is already gone is not an error,
+			// and the cache below still gets cleared.
+			await ctx.db.endorsement.deleteMany({ where: { id: input.id } });
 			revalidateTag("endorsements");
 		}),
 });

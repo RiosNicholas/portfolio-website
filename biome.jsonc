@@ -30,7 +30,7 @@
 			"complexity": {
 				// `data-motion="low"` must forcibly beat inline Framer Motion
 				// styles, and `.geo-tri`/`.geo-dotsq` shape rules must beat
-				// Tailwind width/height/background utilities — both are
+				// Tailwind width/height/background utilities - both are
 				// load-bearing, not accidental cascade fights.
 				"noImportantStyles": "off"
 			},
