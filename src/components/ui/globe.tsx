@@ -18,7 +18,14 @@ type GlobeProps = {
  * Derived for the Jersey City marker's longitude (-74.0347); it's both the
  * resting angle and the rotation's starting point.
  */
-const INITIAL_PHI = (3 * Math.PI) / 2 - (-74.0347 * Math.PI) / 180;
+/**
+ * The Based cell shows only the globe's top-left quarter (its centre sits
+ * on the card's bottom-right corner), so the globe turns this far from
+ * front-facing to carry Jersey City left of centre, into the visible part.
+ */
+const CORNER_PHI_OFFSET = -0.55;
+const INITIAL_PHI =
+	(3 * Math.PI) / 2 - (-74.0347 * Math.PI) / 180 + CORNER_PHI_OFFSET;
 /**
  * Camera tilt. cobe's orthographic projection always shows exactly one
  * hemisphere; `theta` rotates *which* one faces the camera, tilting more of
@@ -29,7 +36,9 @@ const INITIAL_PHI = (3 * Math.PI) / 2 - (-74.0347 * Math.PI) / 180;
  * cell's framing. `theta` does not affect horizontal centering — that's
  * `phi` — so `INITIAL_PHI` is independent of this value.
  */
-const THETA = 0.5;
+// Lowered from 0.5 so the marker rides higher (about half the radius above
+// centre), inside the quarter the Based cell shows.
+const THETA = 0.2;
 /**
  * Marker pulse. The globe itself is static (fixed at `INITIAL_PHI` — no
  * rotation), so the only motion left is the marker breathing in size,

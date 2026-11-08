@@ -14,7 +14,7 @@ const CELL_CLASS =
 
 // Jersey City, the Based cell's marker.
 const JERSEY_CITY_MARKERS: Marker[] = [
-	{ location: [40.7248, -74.0347], size: 0.08 },
+	{ location: [40.7248, -74.0347], size: 0.06 },
 ];
 
 function CellLabel({ children }: { children: React.ReactNode }) {
@@ -167,7 +167,10 @@ export function BentoGrid({
 				{/* One sentence; the two terms a recruiter scans for carry the
 				    ink, the connecting words stay muted. */}
 				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-statement">
-					Open to <strong className="font-semibold text-ink">full-time</strong>{" "}
+					Open to{" "}
+					<strong className="whitespace-nowrap font-semibold text-ink">
+						full-time
+					</strong>{" "}
 					+&nbsp;<strong className="font-semibold text-ink">freelance</strong>{" "}
 					opportunities
 				</p>
