@@ -5,6 +5,8 @@ export const profileLinks = {
 		"https://drive.google.com/file/d/1Ev17k23REU0jirDuQRYNnxMCiXLzan31/view?usp=sharing",
 } as const;
 
+export const contactEmail = "rios.nicholas@protonmail.com";
+
 /**
  * Every canonical URL, OG tag, and `robots.txt`/`sitemap.xml` entry is
  * generated from this value, so it must match the domain the site is
@@ -17,6 +19,6 @@ export type NavLink = { href: string; label: string };
 
 export const navLinks: NavLink[] = [
 	{ href: "/", label: "Home" },
-	{ href: "/work", label: "Work" },
 	{ href: "/about", label: "About" },
+	{ href: "/projects", label: "Projects" },
 ];
