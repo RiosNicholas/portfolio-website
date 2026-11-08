@@ -6,11 +6,15 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import { getSkills, getSkillsByKind } from "~/server/data/skills";
+import { getSkillsByKind } from "~/server/data/skills";
 import { SkillKind } from "../../../../generated/prisma";
 
 export const skillRouter = createTRPCRouter({
-	all: publicProcedure.query(() => getSkills()),
+	// Read straight from the database, not the data cache, so /admin never
+	// lists a row that is already gone.
+	all: publicProcedure.query(({ ctx }) =>
+		ctx.db.skill.findMany({ orderBy: { sortOrder: "asc" } }),
+	),
 	byKind: publicProcedure
 		.input(z.object({ kind: z.nativeEnum(SkillKind) }))
 		.query(({ input }) => getSkillsByKind(input.kind)),
@@ -32,7 +36,9 @@ export const skillRouter = createTRPCRouter({
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			await ctx.db.skill.delete({ where: { id: input.id } });
+			// deleteMany, not delete: a row that is already gone is not an error,
+			// and the cache below still gets cleared.
+			await ctx.db.skill.deleteMany({ where: { id: input.id } });
 			revalidateTag("skills");
 		}),
 });

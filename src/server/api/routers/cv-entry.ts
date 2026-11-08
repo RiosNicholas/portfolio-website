@@ -6,11 +6,15 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import { getCvEntries, getCvEntriesByCategory } from "~/server/data/cv-entries";
+import { getCvEntriesByCategory } from "~/server/data/cv-entries";
 import { CvCategory } from "../../../../generated/prisma";
 
 export const cvEntryRouter = createTRPCRouter({
-	all: publicProcedure.query(() => getCvEntries()),
+	// Read straight from the database, not the data cache, so /admin never
+	// lists a row that is already gone.
+	all: publicProcedure.query(({ ctx }) =>
+		ctx.db.cvEntry.findMany({ orderBy: { sortOrder: "asc" } }),
+	),
 	byCategory: publicProcedure
 		.input(z.object({ category: z.nativeEnum(CvCategory) }))
 		.query(({ input }) => getCvEntriesByCategory(input.category)),
@@ -34,7 +38,9 @@ export const cvEntryRouter = createTRPCRouter({
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {
-			await ctx.db.cvEntry.delete({ where: { id: input.id } });
+			// deleteMany, not delete: a row that is already gone is not an error,
+			// and the cache below still gets cleared.
+			await ctx.db.cvEntry.deleteMany({ where: { id: input.id } });
 			revalidateTag("cv-entries");
 		}),
 });
