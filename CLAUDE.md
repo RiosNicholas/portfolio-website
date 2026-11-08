@@ -87,5 +87,7 @@ Applies to code comments, docs, commit messages and PR descriptions.
 ## Commits & PRs
 
 - Commits are authored as Nicholas Rios only. Never add a `Co-Authored-By` trailer or any Claude/AI attribution to commit messages or PR descriptions.
-- Conventional prefixes, lowercase summary: `feat:`, `fix:`, `docs:`, `copy:`, `style:`, `data:`.
+- Prefix is one of: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`.
+- Subject line: `type: verb + what + why + emoji`, max 72 characters. Starts with a lowercase verb, says what changed and why it matters, ends with a relevant emoji. Example: `fix: resolve cart rounding to stop overcharging users 🐛`.
+- Body: a blank line, then 2-4 bullets starting with `-`. Each starts with a lowercase verb and covers what specifically changed, why it was necessary, and any side effects or context worth noting.
 - Design changes go on a feature branch and a PR with before/after screenshots. Never commit straight to `main`.
