@@ -1,4 +1,4 @@
-# DESIGN.md — Nicholas Rios · Portfolio
+# DESIGN.md - Nicholas Rios · Portfolio
 
 Design direction and token reference for the portfolio site. Implementation
 lives in `src/styles/globals.css` (Tailwind v4 + OKLCH tokens) and
@@ -17,7 +17,7 @@ The site used to be maximalist (graph-paper grid, floating geometric
 shapes, marker highlights, a swappable accent, yellow CTAs, monospace
 labels). All of that is gone. Don't bring it back.
 
-Primary goal: sell frontend engineering — web apps, component libraries,
+Primary goal: sell frontend engineering - web apps, component libraries,
 developer tools, and agentic AI tooling (agents, tools, MCPs, chat). Voice:
 confident, plain-spoken, dry wit allowed.
 
@@ -38,16 +38,16 @@ confident, plain-spoken, dry wit allowed.
 
 ## 3. Tokens (`src/styles/globals.css`)
 
-All colours are OKLCH. Nothing invents a colour: every value is a Tailwind
+All colors are OKLCH. Nothing invents a color: every value is a Tailwind
 swatch or a `color-mix` of two tokens. Three layers, each referencing only
 the one below it:
 
-1. **Primitives** — Tailwind's own scales (`--color-zinc-*`,
+1. **Primitives** - Tailwind's own scales (`--color-zinc-*`,
    `--color-blue-*`, `--color-amber-*`).
-2. **Mode scale** — numbered steps that pick a swatch per theme
+2. **Mode scale** - numbered steps that pick a swatch per theme
    (`--neutral-1` page … `--neutral-12` strongest text, plus `--blue-*` and
    `--amber-*` roles). Dark mode only redefines this layer.
-3. **Semantic** — names a job and points at a step. Components use only
+3. **Semantic** - names a job and points at a step. Components use only
    these, through utilities registered in `@theme inline`.
 
 | Semantic token     | Utility                | Light                | Dark                          |
@@ -73,17 +73,17 @@ the one below it:
 | `--pop-ink`        | `text-pop-ink`         | zinc-950             | zinc-950                      |
 | `--focus`          | (focus ring)           | blue-600             | blue-500                      |
 
-**Colour roles** — blue is the brand mark and anything interactive. Amber
+**Color roles** - blue is the brand mark and anything interactive. Amber
 (`pop`) is the hero's rotating phrase, its button, and the ASCII pointer
 lens, nowhere else. In dark mode the hero is charcoal barely lifted off the
 page, not a blue slab; the blue lives in the glyphs.
 
-**Legacy aliases** — `--paper*`, `--ink-2/3/4`, `--accent*`, `--cta-*`,
+**Legacy aliases** - `--paper*`, `--ink-2/3/4`, `--accent*`, `--cta-*`,
 `--frosted*`, `--border*` and `--shadow-*` still exist, mapped onto the
 semantic tokens, for `/admin`, the login page, the OG image and shadcn
 primitives. Don't use them in public pages.
 
-**Type** — one typeface: Schibsted Grotesk (`next/font`, `--font-schibsted`)
+**Type** - one typeface: Schibsted Grotesk (`next/font`, `--font-schibsted`)
 for display, headings and body. Mono is the system stack, rarely used.
 Public pages use a five-step scale and nothing in between (admin keeps
 Tailwind's defaults):
@@ -99,18 +99,24 @@ Tailwind's defaults):
 Headlines are `font-semibold` with tight negative tracking baked into the
 scale.
 
-**Radii** — cards and media are `rounded-3xl`; buttons, chips and avatars
+**Radii** - cards and media are `rounded-3xl`; buttons, chips and avatars
 are `rounded-full`. The `--r-*` vars are legacy.
 
-**Shadows** — none on public pages. Depth comes from surface steps and a
+**Shadows** - none on public pages. Depth comes from surface steps and a
 small `hover:-translate-y-1` on cards.
 
-**Layout** — `.shell` is the page container: max 1440px, gutter
+**Layout** - `.shell` is the page container: max 1440px, gutter
 `clamp(20px, 4vw, 64px)`. Sections are spaced with `pt-24 md:pt-40` (or
 `pt-32 md:pt-48` for endorsements and contact). Two-column layouts use a
 12-col grid at `lg` (5 + 7 or 6 + 6). Mobile first, always.
 
-**Theme** — follows OS `prefers-color-scheme` on first load, toggled via
+**Sizing to a card** - when something on phones has to fill its card, size
+it with container query units (`cqw`) off a `@container` parent, not with
+`vw` guesses or fixed pixels. Bento cells are containers for this reason.
+Derive related values from one variable instead of repeating numbers (the
+globe's insets are `calc(var(--globe) / 2)`).
+
+**Theme** - follows OS `prefers-color-scheme` on first load, toggled via
 `src/components/theme/theme-toggle.tsx`, persisted to `localStorage`.
 `ThemeInitScript` sets `data-theme` and `data-motion` on `<html>` before
 paint so there's no flash of the wrong theme. The `dark:` variant keys off
@@ -119,22 +125,22 @@ paint so there's no flash of the wrong theme. The `dark:` variant keys off
 ## 4. Motion
 
 `useAnimationsEnabled()` (`src/lib/use-animations-enabled.ts`) is the
-single gate for all `motion`-driven animation — `false` when OS
+single gate for all `motion`-driven animation - `false` when OS
 `prefers-reduced-motion: reduce` is set or `data-motion="low"` is on
 `<html>`. Every animated component must render a complete, non-animated
-resting state when it's `false` — see
+resting state when it's `false` - see
 `.claude/instructions/animation-accessibility.md` for the pattern.
 
-- **Reveal** (`ui/reveal.tsx`) — fade + 18px rise on scroll, only for
+- **Reveal** (`ui/reveal.tsx`) - fade + 18px rise on scroll, only for
   elements that start below the fold. Server HTML always ships visible.
-- **Word rise** (`.word-rise`, `RisingWords`) — pure-CSS word-by-word
+- **Word rise** (`.word-rise`, `RisingWords`) - pure-CSS word-by-word
   entrance on hero headlines, staggered 90ms. Off under reduced motion.
-- **Rotating phrase** — swaps every 2.4s (last phrase holds 3.6s); frozen
+- **Rotating phrase** - swaps every 2.4s (last phrase holds 3.6s); frozen
   on a complete phrase under reduced motion.
-- **Motion fallback** (`.motion-fallback`) — content that only shows when
+- **Motion fallback** (`.motion-fallback`) - content that only shows when
   motion is reduced, e.g. the hero description that stands in for the
   rotating line.
-- **Marquee** — CSS keyframes (`animate-marquee-vertical`), not `motion`,
+- **Marquee** - CSS keyframes (`animate-marquee-vertical`), not `motion`,
   so it can pause and resume in place. Degrades to a static, scrollable
   list when motion is off.
 
@@ -144,43 +150,48 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
 
 ## 5. Signature components
 
-- **Hero field** (`layout/hero-field.tsx` + `ui/ascii-field.tsx`) — the
+- **Hero field** (`layout/hero-field.tsx` + `ui/ascii-field.tsx`) - the
   full-width band every page opens on. A canvas draws a drifting ASCII wave
   (` .·:-=+*#%@`) in `--hero-glyph`, with an amber lens that follows the
   pointer. 30fps from a pre-rendered glyph atlas, paused off-screen; one
   still frame under reduced motion. Inner pages share `pageHeroClass` so
   every hero is the same height.
-- **Home hero** (`HeroSection`) — one sentence across four lines:
+- **Home hero** (`HeroSection`) - one sentence across four lines:
   *Software Engineer / building / [rotating phrase] / @JPMorganChase.* The
   phrase is amber, the employer line is `hero-subtle`, and the only button
   is a `pop` "See my experience" linking to About.
-- **At a glance** (`BentoGrid`) — 6-col grid of `bg-surface` cards that
+- **At a glance** (`BentoGrid`) - 6-col grid of `bg-surface` cards that
   share one label/value rhythm (muted label on top, value in
   `text-statement` below). Cells: Based in (with a `cobe` globe peeking off
   the corner), Experience (`NumberTicker`), Status, Skills (vertical
   marquee), Favorite tools (pill chips on `surface-raised`), Currently,
   Languages. Skills, tools and languages come from the database, edited via
-  `/admin`.
-- **Endorsements** (`Endorsements` + `TestimonialCard`) — up to three
+  `/admin`. On phones it's 2 columns: Based in takes the first row, then
+  Experience and Status sit side by side, then one cell per row. The globe
+  keeps the desktop framing at every size (centered on the card's corner,
+  `--globe` sets the size). On phones the Experience number and the Status
+  sentence scale with the card (`cqw`) so they fill it without wrapping
+  "opportunities".
+- **Endorsements** (`Endorsements` + `TestimonialCard`) - up to three
   static cards: quote first, then avatar, name (links to LinkedIn) and
   role. A three-column grid at `lg`; below that, a swipeable snap row with
   the next card peeking in.
-- **Case studies** (`CaseStudy`) — on `/projects`, one per row: optional
+- **Case studies** (`CaseStudy`) - on `/projects`, one per row: optional
   large screenshot, then a 5 + 7 split with title/role/org/year on the left
   and the description, one key stat and a muted "Built with …" line on the
   right.
-- **Buttons** (`ui/button-link.tsx`) — the site's one button, `rounded-full`
+- **Buttons** (`ui/button-link.tsx`) - the site's one button, `rounded-full`
   and `h-12`. Variants: `primary` (brand), `secondary` (surface), `pop`
   (amber, hero only), `on-hero` (translucent white). External links get an
   up-right arrow that nudges on hover. Inline links use `textLinkClass`: a
-  2px brand-coloured underline.
-- **Nav** (`SiteNav`) — wordmark with a small blue square that rotates on
+  2px brand-colored underline.
+- **Nav** (`SiteNav`) - wordmark with a small blue square that rotates on
   hover, then **About · Projects** and the theme toggle. The current page
   gets a brand underline.
-- **Contact + footer** (`ContactCta`, `SiteFooter`) — "Let's build
-  something good." with LinkedIn and email; the footer is one centred
+- **Contact + footer** (`ContactCta`, `SiteFooter`) - "Let's build
+  something good." with LinkedIn and email; the footer is one centered
   muted line: © 2026 Nicholas Rios · New York City Metropolitan Area.
-- **Custom cursor** (`CustomCursor`) — dot + spring-follow ring, states for
+- **Custom cursor** (`CustomCursor`) - dot + spring-follow ring, states for
   link/text/photo hover. Only takes over (`data-custom-cursor="on"`) once
   it confirms a real pointer device and has mounted.
 
@@ -188,16 +199,16 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
 
 - Don't bring back the old system: no graph-paper grid, geometric shapes,
   marker highlights, swappable accents, yellow CTAs or monospace labels.
-- Don't use amber outside the hero, and don't add a third accent colour.
-- Don't hard-code colours or reach for Tailwind palette classes in
-  components — use the semantic utilities.
+- Don't use amber outside the hero, and don't add a third accent color.
+- Don't hard-code colors or reach for Tailwind palette classes in
+  components - use the semantic utilities.
 - Don't add type sizes outside the five-step scale on public pages.
 - Don't add gradients or drop shadows. The only gradient is the fade mask
   on the skills marquee.
 - Don't add a profile photo. The site stays about the work.
 - Don't add stand-in images. `src/lib/media.ts` stays empty until there's a
   real photo or screenshot.
-- Don't add more than ~24 skills to the reel — past that it's decoration,
+- Don't add more than ~24 skills to the reel - past that it's decoration,
   not communication.
 - Don't use emoji.
 - Don't duplicate links or accents within a section.

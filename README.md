@@ -1,7 +1,7 @@
-# Nicholas Rios — Portfolio
+# Nicholas Rios - Portfolio
 
 Personal portfolio site, live at [nrios.dev](https://nrios.dev): home,
-projects (case studies), and about pages. Built on the T3 Stack — content
+projects (case studies), and about pages. Built on the T3 Stack - content
 (case studies, endorsements, CV entries, skills, languages) lives in
 Postgres via Prisma and is edited through a gated `/admin` CRUD UI, not in
 code.
@@ -20,8 +20,8 @@ code.
 - **tRPC 11** (+ TanStack Query, superjson) and **Prisma 6** for content
   storage (`CaseStudy`, `Endorsement`, `CvEntry`, `Skill`, `Language`
   models) and the `/admin` surface
-- **NextAuth (Auth.js) v5** — a username/password (Credentials) sign-in at
-  a custom `/auth/login` page, JWT sessions, gates `/admin` — see
+- **NextAuth (Auth.js) v5** - a username/password (Credentials) sign-in at
+  a custom `/auth/login` page, JWT sessions, gates `/admin` - see
   [Content & admin](#content--admin) below
 - **Zod** + **@t3-oss/env-nextjs** for input and env validation
 - **Biome** for linting and formatting (not ESLint/Prettier)
@@ -46,7 +46,7 @@ npm run auth:hash      # generate an ADMIN_PASSWORD_HASH value for .env
 ```
 
 `npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
-`ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` to be set (`src/env.js` validates these at build time) — `/`, `/projects`, and
+`ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` to be set (`src/env.js` validates these at build time) - `/`, `/projects`, and
 `/about` are Server Components that read from Postgres, and `/admin` needs
 a working NextAuth Credentials session. See [Local setup](#local-setup).
 
@@ -69,9 +69,9 @@ src/
     layout/            structural wrappers (SiteNav, SiteFooter,
                        HeroField, JsonLd, ThemeInitScript,
                        SkipToContent)
-    theme/             theme-toggle.tsx — light/dark toggle, persisted to
+    theme/             theme-toggle.tsx - light/dark toggle, persisted to
                        localStorage
-    ui/                primitives — shadcn/ui + custom (Marquee, Reveal,
+    ui/                primitives - shadcn/ui + custom (Marquee, Reveal,
                        CustomCursor, Globe, AsciiField, Avatar,
                        ButtonLink, DropdownMenu, MediaFigure,
                        NumberTicker, TestimonialCard, MotionProvider)
@@ -79,7 +79,7 @@ src/
                        structured data, theme defaults), avatar helpers,
                        and shared utilities (cn, use-animations-enabled)
   server/
-    api/routers/       tRPC routers — one per content model, plus `post`
+    api/routers/       tRPC routers - one per content model, plus `post`
     api/schemas/       Zod input schemas shared between routers and
                        /admin's client-side forms
     data/               unstable_cache-wrapped Prisma reads, tagged per
@@ -98,9 +98,9 @@ prisma/
                        to generated/prisma
   seed.ts               per-table seed functions for all content models
 scripts/
-  hash-password.ts      npm run auth:hash — generates ADMIN_PASSWORD_HASH
+  hash-password.ts      npm run auth:hash - generates ADMIN_PASSWORD_HASH
   seed-if-empty.ts       runs prisma/seed.ts's functions per-table, only
-                       for tables that are still empty — run on every
+                       for tables that are still empty - run on every
                        deploy via vercel-build (see [Deploying](#deploying))
   update-favorite-tools.ts  one-off data script for the Skill table
 ```
@@ -124,16 +124,16 @@ edited through `/admin`:
 who isn't signed in as the single credentials identity, and `adminProcedure`
 (`src/server/api/trpc.ts`) rejects mutations from anyone else even if they
 reach a form directly. Each admin mutation calls `revalidateTag(...)` after
-writing, so an edit shows up on the public page on the next request — no
+writing, so an edit shows up on the public page on the next request - no
 redeploy needed.
 
 `src/lib/site-links.ts` (nav links, profile URLs, `siteUrl`) and
-`src/lib/structured-data.ts` (Person JSON-LD) are **not** modeled — they're
+`src/lib/structured-data.ts` (Person JSON-LD) are **not** modeled - they're
 low-churn structural/deploy config read by static route handlers
 (`robots.ts`, `sitemap.ts`), kept as typed consts on purpose.
 
 The `Endorsement` table is seeded with real LinkedIn recommendations
-(`prisma/seed.ts`, upserted by `linkedinUrl`) — not the 12 fabricated
+(`prisma/seed.ts`, upserted by `linkedinUrl`) - not the 12 fabricated
 placeholders that used to live in `src/lib/endorsements.ts`. LinkedIn's API
 doesn't expose recommendation data, so new ones get copy-pasted in by hand,
 either by adding to the seed script and re-running it or directly via
@@ -147,14 +147,14 @@ component inventory.
 ## Accessibility & motion
 
 - `useAnimationsEnabled()` (`src/lib/use-animations-enabled.ts`) is the
-  single source of truth for whether rich motion should play — it's `true`
+  single source of truth for whether rich motion should play - it's `true`
   unless the OS `prefers-reduced-motion` or the site's `data-motion="low"`
   toggle is active. Every `motion`-driven component reads it and renders a
   complete, non-animated resting state when `false`; see
   `.claude/instructions/animation-accessibility.md` for the pattern.
 - The custom cursor (`src/components/ui/custom-cursor.tsx`) only replaces
   the native cursor once it confirms a real pointer device and has actually
-  mounted (`data-custom-cursor="on"` on `<html>`) — with JavaScript
+  mounted (`data-custom-cursor="on"` on `<html>`) - with JavaScript
   disabled, or on touch devices, the native cursor is used throughout.
 - A skip link (`#main-content`) precedes the fixed nav in `layout.tsx` for
   keyboard users.
@@ -164,42 +164,42 @@ component inventory.
 1. Copy `.env.example` to `.env` and fill in `AUTH_SECRET` (`npx auth
    secret`), `ADMIN_USERNAME`/`ADMIN_PASSWORD_HASH` (see "Credentials-based
    admin access" below), and `DATABASE_URL`/`DIRECT_URL` (both can point at
-   the same local Postgres — `start-database.sh` spins one up via
+   the same local Postgres - `start-database.sh` spins one up via
    Docker/Podman).
 2. `npm install`
-3. `npx prisma migrate dev --name add_content_models` — creates the DB
+3. `npx prisma migrate dev --name add_content_models` - creates the DB
    schema (first run also generates the Prisma Client).
-4. `npx prisma db seed` — seeds case studies, CV entries, skills/tools, and
+4. `npx prisma db seed` - seeds case studies, CV entries, skills/tools, and
    a handful of real LinkedIn endorsements.
 5. `npm run auth:hash` (before first boot, if you haven't already), then
    `npm run dev`, sign in at `/auth/login` with `ADMIN_USERNAME` and
-   the password you hashed. `/admin` works immediately — no `db:studio`
+   the password you hashed. `/admin` works immediately - no `db:studio`
    lookup, no restart-after-first-login. See "Credentials-based admin
    access" below for the full walkthrough.
-6. Visit `/admin` — you should see the CRUD sections instead of being
+6. Visit `/admin` - you should see the CRUD sections instead of being
    redirected.
 
 ### Credentials-based admin access
 
-`/admin` is gated behind a username/password (Credentials) sign-in — no
+`/admin` is gated behind a username/password (Credentials) sign-in - no
 OAuth app, no chicken-and-egg allowlist step:
 
 1. **Pick a username.** Set `ADMIN_USERNAME` in `.env` to anything
    non-empty.
 2. **Generate a password hash.** `npm run auth:hash`, enter a password at
    the prompt, and paste the printed line into `.env` as
-   `ADMIN_PASSWORD_HASH`. Never put the plaintext password in `.env` —
+   `ADMIN_PASSWORD_HASH`. Never put the plaintext password in `.env` -
    `src/env.js` validates the value against a `scrypt:<salt>:<key>` regex
    and fails the build if it looks like plaintext.
 3. **Sign in.** `npm run dev`, visit `/auth/login` (a custom
-   branded sign-in page — `src/app/auth/login/`), and sign in with
+   branded sign-in page - `src/app/auth/login/`), and sign in with
    `ADMIN_USERNAME` and the password you just hashed.
-4. Visit `/admin` — it renders the hub immediately.
+4. Visit `/admin` - it renders the hub immediately.
 
 This replaces the previous Discord OAuth setup's three-restart
 chicken-and-egg dance (sign in once, look up a DB-generated `User.id` with
 `db:studio`, set it as an allowlist env var, restart). Credentials sessions
-are JWT-only — Auth.js never writes a `User` row for them — so the identity
+are JWT-only - Auth.js never writes a `User` row for them - so the identity
 `authorize()` returns is a fixed code constant (`ADMIN_USER_ID` in
 `src/server/auth/config.ts`), known at config time. That's also why there's
 no allowlist env var to populate anymore: `isAdminUserId()`
@@ -219,19 +219,19 @@ legacy `POSTGRES_*` aliases. Set this project's `DIRECT_URL` (used by
 | `DIRECT_URL`         | `DATABASE_URL_UNPOOLED`      |
 
 Also set `AUTH_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as real
-project env vars — all are required at build time (`src/env.js`). Generate
+project env vars - all are required at build time (`src/env.js`). Generate
 the production hash from a *different* password than the local dev one
-(`npm run auth:hash` locally, paste the result into Vercel — never the
+(`npm run auth:hash` locally, paste the result into Vercel - never the
 plaintext). `package.json`'s `vercel-build` script (`prisma
 migrate deploy && tsx scripts/seed-if-empty.ts && next build`) runs
 migrations, then seeds any content table that's still empty (per-table, so
-a partially-seeded DB never gets clobbered — see
-`scripts/seed-if-empty.ts`), before building — Vercel picks up a
+a partially-seeded DB never gets clobbered - see
+`scripts/seed-if-empty.ts`), before building - Vercel picks up a
 `vercel-build` script over `build` automatically, no dashboard override
 needed.
 
 `src/lib/site-links.ts`'s `siteUrl` constant (`https://nrios.dev`)
-feeds `metadataBase`, canonical URLs, `robots.ts`, and `sitemap.ts` — it's a
+feeds `metadataBase`, canonical URLs, `robots.ts`, and `sitemap.ts` - it's a
 static const rather than an env var so `npm run build` never requires a
 domain to be configured to succeed. Update it there if the production
 domain ever changes.
