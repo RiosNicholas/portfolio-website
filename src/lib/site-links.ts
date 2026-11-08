@@ -13,7 +13,7 @@ export const contactEmail = "rios.nicholas@protonmail.com";
  * actually served from. Static content rather than an env var so
  * `npm run build` never requires a domain to be configured to succeed.
  */
-export const siteUrl = "https://nicholasrios.dev";
+export const siteUrl = "https://nrios.dev";
 
 export type NavLink = { href: string; label: string };
 
