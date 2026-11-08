@@ -31,7 +31,7 @@ function CellSub({ children }: { children: React.ReactNode }) {
 
 function YearsCell() {
 	return (
-		<div className={cn(CELL_CLASS, "col-span-2")}>
+		<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
 				<div className="font-semibold text-display text-ink">
@@ -88,13 +88,18 @@ function LanguagesCell({ languages }: { languages: Language[] }) {
 	return (
 		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-3")}>
 			<CellLabel>Languages</CellLabel>
-			<div className="mt-4 grid flex-1 grid-cols-3 items-end gap-4">
+			{/* Phones: one row per language (name, then level), so a long
+			    name like Portuguese never truncates. sm and up: three columns. */}
+			<div className="mt-4 grid flex-1 grid-cols-1 items-end gap-3 sm:grid-cols-3 sm:gap-4">
 				{languages.map((language) => (
-					<div key={language.name}>
-						<div className="truncate font-semibold text-ink text-lead">
+					<div
+						className="flex items-baseline justify-between gap-4 sm:block"
+						key={language.name}
+					>
+						<div className="font-semibold text-ink text-lead">
 							{language.name}
 						</div>
-						<div className="mt-1 text-body text-ink-muted">
+						<div className="text-body text-ink-muted sm:mt-1">
 							{language.level}
 						</div>
 					</div>
@@ -131,9 +136,12 @@ export function BentoGrid({
 		//   row3  [ row-span-3  ][Currently 3                 ]
 		//   row4  [ ...         ][Languages 3                 ]
 		<Reveal className="mt-10 grid auto-rows-min grid-cols-2 gap-3 md:mt-14 md:auto-rows-[minmax(11rem,auto)] md:grid-cols-6">
-			{/* Location */}
-			<div className={cn(CELL_CLASS, "col-span-2")}>
-				<div className="relative z-10 flex h-full flex-col justify-between gap-5">
+			{/* Location. A large globe centred on the card's bottom-right
+			    corner, so only its top-left quarter (North America) pokes in.
+			    Below lg the text sits at the top to clear it. Half width on
+			    phones, beside Experience. */}
+			<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
+				<div className="relative z-10 flex h-full flex-col justify-start gap-5 pb-24 md:pb-28 lg:justify-between lg:pb-0">
 					<CellLabel>Based in</CellLabel>
 					<div>
 						<div className="font-semibold text-ink text-statement">
@@ -145,7 +153,7 @@ export function BentoGrid({
 					</div>
 				</div>
 				<Globe
-					className="absolute -right-24 -bottom-24 size-56 md:-right-28 md:-bottom-24 md:size-64 lg:-right-20"
+					className="absolute -right-[110px] -bottom-[110px] size-[220px] md:-right-[150px] md:-bottom-[150px] md:size-[300px] lg:-right-[300px] lg:-bottom-[300px] lg:size-[600px]"
 					markers={JERSEY_CITY_MARKERS}
 				/>
 			</div>
