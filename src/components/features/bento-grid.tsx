@@ -9,8 +9,10 @@ import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
 import type { Language, Skill } from "../../../generated/prisma";
 
+// Every cell is a size container, so phone-only sizes can follow the
+// card's width (cqw) instead of guessing from the viewport.
 const CELL_CLASS =
-	"relative flex flex-col justify-between gap-5 overflow-hidden rounded-3xl bg-surface p-6 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-7";
+	"@container relative flex flex-col justify-between gap-5 overflow-hidden rounded-3xl bg-surface p-5 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-7";
 
 // Jersey City, the Based cell's marker.
 const JERSEY_CITY_MARKERS: Marker[] = [
@@ -34,10 +36,9 @@ function YearsCell() {
 		<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
-				{/* Phones: the cell is half width and as tall as the globe cell
-				    beside it, so the number scales with the viewport to fill it
-				    instead of sitting small in empty space. */}
-				<div className="font-semibold text-display text-ink max-md:text-[clamp(4.5rem,24vw,7rem)] max-md:leading-none">
+				{/* Phones: the number scales with the card so "3 yrs" spans its
+				    width. */}
+				<div className="font-semibold text-display text-ink max-md:text-[80cqw] max-md:leading-none">
 					<NumberTicker value={3} />
 					<sup className="ml-1 align-super font-medium text-ink-muted text-statement">
 						yrs
@@ -58,7 +59,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:min-h-[22rem] md:p-0 lg:col-span-3 lg:row-span-3",
 			)}
 		>
-			<div className="flex items-baseline justify-between px-6 pt-6 pb-2 md:px-7 md:pt-7">
+			<div className="flex items-baseline justify-between px-5 pt-5 pb-2 md:px-7 md:pt-7">
 				<CellLabel>Skills</CellLabel>
 				<span className="text-body text-ink-muted">{skills.length} / ∞</span>
 			</div>
@@ -76,7 +77,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 			>
 				{skills.map((skill) => (
 					<div
-						className="flex items-center gap-3 whitespace-nowrap px-6 py-1 font-semibold text-ink text-statement md:px-7"
+						className="flex items-center gap-3 whitespace-nowrap px-5 py-1 font-semibold text-ink text-statement md:px-7"
 						key={skill.id}
 					>
 						{skill.label}
@@ -122,10 +123,15 @@ export function BentoGrid({
 	languages: Language[];
 }) {
 	return (
-		// Grid layout reference — the source order below (Based, Experience,
+		// Grid layout reference - the source order below (Based, Experience,
 		// Status, Skills, Favorite tools, Currently, Languages) satisfies BOTH
 		// row maps via CSS Grid auto-placement. Do not reorder these children,
 		// and every row must total 6 columns at both breakpoints.
+		//
+		// phones (2 columns):
+		//   row1  [Based 2                     ]
+		//   row2  [Experience 1 ][Status 1     ]
+		//   then one full-width row per cell
 		//
 		// md (768–1023px):
 		//   row1  [Based 2      ][Experience 2 ][Status 2     ]
@@ -139,12 +145,14 @@ export function BentoGrid({
 		//   row3  [ row-span-3  ][Currently 3                 ]
 		//   row4  [ ...         ][Languages 3                 ]
 		<Reveal className="mt-10 grid auto-rows-min grid-cols-2 gap-3 md:mt-14 md:auto-rows-[minmax(11rem,auto)] md:grid-cols-6">
-			{/* Location. A large globe centred on the card's bottom-right
+			{/* Location. A large globe centered on the card's bottom-right
 			    corner, so only its top-left quarter (North America) pokes in.
-			    Below lg the text sits at the top to clear it. Half width on
-			    phones, beside Experience. */}
-			<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
-				<div className="relative z-10 flex h-full flex-col justify-start gap-5 pb-24 md:pb-28 lg:justify-between lg:pb-0">
+			    --globe sets its size and the insets are half of it, so the
+			    framing holds at every breakpoint. On phones the card gets the
+			    full row and the globe scales with it. From md to lg the text
+			    sits at the top to clear it. */}
+			<div className={cn(CELL_CLASS, "col-span-2")}>
+				<div className="relative z-10 flex h-full flex-col justify-between gap-5 md:justify-start md:pb-28 lg:justify-between lg:pb-0">
 					<CellLabel>Based in</CellLabel>
 					<div>
 						<div className="font-semibold text-ink text-statement">
@@ -156,7 +164,7 @@ export function BentoGrid({
 					</div>
 				</div>
 				<Globe
-					className="absolute -right-[110px] -bottom-[110px] size-[220px] md:-right-[150px] md:-bottom-[150px] md:size-[300px] lg:-right-[300px] lg:-bottom-[300px] lg:size-[600px]"
+					className="absolute -right-[calc(var(--globe)/2)] -bottom-[calc(var(--globe)/2)] size-(--globe) [--globe:150cqw] md:[--globe:300px] lg:[--globe:600px]"
 					markers={JERSEY_CITY_MARKERS}
 				/>
 			</div>
@@ -164,12 +172,14 @@ export function BentoGrid({
 			{/* Years */}
 			<YearsCell />
 
-			{/* Status */}
-			<div className={cn(CELL_CLASS, "col-span-2")}>
+			{/* Status - half width on phones, beside Experience */}
+			<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
 				<CellLabel>Status</CellLabel>
 				{/* One sentence; the two terms a recruiter scans for carry the
 				    ink, the connecting words stay muted. */}
-				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-statement">
+				{/* Phones: "opportunities" is about 6em wide, so 16cqw keeps it on
+				    one line in any card width, capped at the statement size. */}
+				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-statement max-md:text-[length:min(16cqw,var(--text-statement))]">
 					Open to{" "}
 					<strong className="whitespace-nowrap font-semibold text-ink">
 						full-time
@@ -179,7 +189,7 @@ export function BentoGrid({
 				</p>
 			</div>
 
-			{/* Skills — see grid layout reference above <Reveal> */}
+			{/* Skills - see grid layout reference above <Reveal> */}
 			<SkillsCell skills={skills} />
 
 			{/* Stack */}
@@ -218,7 +228,7 @@ export function BentoGrid({
 				</div>
 			</div>
 
-			{/* Languages — see grid layout reference above <Reveal> */}
+			{/* Languages - see grid layout reference above <Reveal> */}
 			<LanguagesCell languages={languages} />
 		</Reveal>
 	);
