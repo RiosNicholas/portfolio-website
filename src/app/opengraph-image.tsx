@@ -3,14 +3,14 @@ import { ImageResponse } from "next/og";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt =
-	"Nicholas Rios - Software Engineer building agentic AI tooling @JPMorganChase.";
+	"Nicholas Rios - Software Engineer. Web development, platform engineering, design systems, agentic AI.";
 
 // Light-theme hero tokens as hex: CSS custom properties from globals.css
 // aren't available in this isolated render, and Satori can't parse oklch.
 const hero = "#1447e6";
 const glyphColor = "142, 197, 255";
-const pop = "#ffd230";
 const subtle = "#bedbff";
+const pop = "#ffd230";
 
 // A still frame of the hero's ASCII field (ascii-field.tsx at t = 0),
 // mirrored so its densest patch sits right of the text. The default font
@@ -84,21 +84,33 @@ export default function OpengraphImage() {
 					padding: "72px 80px",
 				}}
 			>
-				<div style={{ display: "flex", fontSize: 30, color: subtle }}>
-					Nicholas Rios
-				</div>
 				<div
 					style={{
 						display: "flex",
-						flexDirection: "column",
-						fontSize: 64,
-						lineHeight: 1.1,
+						alignItems: "center",
+						gap: 14,
+						fontSize: 30,
+						color: subtle,
 					}}
 				>
-					<div style={{ fontSize: 96 }}>Software Engineer</div>
-					<div>building</div>
-					<div style={{ color: pop }}>agentic AI tooling</div>
-					<div style={{ color: subtle }}>@JPMorganChase.</div>
+					{/* The nav's logo mark, in the hero's amber so it reads on cobalt. */}
+					<div
+						style={{
+							width: 22,
+							height: 22,
+							borderRadius: 6,
+							background: pop,
+						}}
+					/>
+					Nicholas Rios
+				</div>
+				<div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+					<div style={{ fontSize: 104, lineHeight: 1.05 }}>
+						Software Engineer
+					</div>
+					<div style={{ fontSize: 30, color: subtle }}>
+						Web development · Platform engineering · Design systems · Agentic AI
+					</div>
 				</div>
 			</div>
 		</div>,
