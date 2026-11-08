@@ -1,27 +1,18 @@
-import Link from "next/link";
+import { ButtonLink } from "~/components/ui/button-link";
 
 export default function NotFound() {
 	return (
 		<main
-			className="shell flex min-h-[70vh] flex-col items-center justify-center gap-6 py-24 text-center"
+			className="shell flex min-h-[60vh] flex-col justify-center gap-8 py-24"
 			id="main-content"
 		>
-			<span className="font-medium font-mono text-(--ink-4) text-xs uppercase tracking-wider">
-				404
-			</span>
-			<h1 className="font-display font-semibold text-4xl text-foreground leading-none tracking-tighter md:text-6xl">
-				Page <em className="mark">not found</em>
-			</h1>
-			<p className="max-w-md font-sans text-(--ink-2) text-base leading-relaxed">
-				The page you're looking for doesn't exist or has moved.
+			<h1 className="m-0 font-semibold text-display">Page not found</h1>
+			<p className="m-0 max-w-[32rem] text-lead">
+				The page you&apos;re looking for doesn&apos;t exist or has moved.
 			</p>
-			<Link
-				className="inline-flex items-center gap-2 whitespace-nowrap rounded-(--r-md) bg-(--cta-bg) px-5 py-3 font-display font-semibold text-(--cta-ink) text-sm tracking-tight no-underline shadow-(--shadow-pop) transition duration-300 ease-out hover:-translate-y-0.5 hover:bg-(--cta-bg-hover)"
-				href="/"
-			>
-				<span>Back to home</span>
-				<span>↗</span>
-			</Link>
+			<div>
+				<ButtonLink href="/">Back to home</ButtonLink>
+			</div>
 		</main>
 	);
 }

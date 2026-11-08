@@ -3,11 +3,7 @@ import "~/styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
-import {
-	Hanken_Grotesk,
-	JetBrains_Mono,
-	Schibsted_Grotesk,
-} from "next/font/google";
+import { Schibsted_Grotesk } from "next/font/google";
 import { JsonLd } from "~/components/layout/json-ld";
 import { SiteFooter } from "~/components/layout/site-footer";
 import { SiteNav } from "~/components/layout/site-nav";
@@ -18,31 +14,16 @@ import { MotionProvider } from "~/components/ui/motion-provider";
 import { profileLinks, siteUrl } from "~/lib/site-links";
 import { personJsonLd } from "~/lib/structured-data";
 import { themeDefaults } from "~/lib/theme";
-import { cn } from "~/lib/utils";
 
 const schibstedGrotesk = Schibsted_Grotesk({
 	subsets: ["latin"],
 	variable: "--font-schibsted",
-	weight: ["400", "500", "600", "700", "800"],
-	display: "swap",
-});
-
-const hankenGrotesk = Hanken_Grotesk({
-	subsets: ["latin"],
-	variable: "--font-hanken",
 	weight: ["400", "500", "600", "700"],
 	display: "swap",
 });
 
-const jetbrainsMono = JetBrains_Mono({
-	subsets: ["latin"],
-	variable: "--font-jetbrains-mono",
-	weight: ["400", "500"],
-	display: "swap",
-});
-
 const description =
-	"Nicholas Rios — full-stack engineer, UI & platform. Based in Jersey City.";
+	"Nicholas Rios is a software engineer building web applications, component libraries, developer tools and agentic AI tooling at JPMorganChase.";
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
@@ -82,13 +63,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
 	return (
 		<html
-			className={cn(
-				schibstedGrotesk.variable,
-				hankenGrotesk.variable,
-				jetbrainsMono.variable,
-			)}
-			data-accent={themeDefaults.accent}
-			data-grid={themeDefaults.grid}
+			className={schibstedGrotesk.variable}
 			data-motion={themeDefaults.motion}
 			data-theme={themeDefaults.theme}
 			lang="en"
@@ -97,8 +72,6 @@ export default function RootLayout({
 			<body className="antialiased" suppressHydrationWarning>
 				<ThemeInitScript />
 				<JsonLd data={personJsonLd} />
-				<div aria-hidden className="paper-bg" />
-				<div aria-hidden className="grain" />
 				<SkipToContent />
 				<MotionProvider>
 					<CustomCursor />

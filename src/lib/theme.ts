@@ -6,8 +6,6 @@
 
 export const themeStorageKeys = {
 	theme: "theme",
-	accent: "accent",
-	grid: "grid",
 	motion: "motion",
 } as const;
 
@@ -19,7 +17,5 @@ export const themeStorageKeys = {
  */
 export const themeDefaults = {
 	theme: "light",
-	accent: "cobalt",
-	grid: "subtle",
 	motion: "high",
 } as const;
