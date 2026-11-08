@@ -10,49 +10,23 @@ import { cn } from "~/lib/utils";
 import type { Language, Skill } from "../../../generated/prisma";
 
 const CELL_CLASS =
-	"relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-(--paper-2) p-6 shadow-(--shadow-card) transition duration-300 ease-out hover:border-(--border-2) hover:shadow-(--shadow-pop)";
+	"relative flex flex-col justify-between gap-5 overflow-hidden rounded-3xl bg-surface p-6 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-7";
 
-// Jersey City — kept in sync with the coordinate text rendered in the Based
-// cell below.
+// Jersey City, the Based cell's marker.
 const JERSEY_CITY_MARKERS: Marker[] = [
 	{ location: [40.7248, -74.0347], size: 0.08 },
 ];
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex items-center gap-2 font-medium font-mono text-(--accent-text) text-xs uppercase tracking-wider">
-			<span className="size-2 shrink-0 rounded-sm bg-(--accent)" />
+		<div className="flex items-center gap-2 font-medium text-body text-ink-muted">
 			{children}
 		</div>
 	);
 }
 
 function CellSub({ children }: { children: React.ReactNode }) {
-	return (
-		<div className="font-mono text-(--ink-3) text-xs tracking-normal">
-			{children}
-		</div>
-	);
-}
-
-function SkillLabel({
-	label,
-	accent,
-}: {
-	label: string;
-	accent?: string | null;
-}) {
-	if (!accent) return <>{label}</>;
-	const index = label.indexOf(accent);
-	if (index === -1) return <>{label}</>;
-
-	return (
-		<>
-			{label.slice(0, index)}
-			<em className="text-(--accent-text) not-italic">{accent}</em>
-			{label.slice(index + accent.length)}
-		</>
-	);
+	return <div className="text-body text-ink-muted">{children}</div>;
 }
 
 function YearsCell() {
@@ -60,9 +34,9 @@ function YearsCell() {
 		<div className={cn(CELL_CLASS, "col-span-2")}>
 			<CellLabel>Experience</CellLabel>
 			<div>
-				<div className="font-display font-semibold text-6xl text-foreground leading-none tracking-tighter md:text-8xl">
+				<div className="font-semibold text-display text-ink">
 					<NumberTicker value={3} />
-					<sup className="align-super font-medium font-mono text-(--accent-text) text-lg tracking-normal md:text-2xl">
+					<sup className="ml-1 align-super font-medium text-ink-muted text-statement">
 						yrs
 					</sup>
 				</div>
@@ -78,20 +52,18 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 		<div
 			className={cn(
 				CELL_CLASS,
-				"col-span-2 p-0 md:col-span-4 md:row-span-2 lg:col-span-3 lg:row-span-3",
+				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:min-h-[22rem] md:p-0 lg:col-span-3 lg:row-span-3",
 			)}
 		>
-			<div className="flex items-baseline justify-between px-6 pt-6 pb-2">
+			<div className="flex items-baseline justify-between px-6 pt-6 pb-2 md:px-7 md:pt-7">
 				<CellLabel>Skills</CellLabel>
-				<span className="font-mono text-(--ink-3) text-xs">
-					{skills.length} / ∞
-				</span>
+				<span className="text-body text-ink-muted">{skills.length} / ∞</span>
 			</div>
 			<Marquee
 				aria-label="Skills"
 				ariaHideDuplicates
 				className={cn(
-					"relative h-64 p-0 [--duration:28s] [--gap:0px] md:h-auto md:flex-1",
+					"relative h-64 p-0 [--duration:28s] [--gap:0px] md:absolute md:inset-x-0 md:top-18 md:bottom-0 md:h-auto",
 					enabled &&
 						"mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]",
 				)}
@@ -101,11 +73,10 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 			>
 				{skills.map((skill) => (
 					<div
-						className="flex items-center gap-2.5 whitespace-nowrap px-6 py-1 font-display font-semibold text-2xl text-foreground leading-tight tracking-tight md:text-3xl xl:text-4xl"
+						className="flex items-center gap-3 whitespace-nowrap px-6 py-1 font-semibold text-ink text-statement md:px-7"
 						key={skill.id}
 					>
-						<span className="h-1.5 w-1.5 shrink-0 rounded-sm bg-(--accent)" />
-						<SkillLabel accent={skill.accent} label={skill.label} />
+						{skill.label}
 					</div>
 				))}
 			</Marquee>
@@ -117,13 +88,13 @@ function LanguagesCell({ languages }: { languages: Language[] }) {
 	return (
 		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-3")}>
 			<CellLabel>Languages</CellLabel>
-			<div className="grid flex-1 grid-cols-3 items-center gap-3">
+			<div className="mt-4 grid flex-1 grid-cols-3 items-end gap-4">
 				{languages.map((language) => (
 					<div key={language.name}>
-						<div className="font-display font-semibold text-foreground text-xl leading-tight tracking-tight md:text-2xl xl:text-3xl">
+						<div className="truncate font-semibold text-ink text-lead">
 							{language.name}
 						</div>
-						<div className="mt-1 font-mono text-(--ink-3) text-xs md:text-sm">
+						<div className="mt-1 text-body text-ink-muted">
 							{language.level}
 						</div>
 					</div>
@@ -159,29 +130,22 @@ export function BentoGrid({
 		//   row2  [Skills 3,    ][Favorite tools 3            ]
 		//   row3  [ row-span-3  ][Currently 3                 ]
 		//   row4  [ ...         ][Languages 3                 ]
-		<Reveal className="my-10 grid auto-rows-min grid-cols-2 gap-3 md:my-16 md:auto-rows-[168px] md:grid-cols-6 lg:my-20">
+		<Reveal className="mt-10 grid auto-rows-min grid-cols-2 gap-3 md:mt-14 md:auto-rows-[minmax(11rem,auto)] md:grid-cols-6">
 			{/* Location */}
-			<div
-				className={cn(
-					CELL_CLASS,
-					"col-span-2 bg-[linear-gradient(to_right,var(--grid-minor)_1px,transparent_1px),linear-gradient(to_bottom,var(--grid-minor)_1px,transparent_1px)] bg-size-[22px_22px]",
-				)}
-			>
-				<div className="relative z-10 flex h-full flex-col justify-between">
-					<CellLabel>Based</CellLabel>
+			<div className={cn(CELL_CLASS, "col-span-2")}>
+				<div className="relative z-10 flex h-full flex-col justify-between gap-5">
+					<CellLabel>Based in</CellLabel>
 					<div>
-						<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
+						<div className="font-semibold text-ink text-statement">
 							Jersey
 							<br />
-							<em className="text-(--accent-text) not-italic">City</em>
+							City
 						</div>
-						<div className="mt-2 font-mono text-(--ink-3) text-xs">
-							NJ · 40.7248° N · -74.0347° W
-						</div>
+						<div className="mt-2 text-body text-ink-muted">New Jersey</div>
 					</div>
 				</div>
 				<Globe
-					className="absolute -right-20 -bottom-20 size-64 md:-right-36 md:-bottom-20 md:size-72 lg:-right-12"
+					className="absolute -right-24 -bottom-24 size-56 md:-right-28 md:-bottom-24 md:size-64 lg:-right-20"
 					markers={JERSEY_CITY_MARKERS}
 				/>
 			</div>
@@ -192,19 +156,13 @@ export function BentoGrid({
 			{/* Status */}
 			<div className={cn(CELL_CLASS, "col-span-2")}>
 				<CellLabel>Status</CellLabel>
-				<div className="flex flex-col gap-3">
-					<div className="font-display font-semibold text-foreground text-lg leading-tight tracking-tight md:text-xl">
-						Open to{" "}
-						<strong className="font-semibold text-(--accent-text)">
-							full-time
-						</strong>{" "}
-						+{" "}
-						<strong className="font-semibold text-(--accent-text)">
-							contract
-						</strong>{" "}
-						opportunities
-					</div>
-				</div>
+				{/* One sentence; the two terms a recruiter scans for carry the
+				    ink, the connecting words stay muted. */}
+				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-statement">
+					Open to <strong className="font-semibold text-ink">full-time</strong>{" "}
+					+&nbsp;<strong className="font-semibold text-ink">freelance</strong>{" "}
+					opportunities
+				</p>
 			</div>
 
 			{/* Skills — see grid layout reference above <Reveal> */}
@@ -218,10 +176,10 @@ export function BentoGrid({
 				)}
 			>
 				<CellLabel>Favorite tools</CellLabel>
-				<div className="flex flex-wrap gap-1.5">
+				<div className="my-4 flex flex-wrap gap-1.5">
 					{tools.map((tool) => (
 						<span
-							className="rounded-full border border-(--border-2) bg-(--frosted) px-3 py-1.5 font-medium font-sans text-(--ink-2) text-xs"
+							className="rounded-full bg-surface-raised px-3 py-1 font-medium text-body text-ink"
 							key={tool.id}
 						>
 							{tool.label}
@@ -234,12 +192,16 @@ export function BentoGrid({
 			{/* Now */}
 			<div className={cn(CELL_CLASS, "col-span-2 lg:col-span-3")}>
 				<CellLabel>Currently</CellLabel>
-				<div className="font-display font-semibold text-3xl text-foreground leading-none tracking-tight md:text-4xl">
-					JPMorgan
-					<br />
-					<em className="text-(--accent-text) not-italic">Chase</em>
+				<div>
+					<div className="font-semibold text-ink text-statement">
+						JPMorgan
+						<br />
+						Chase
+					</div>
+					<div className="mt-2 text-body text-ink-muted">
+						Credit Risk Technology (Core UI Platform)
+					</div>
 				</div>
-				<CellSub>Building UI platform infra &amp; agentic AI systems</CellSub>
 			</div>
 
 			{/* Languages — see grid layout reference above <Reveal> */}

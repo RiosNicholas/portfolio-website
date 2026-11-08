@@ -87,7 +87,7 @@ function getSampleCtx(): CanvasRenderingContext2D | null {
  */
 function resolveToken(
 	fgVar: string,
-	bgVar = "--paper-2",
+	bgVar = "--paper-3",
 ): [number, number, number] {
 	const ctx = getSampleCtx();
 	if (!ctx) return [0.5, 0.5, 0.5];

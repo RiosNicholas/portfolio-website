@@ -118,7 +118,7 @@ export default function AdminSkillsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The home page bento grid's Skills marquee and Favorite tools chip list. `accent` marks a substring of the label rendered as an accented word."
+				description="The home page grid's Skills list and Favorite tools chips. The `accent` field is kept but not shown on the public site."
 				title="Skills & tools"
 			/>
 
