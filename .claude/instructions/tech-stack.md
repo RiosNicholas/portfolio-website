@@ -7,13 +7,17 @@ Tailwind v4 for styling.
 
 - **Next.js 15** (App Router, Turbo dev server) — `next@^15.2.3`
 - **React 19** — `react@^19.0.0`, `react-dom@^19.0.0`
-- **TypeScript 5.8**, strict, `noEmit` typecheck only (`npm run typecheck`)
+- **TypeScript 5**, strict, `noEmit` typecheck only (`npm run typecheck`)
+- Hosted on **Vercel** (`vercel-build` script runs migrations + seeding),
+  **Neon** Postgres via the Vercel Marketplace integration, **Vercel
+  Analytics** + **Speed Insights** in `src/app/layout.tsx`
 
 ## Data & API
 
 - **tRPC 11** — routers in `src/server/api/routers/`, client wiring in
-  `src/trpc/`. Two procedure types: `publicProcedure` and
-  `protectedProcedure` (requires an authenticated session).
+  `src/trpc/`. Procedure types: `publicProcedure`, `protectedProcedure`
+  (requires an authenticated session) and `adminProcedure` (requires the
+  admin identity; used by every content mutation).
 - **Prisma 6** — schema-first ORM. `npm run db:push` for dev schema sync,
   `npm run db:generate` (`prisma migrate dev`) for migrations,
   `npm run db:studio` for the GUI.
@@ -66,13 +70,14 @@ Tailwind v4 for styling.
   purpose; don't reintroduce that pattern elsewhere.
 - **lucide-react** (primary) and **@radix-ui/react-icons** (for
   Radix-primitive-specific icons) — the only icon sources. No
-  hand-authored SVG icons. `@hugeicons/react` is listed as a dependency
-  but has zero actual usage in the codebase; don't use it, and it's a
-  candidate for removal from `package.json`.
-- **next-themes** for light/dark theme switching.
-- **cobe** for the interactive globe (if reintroduced — it was removed
-  from the photography section per recent commits, check before assuming
-  it's wired up).
+  hand-authored SVG icons.
+- Light/dark theme is hand-rolled (no next-themes):
+  `src/components/theme/theme-toggle.tsx` +
+  `src/components/layout/theme-init-script.tsx`, persisted to
+  localStorage.
+- **cobe** for the WebGL globe (`src/components/ui/globe.tsx`), used in
+  the home bento grid.
+- **@vercel/blob** is installed but not used anywhere in `src/`.
 
 ## Tooling
 

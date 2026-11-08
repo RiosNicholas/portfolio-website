@@ -5,7 +5,7 @@
 `src/app/` follows Next.js App Router conventions — one folder per route,
 `page.tsx` per route, shared `layout.tsx` and `not-found.tsx` at the root.
 
-Current routes: `/` (`src/app/page.tsx`), `/about`, `/work`. `src/app/_components/`
+Current routes: `/` (`src/app/page.tsx`), `/about`, `/projects` (`/work` redirects there), `/admin/**`, `/auth/login`. `src/app/_components/`
 holds route-local components that aren't reused elsewhere (prefixed `_` so
 Next.js doesn't treat it as a route segment).
 

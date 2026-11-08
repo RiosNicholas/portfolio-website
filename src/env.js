@@ -7,7 +7,7 @@ export const env = createEnv({
 	 * isn't built with invalid env vars.
 	 */
 	server: {
-		// Required: `/`, `/work`, and `/about` are Server Components that read
+		// Required: `/`, `/projects`, and `/about` are Server Components that read
 		// content from Postgres via Prisma at request/prerender time (see
 		// `src/server/data/*.ts`), and `/admin` requires a working NextAuth
 		// Credentials session. AUTH_SECRET now signs the session JWT itself

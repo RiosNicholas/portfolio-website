@@ -1,27 +1,33 @@
 # Nicholas Rios — Portfolio
 
-Personal portfolio site: home, work (case studies), and about pages. Built
-on the T3 Stack — content (case studies, endorsements, CV entries, skills)
-lives in Postgres via Prisma and is edited through a gated `/admin` CRUD UI,
-not in code.
+Personal portfolio site, live at [nrios.dev](https://nrios.dev): home,
+projects (case studies), and about pages. Built on the T3 Stack — content
+(case studies, endorsements, CV entries, skills, languages) lives in
+Postgres via Prisma and is edited through a gated `/admin` CRUD UI, not in
+code.
 
 ## Stack
 
-- **Next.js 15** (App Router) + **React 19** + **TypeScript 5** (strict)
+- **Next.js 15** (App Router, Turbopack dev server) + **React 19** +
+  **TypeScript 5** (strict)
 - **Tailwind CSS v4** via `@tailwindcss/postcss`, OKLCH design tokens in
-  `src/styles/globals.css`
-- **shadcn/ui** + **Magic UI** primitives, **motion** (Framer Motion
-  successor) for scroll/interaction animation, **lucide-react** icons,
-  **cobe** for the interactive WebGL globe on the home page
+  `src/styles/globals.css`, plus **tw-animate-css**
+- **shadcn/ui** (Radix primitives, `class-variance-authority`) and
+  Magic UI-style patterns (marquee, number ticker), **motion** (Framer
+  Motion successor) for scroll/interaction animation, **lucide-react** +
+  **@radix-ui/react-icons**, **cobe** for the WebGL globe in the home bento
+  grid
+- **tRPC 11** (+ TanStack Query, superjson) and **Prisma 6** for content
+  storage (`CaseStudy`, `Endorsement`, `CvEntry`, `Skill`, `Language`
+  models) and the `/admin` surface
+- **NextAuth (Auth.js) v5** — a username/password (Credentials) sign-in at
+  a custom `/auth/login` page, JWT sessions, gates `/admin` — see
+  [Content & admin](#content--admin) below
+- **Zod** + **@t3-oss/env-nextjs** for input and env validation
 - **Biome** for linting and formatting (not ESLint/Prettier)
-- **tRPC 11 + Prisma 6 + NextAuth v5** — power content storage (`CaseStudy`,
-  `Endorsement`, `CvEntry`, `Skill`, `Language` models) and the `/admin`
-  surface. A username/password (Credentials) sign-in at a custom
-  `/auth/login` page gates `/admin` — see
-  [Content & admin](#content--admin) below.
-- **Vercel Postgres** (data), **Vercel Blob** (rehosts pasted endorsement
-  avatar URLs so they don't rot — see `src/server/blob.ts`), **Vercel
-  Analytics** + **Speed Insights** (wired up in `src/app/layout.tsx`)
+- Hosted on **Vercel**, with **Neon** Postgres (via the Vercel Marketplace
+  integration) and **Vercel Analytics** + **Speed Insights** (wired up in
+  `src/app/layout.tsx`)
 
 ## Commands
 
@@ -40,8 +46,7 @@ npm run auth:hash      # generate an ADMIN_PASSWORD_HASH value for .env
 ```
 
 `npm run build` requires `DATABASE_URL`, `DIRECT_URL`, `AUTH_SECRET`,
-`ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and `BLOB_READ_WRITE_TOKEN` to be
-set (`src/env.js` validates these at build time) — `/`, `/projects`, and
+`ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` to be set (`src/env.js` validates these at build time) — `/`, `/projects`, and
 `/about` are Server Components that read from Postgres, and `/admin` needs
 a working NextAuth Credentials session. See [Local setup](#local-setup).
 
@@ -59,16 +64,17 @@ src/
                        (AdminUi), the sign-in form, and the avatar
                        dropdown session control shown on /admin routes
     features/          full page sections (HeroSection, BentoGrid,
-                       CaseStudy, ContactCta, EndorsementMarquee, ...)
+                       CaseStudy, ProjectsHero, AboutHero, AboutBio,
+                       Endorsements, ContactCta, RotatingPhrase)
     layout/            structural wrappers (SiteNav, SiteFooter,
-                       SectionHeader, JsonLd, ThemeInitScript,
+                       HeroField, JsonLd, ThemeInitScript,
                        SkipToContent)
     theme/             theme-toggle.tsx — light/dark toggle, persisted to
                        localStorage
-    ui/                primitives — shadcn/ui + Magic UI + custom
-                       (Marquee, Reveal, CustomCursor, Globe, Avatar,
-                       DropdownMenu, NavigationMenu, NumberTicker,
-                       StatusDot, GeoDecoration, MotionProvider)
+    ui/                primitives — shadcn/ui + custom (Marquee, Reveal,
+                       CustomCursor, Globe, AsciiField, Avatar,
+                       ButtonLink, DropdownMenu, MediaFigure,
+                       NumberTicker, TestimonialCard, MotionProvider)
   lib/                site-wide config consts (nav/profile links,
                        structured data, theme defaults), avatar helpers,
                        and shared utilities (cn, use-animations-enabled)
@@ -80,22 +86,23 @@ src/
                        model, invalidated by admin mutations
     auth/               NextAuth v5 config (Credentials provider, JWT
                        sessions) + scrypt password helpers
-    blob.ts              rehosts pasted endorsement avatar URLs to
-                       Vercel Blob so they don't expire (see
-                       [Deploying](#deploying))
+    db.ts               Prisma client singleton
+  trpc/                tRPC React client, server caller, query client
   styles/globals.css   Tailwind v4 entry point, OKLCH tokens, motion/
                        accessibility rules
 prisma/
-  schema.prisma        Post/Account/Session/User/VerificationToken (auth)
-                       + CaseStudy/Endorsement/CvEntry/Skill/Language (content)
-  seed.ts               per-table seed functions for the content that
-                       used to live in src/lib/{work-data,about-data,
-                       bento-data}.ts
+  schema.prisma        CaseStudy/Endorsement/CvEntry/Skill/Language
+                       (content) + T3 scaffold Post and Auth.js
+                       Account/Session/User/VerificationToken models
+                       (unused under JWT sessions). Client is generated
+                       to generated/prisma
+  seed.ts               per-table seed functions for all content models
 scripts/
   hash-password.ts      npm run auth:hash — generates ADMIN_PASSWORD_HASH
   seed-if-empty.ts       runs prisma/seed.ts's functions per-table, only
                        for tables that are still empty — run on every
                        deploy via vercel-build (see [Deploying](#deploying))
+  update-favorite-tools.ts  one-off data script for the Skill table
 ```
 
 ## Content & admin
@@ -200,26 +207,22 @@ no allowlist env var to populate anymore: `isAdminUserId()`
 
 ## Deploying
 
-Deployed on **Vercel Postgres** (Neon-backed), connected via the Vercel
-dashboard integration. That integration auto-populates
-`POSTGRES_PRISMA_URL` (pooled) and `POSTGRES_URL_NON_POOLING` (direct) as
-project env vars — map those to this project's own names in Vercel's
-project env var settings (one-time, after connecting the integration):
+Deployed on **Vercel**, with a **Neon** Postgres database connected through
+the Vercel Marketplace integration. The integration auto-populates
+`DATABASE_URL` (pooled) and `DATABASE_URL_UNPOOLED` (direct), along with
+legacy `POSTGRES_*` aliases. Set this project's `DIRECT_URL` (used by
+`prisma migrate`) to the unpooled connection string:
 
-| This project's var | = Vercel Postgres var        |
-|---------------------|-------------------------------|
-| `DATABASE_URL`       | `POSTGRES_PRISMA_URL`         |
-| `DIRECT_URL`         | `POSTGRES_URL_NON_POOLING`    |
+| This project's var | = Neon integration var      |
+|---------------------|------------------------------|
+| `DATABASE_URL`       | `DATABASE_URL` (pooled)      |
+| `DIRECT_URL`         | `DATABASE_URL_UNPOOLED`      |
 
-Also set `AUTH_SECRET`, `ADMIN_USERNAME`, `ADMIN_PASSWORD_HASH`, and
-`BLOB_READ_WRITE_TOKEN` as real project env vars — all are required at
-build time (`src/env.js`). Generate the production hash from a *different*
-password than the local dev one (`npm run auth:hash` locally, paste the
-result into Vercel — never the plaintext). `BLOB_READ_WRITE_TOKEN` is
-populated automatically once a Vercel Blob store is provisioned and linked
-to the project — it's used to rehost pasted endorsement avatar URLs (e.g.
-LinkedIn CDN links, which expire) as permanent blob URLs on save (see
-`src/server/blob.ts`). `package.json`'s `vercel-build` script (`prisma
+Also set `AUTH_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as real
+project env vars — all are required at build time (`src/env.js`). Generate
+the production hash from a *different* password than the local dev one
+(`npm run auth:hash` locally, paste the result into Vercel — never the
+plaintext). `package.json`'s `vercel-build` script (`prisma
 migrate deploy && tsx scripts/seed-if-empty.ts && next build`) runs
 migrations, then seeds any content table that's still empty (per-table, so
 a partially-seeded DB never gets clobbered — see
@@ -227,7 +230,7 @@ a partially-seeded DB never gets clobbered — see
 `vercel-build` script over `build` automatically, no dashboard override
 needed.
 
-`src/lib/site-links.ts`'s `siteUrl` constant (`https://nicholasrios.dev`)
+`src/lib/site-links.ts`'s `siteUrl` constant (`https://nrios.dev`)
 feeds `metadataBase`, canonical URLs, `robots.ts`, and `sitemap.ts` — it's a
 static const rather than an env var so `npm run build` never requires a
 domain to be configured to succeed. Update it there if the production
