@@ -3,7 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 export const alt =
-	"Nicholas Rios - Software Engineer. Web development, platform engineering, design systems, agentic AI.";
+	"Nicholas Rios - Software Engineer. Web Development, Platform Engineering, Design Systems, Agentic AI.";
 
 // Light-theme hero tokens as hex: CSS custom properties from globals.css
 // aren't available in this isolated render, and Satori can't parse oklch.
@@ -109,7 +109,7 @@ export default function OpengraphImage() {
 						Software Engineer
 					</div>
 					<div style={{ fontSize: 30, color: subtle }}>
-						Web development · Platform engineering · Design systems · Agentic AI
+						Web Development · Platform Engineering · Design Systems · Agentic AI
 					</div>
 				</div>
 			</div>
