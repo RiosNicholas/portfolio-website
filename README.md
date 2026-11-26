@@ -79,7 +79,7 @@ src/
                        structured data, theme defaults), avatar helpers,
                        and shared utilities (cn, use-animations-enabled)
   server/
-    api/routers/       tRPC routers - one per content model, plus `post`
+    api/routers/       tRPC routers - one per content model
     api/schemas/       Zod input schemas shared between routers and
                        /admin's client-side forms
     data/               unstable_cache-wrapped Prisma reads, tagged per
@@ -92,10 +92,8 @@ src/
                        accessibility rules
 prisma/
   schema.prisma        CaseStudy/Endorsement/CvEntry/Skill/Language
-                       (content) + T3 scaffold Post and Auth.js
-                       Account/Session/User/VerificationToken models
-                       (unused under JWT sessions). Client is generated
-                       to generated/prisma
+                       content models. Client is generated to
+                       generated/prisma
   seed.ts               per-table seed functions for all content models
 scripts/
   hash-password.ts      npm run auth:hash - generates ADMIN_PASSWORD_HASH
