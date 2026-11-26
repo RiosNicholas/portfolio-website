@@ -26,6 +26,16 @@ const sections = [
 		title: "Languages",
 		description: "Home page bento grid languages cell.",
 	},
+	{
+		href: "/admin/articles",
+		title: "Articles",
+		description: "Writing page posts - /writing/<slug>.",
+	},
+	{
+		href: "/admin/mentions",
+		title: "Mentions",
+		description: "Writing page external links.",
+	},
 ];
 
 export default function AdminPage() {

@@ -455,3 +455,13 @@
 :root[data-motion="low"] .motion-fallback {
 	display: block;
 }
+
+/* Shiki writes the light colors inline; the dark pair rides in CSS variables.
+   Code blocks use the surface token instead of either theme's background. */
+.shiki {
+	background-color: var(--surface) !important;
+}
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+	color: var(--shiki-dark) !important;
+}
