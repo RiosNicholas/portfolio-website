@@ -29,7 +29,7 @@ export async function AboutBio() {
 
 	return (
 		<section aria-labelledby="summary" className="shell pt-24 md:pt-40">
-			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-10">
+			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-24">
 				<Reveal className="lg:col-span-5">
 					<h2 className={sectionHeading} id="summary">
 						Summary
@@ -60,28 +60,27 @@ export async function AboutBio() {
 					<CvList entries={experience} />
 				</Reveal>
 
-				<Reveal className="grid grid-cols-1 gap-16 lg:col-span-12 lg:grid-cols-2 lg:gap-10">
-					<div>
-						<h2 className={sectionHeading}>Education</h2>
-						<CvList entries={education} />
-					</div>
-					{(activities.length > 0 || awards.length > 0) && (
-						<div className="flex flex-col gap-14">
-							{activities.length > 0 && (
-								<div>
-									<h2 className={sectionHeading}>Activities</h2>
-									<CvList entries={activities} />
-								</div>
-							)}
-							{awards.length > 0 && (
-								<div>
-									<h2 className={sectionHeading}>Awards & certifications</h2>
-									<CvList entries={awards} />
-								</div>
-							)}
-						</div>
-					)}
+				<Reveal className="lg:col-span-5">
+					<h2 className={sectionHeading}>Education</h2>
+					<CvList entries={education} />
 				</Reveal>
+
+				{(activities.length > 0 || awards.length > 0) && (
+					<Reveal className="flex flex-col gap-14 lg:col-span-7" delay={0.08}>
+						{activities.length > 0 && (
+							<div>
+								<h2 className={sectionHeading}>Activities</h2>
+								<CvList entries={activities} />
+							</div>
+						)}
+						{awards.length > 0 && (
+							<div>
+								<h2 className={sectionHeading}>Awards & certifications</h2>
+								<CvList entries={awards} />
+							</div>
+						)}
+					</Reveal>
+				)}
 			</div>
 		</section>
 	);
