@@ -138,7 +138,9 @@ export default function AdminArticlesPage() {
 			published: form.published,
 		});
 		if (!parsed.success) {
-			setError(parsed.error.issues[0]?.message ?? "Check the fields.");
+			setError(
+				parsed.error.issues.map((i) => `${i.path[0]}: ${i.message}`).join(", "),
+			);
 			return;
 		}
 		if (form.id) {
