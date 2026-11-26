@@ -10,7 +10,7 @@ import { Reveal } from "~/components/ui/reveal";
 import { profileLinks } from "~/lib/site-links";
 
 const description =
-	"Résumé of Nicholas Rios, a New York City area platform software engineer: work history, skills and education, with a PDF download.";
+	"Resume of Nicholas Rios, a New York City area platform software engineer: work history, skills and education, with a PDF download.";
 
 export const metadata: Metadata = {
 	title: "Resume",
@@ -53,7 +53,8 @@ export default function ResumePage() {
 				</div>
 			</HeroField>
 
-			{/* Phones skip the frame: iOS Safari embeds show only page 1 of a PDF. */}
+			{/* Phones skip the frame: iOS Safari embeds show only page 1 of a PDF.
+			    85dvh fits one full page with the frame edges still in view. */}
 			<div className="shell hidden pb-24 md:block md:pb-40">
 				<iframe
 					className="h-[85dvh] w-full rounded-3xl border border-surface-hover bg-surface"
