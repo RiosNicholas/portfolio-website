@@ -446,3 +446,10 @@
 :root[data-motion="low"] .motion-fallback {
 	display: block;
 }
+
+/* Shiki writes the light colors inline; the dark pair rides in CSS variables. */
+[data-theme="dark"] .shiki,
+[data-theme="dark"] .shiki span {
+	color: var(--shiki-dark) !important;
+	background-color: var(--shiki-dark-bg) !important;
+}
