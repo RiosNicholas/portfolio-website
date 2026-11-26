@@ -6,8 +6,6 @@ import {
 	createTRPCRouter,
 	publicProcedure,
 } from "~/server/api/trpc";
-import { getCvEntriesByCategory } from "~/server/data/cv-entries";
-import { CvCategory } from "../../../../generated/prisma";
 
 export const cvEntryRouter = createTRPCRouter({
 	// Read straight from the database, not the data cache, so /admin never
@@ -15,9 +13,6 @@ export const cvEntryRouter = createTRPCRouter({
 	all: publicProcedure.query(({ ctx }) =>
 		ctx.db.cvEntry.findMany({ orderBy: { sortOrder: "asc" } }),
 	),
-	byCategory: publicProcedure
-		.input(z.object({ category: z.nativeEnum(CvCategory) }))
-		.query(({ input }) => getCvEntriesByCategory(input.category)),
 
 	create: adminProcedure
 		.input(cvEntryInput)

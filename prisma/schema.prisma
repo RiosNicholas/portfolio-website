@@ -22,6 +22,7 @@ enum CvCategory {
     EXPERIENCE
     EDUCATION
     ACTIVITY
+    AWARD
 }
 
 enum SkillKind {

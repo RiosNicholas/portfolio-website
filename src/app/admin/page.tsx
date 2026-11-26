@@ -13,7 +13,7 @@ const sections = [
 	},
 	{
 		href: "/admin/cv",
-		title: "Experience, education & activities",
+		title: "Experience, education, activities & awards",
 		description: "About page CV rows.",
 	},
 	{
