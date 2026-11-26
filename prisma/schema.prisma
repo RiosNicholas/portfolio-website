@@ -102,3 +102,32 @@ model Language {
 
     @@index([published, sortOrder])
 }
+
+model Article {
+    id          String    @id @default(cuid())
+    slug        String    @unique
+    title       String
+    summary     String
+    body        String // Markdown, rendered on the server
+    tags        String[] // source tags, free text
+    published   Boolean   @default(false)
+    publishedAt DateTime? // set the first time the article is published
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([published, publishedAt])
+}
+
+model Mention {
+    id          String   @id @default(cuid())
+    url         String
+    title       String
+    outlet      String
+    publishedAt DateTime
+    tags        String[]
+    published   Boolean  @default(true)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([published, publishedAt])
+}
