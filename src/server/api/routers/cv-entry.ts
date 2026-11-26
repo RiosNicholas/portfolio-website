@@ -1,5 +1,6 @@
 import { revalidateTag } from "next/cache";
 import { z } from "zod";
+import { sortByDate } from "~/lib/dates";
 import { cvEntryInput } from "~/server/api/schemas/cv-entry";
 import {
 	adminProcedure,
@@ -10,8 +11,8 @@ import {
 export const cvEntryRouter = createTRPCRouter({
 	// Read straight from the database, not the data cache, so /admin never
 	// lists a row that is already gone.
-	all: publicProcedure.query(({ ctx }) =>
-		ctx.db.cvEntry.findMany({ orderBy: { sortOrder: "asc" } }),
+	all: publicProcedure.query(async ({ ctx }) =>
+		sortByDate(await ctx.db.cvEntry.findMany()),
 	),
 
 	create: adminProcedure
