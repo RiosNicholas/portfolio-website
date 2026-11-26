@@ -19,7 +19,7 @@ import {
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
-type CvCategory = "EXPERIENCE" | "EDUCATION" | "ACTIVITY";
+type CvCategory = "EXPERIENCE" | "EDUCATION" | "ACTIVITY" | "AWARD";
 
 type CvEntryRow = {
 	id: string;
@@ -35,6 +35,7 @@ const categories: { value: CvCategory; label: string }[] = [
 	{ value: "EXPERIENCE", label: "Experience" },
 	{ value: "EDUCATION", label: "Education" },
 	{ value: "ACTIVITY", label: "Activities" },
+	{ value: "AWARD", label: "Awards & certifications" },
 ];
 
 type FormState = {
@@ -142,7 +143,7 @@ export default function AdminCvPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The About page's Experience, Education, and Activities rows."
+				description="The About page's Experience, Education, Activities, and Awards & certifications rows."
 				title="CV entries"
 			/>
 

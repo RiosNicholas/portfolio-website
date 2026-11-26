@@ -1,5 +1,5 @@
 import { Reveal } from "~/components/ui/reveal";
-import { getCvEntriesByCategory } from "~/server/data/cv-entries";
+import { getCvEntries } from "~/server/data/cv-entries";
 import type { CvEntry } from "../../../generated/prisma";
 
 function CvList({ entries }: { entries: CvEntry[] }) {
@@ -20,15 +20,15 @@ function CvList({ entries }: { entries: CvEntry[] }) {
 const sectionHeading = "m-0 font-semibold text-statement";
 
 export async function AboutBio() {
-	const [experience, education, activities] = await Promise.all([
-		getCvEntriesByCategory("EXPERIENCE"),
-		getCvEntriesByCategory("EDUCATION"),
-		getCvEntriesByCategory("ACTIVITY"),
-	]);
+	const entries = await getCvEntries();
+	const experience = entries.filter((e) => e.category === "EXPERIENCE");
+	const education = entries.filter((e) => e.category === "EDUCATION");
+	const activities = entries.filter((e) => e.category === "ACTIVITY");
+	const awards = entries.filter((e) => e.category === "AWARD");
 
 	return (
 		<section aria-labelledby="summary" className="shell pt-24 md:pt-40">
-			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-10">
+			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-24">
 				<Reveal className="lg:col-span-5">
 					<h2 className={sectionHeading} id="summary">
 						Summary
@@ -54,22 +54,32 @@ export async function AboutBio() {
 					</div>
 				</Reveal>
 
-				<Reveal className="flex flex-col gap-14 lg:col-span-7" delay={0.08}>
-					<div>
-						<h2 className={sectionHeading}>Relevant work experience</h2>
-						<CvList entries={experience} />
-					</div>
-					<div>
-						<h2 className={sectionHeading}>Education</h2>
-						<CvList entries={education} />
-					</div>
-					{activities.length > 0 && (
-						<div>
-							<h2 className={sectionHeading}>Activities</h2>
-							<CvList entries={activities} />
-						</div>
-					)}
+				<Reveal className="lg:col-span-7" delay={0.08}>
+					<h2 className={sectionHeading}>Relevant work experience</h2>
+					<CvList entries={experience} />
 				</Reveal>
+
+				<Reveal className="lg:col-span-5">
+					<h2 className={sectionHeading}>Education</h2>
+					<CvList entries={education} />
+				</Reveal>
+
+				{(activities.length > 0 || awards.length > 0) && (
+					<Reveal className="flex flex-col gap-14 lg:col-span-7" delay={0.08}>
+						{activities.length > 0 && (
+							<div>
+								<h2 className={sectionHeading}>Activities</h2>
+								<CvList entries={activities} />
+							</div>
+						)}
+						{awards.length > 0 && (
+							<div>
+								<h2 className={sectionHeading}>Awards & certifications</h2>
+								<CvList entries={awards} />
+							</div>
+						)}
+					</Reveal>
+				)}
 			</div>
 		</section>
 	);
