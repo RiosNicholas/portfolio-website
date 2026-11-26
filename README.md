@@ -100,8 +100,8 @@ prisma/
 scripts/
   hash-password.ts      npm run auth:hash - generates ADMIN_PASSWORD_HASH
   seed-if-empty.ts       runs prisma/seed.ts's functions per-table, only
-                       for tables that are still empty - run on every
-                       deploy via vercel-build (see [Deploying](#deploying))
+                       for tables that are still empty - runs on production
+                       deploys via vercel-build (see [Deploying](#deploying))
   update-favorite-tools.ts  one-off data script for the Skill table
 ```
 
@@ -222,11 +222,12 @@ Also set `AUTH_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD_HASH` as real
 project env vars - all are required at build time (`src/env.js`). Generate
 the production hash from a *different* password than the local dev one
 (`npm run auth:hash` locally, paste the result into Vercel - never the
-plaintext). `package.json`'s `vercel-build` script (`prisma
-migrate deploy && tsx scripts/seed-if-empty.ts && next build`) runs
-migrations, then seeds any content table that's still empty (per-table, so
-a partially-seeded DB never gets clobbered - see
-`scripts/seed-if-empty.ts`), before building - Vercel picks up a
+plaintext). `package.json`'s `vercel-build` script runs migrations, then
+seeds any content table that's still empty (per-table, so a
+partially-seeded DB never gets clobbered - see `scripts/seed-if-empty.ts`),
+before building. It only does that when `VERCEL_ENV` is `production`, since
+Preview and Production share one database and a preview build must not
+migrate or seed it. `next build` always runs. Vercel picks up a
 `vercel-build` script over `build` automatically, no dashboard override
 needed.
 
