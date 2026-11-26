@@ -34,7 +34,12 @@ model CaseStudy {
     id          String   @id // reuse existing slugs verbatim ("risk-agents", "evangeliu", ...) -
     // load-bearing as /work#<id> anchors in case-study.tsx / work-teaser.tsx
     num         String
-    year        String
+    year        String?
+    startYear   Int?
+    startMonth  Int?
+    endYear     Int?
+    endMonth    Int?
+    present     Boolean  @default(false)
     title       String
     titleEm     String?
     titleSuffix String?
@@ -69,7 +74,12 @@ model Endorsement {
 model CvEntry {
     id          String     @id @default(cuid())
     category    CvCategory
-    years       String
+    years       String?
+    startYear   Int?
+    startMonth  Int?
+    endYear     Int?
+    endMonth    Int?
+    present     Boolean    @default(false)
     title       String
     titleAccent String[]
     where       String
