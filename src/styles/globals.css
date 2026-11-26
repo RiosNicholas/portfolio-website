@@ -356,6 +356,9 @@
 	}
 }
 
+:root[data-motion="low"] {
+	scroll-behavior: auto;
+}
 :root[data-motion="low"] * {
 	animation-duration: 0.001s !important;
 	transition-duration: 80ms !important;

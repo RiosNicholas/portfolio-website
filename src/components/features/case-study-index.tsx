@@ -1,5 +1,6 @@
 import { textLinkClass } from "~/components/ui/button-link";
 import { caseTitle } from "~/lib/case-study";
+import { cn } from "~/lib/utils";
 import type { CaseStudy as CaseStudyData } from "../../../generated/prisma";
 
 export function CaseStudyIndex({ studies }: { studies: CaseStudyData[] }) {
@@ -11,7 +12,10 @@ export function CaseStudyIndex({ studies }: { studies: CaseStudyData[] }) {
 						<span className="text-ink-muted tabular-nums">
 							{String(index + 1).padStart(2, "0")}
 						</span>
-						<a className={`${textLinkClass} flex-1 py-3`} href={`#${study.id}`}>
+						<a
+							className={cn(textLinkClass, "flex-1 py-3")}
+							href={`#${study.id}`}
+						>
 							{caseTitle(study)}
 						</a>
 						<span className="shrink-0 text-ink-muted">{study.year}</span>
