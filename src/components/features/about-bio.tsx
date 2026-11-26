@@ -20,10 +20,11 @@ function CvList({ entries }: { entries: CvEntry[] }) {
 const sectionHeading = "m-0 font-semibold text-statement";
 
 export async function AboutBio() {
-	const [experience, education, activities] = await Promise.all([
+	const [experience, education, activities, awards] = await Promise.all([
 		getCvEntriesByCategory("EXPERIENCE"),
 		getCvEntriesByCategory("EDUCATION"),
 		getCvEntriesByCategory("ACTIVITY"),
+		getCvEntriesByCategory("AWARD"),
 	]);
 
 	return (
@@ -54,19 +55,30 @@ export async function AboutBio() {
 					</div>
 				</Reveal>
 
-				<Reveal className="flex flex-col gap-14 lg:col-span-7" delay={0.08}>
-					<div>
-						<h2 className={sectionHeading}>Relevant work experience</h2>
-						<CvList entries={experience} />
-					</div>
+				<Reveal className="lg:col-span-7" delay={0.08}>
+					<h2 className={sectionHeading}>Relevant work experience</h2>
+					<CvList entries={experience} />
+				</Reveal>
+
+				<Reveal className="grid grid-cols-1 gap-16 lg:col-span-12 lg:grid-cols-2 lg:gap-10">
 					<div>
 						<h2 className={sectionHeading}>Education</h2>
 						<CvList entries={education} />
 					</div>
-					{activities.length > 0 && (
-						<div>
-							<h2 className={sectionHeading}>Activities</h2>
-							<CvList entries={activities} />
+					{(activities.length > 0 || awards.length > 0) && (
+						<div className="flex flex-col gap-14">
+							{activities.length > 0 && (
+								<div>
+									<h2 className={sectionHeading}>Activities</h2>
+									<CvList entries={activities} />
+								</div>
+							)}
+							{awards.length > 0 && (
+								<div>
+									<h2 className={sectionHeading}>Awards & certifications</h2>
+									<CvList entries={awards} />
+								</div>
+							)}
 						</div>
 					)}
 				</Reveal>
