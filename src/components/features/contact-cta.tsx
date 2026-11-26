@@ -41,12 +41,7 @@ export function ContactCta() {
 							Email me
 						</ButtonLink>
 					</div>
-					<a
-						className={cn(textLinkClass, "text-body")}
-						href={profileLinks.resume}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
+					<a className={cn(textLinkClass, "text-body")} href="/resume">
 						View full resume
 					</a>
 				</Reveal>

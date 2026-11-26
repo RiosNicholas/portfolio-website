@@ -4,14 +4,14 @@ import { navLinks, siteUrl } from "~/lib/site-links";
 import { getPublishedArticleSlugs } from "~/server/data/writing";
 
 /**
- * Nav pages come from `navLinks`, so adding a nav link keeps this in sync.
- * Published articles come from the database, one entry per article.
+ * Nav pages come from `navLinks` plus `/resume`, which is linked from the site
+ * but kept out of the nav. Published articles come from the database.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 	const articles = await getPublishedArticleSlugs();
 
 	return [
-		...navLinks.map(({ href }) => ({
+		...[...navLinks, { href: "/resume" }].map(({ href }) => ({
 			url: `${siteUrl}${href}`,
 			lastModified: new Date(),
 			changeFrequency: "monthly" as const,

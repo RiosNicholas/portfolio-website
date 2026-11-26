@@ -39,6 +39,8 @@ type ButtonLinkProps = VariantProps<typeof buttonVariants> & {
 	className?: string;
 	/** Opens in a new tab and shows the outbound arrow. */
 	external?: boolean;
+	/** Saves the file instead of navigating to it. */
+	download?: boolean;
 	/** Accessible name for icon-only buttons. */
 	label?: string;
 };
@@ -48,6 +50,7 @@ export function ButtonLink({
 	children,
 	className,
 	external,
+	download,
 	label,
 	variant,
 	size,
@@ -60,11 +63,12 @@ export function ButtonLink({
 		/>
 	);
 
-	if (external || href.startsWith("mailto:")) {
+	if (external || download || href.startsWith("mailto:")) {
 		return (
 			<a
 				aria-label={label}
 				className={classes}
+				download={download}
 				href={href}
 				{...(external ? { rel: "noopener noreferrer", target: "_blank" } : {})}
 			>
