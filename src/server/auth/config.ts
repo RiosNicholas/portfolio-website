@@ -66,8 +66,7 @@ export const authConfig = {
 		}),
 	],
 	// No adapter: Auth.js does not persist Credentials logins to the database
-	// under any adapter - Credentials auth is JWT-only by design. Re-add
-	// PrismaAdapter(db) only if an OAuth-style provider comes back.
+	// under any adapter - Credentials auth is JWT-only by design.
 	session: { strategy: "jwt" },
 	// Custom-branded login page (src/app/auth/login/page.tsx) instead of
 	// Auth.js's default unstyled page. This also becomes the target Auth.js

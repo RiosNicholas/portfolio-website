@@ -19,10 +19,9 @@
 		"preview": "next build && next start",
 		"start": "next start",
 		"typecheck": "tsc --noEmit",
-		"vercel-build": "prisma migrate deploy && tsx scripts/seed-if-empty.ts && next build"
+		"vercel-build": "if [ \"$VERCEL_ENV\" = production ]; then prisma migrate deploy && tsx scripts/seed-if-empty.ts; fi && next build"
 	},
 	"dependencies": {
-		"@auth/prisma-adapter": "^2.7.2",
 		"@prisma/client": "^6.6.0",
 		"@radix-ui/react-icons": "^1.3.2",
 		"@t3-oss/env-nextjs": "^0.12.0",

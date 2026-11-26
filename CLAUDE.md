@@ -45,7 +45,7 @@ Case studies, endorsements, CV entries, skills and languages are Prisma models i
 
 ### API Layer
 
-tRPC routers are in `src/server/api/routers/` (one per content model, plus the scaffold `post`), with shared Zod input schemas in `src/server/api/schemas/`. Procedure types: `publicProcedure`, `protectedProcedure` (requires authenticated session), and `adminProcedure` (requires the admin identity). The tRPC context (`src/server/api/trpc.ts`) injects `db`, `session`, and request headers. Dev mode adds artificial latency (100–500ms) to surface waterfall issues.
+tRPC routers are in `src/server/api/routers/` (one per content model), with shared Zod input schemas in `src/server/api/schemas/`. Procedure types: `publicProcedure`, `protectedProcedure` (requires authenticated session), and `adminProcedure` (requires the admin identity). The tRPC context (`src/server/api/trpc.ts`) injects `db`, `session`, and request headers. Dev mode adds artificial latency (100–500ms) to surface waterfall issues.
 
 ### Auth
 
