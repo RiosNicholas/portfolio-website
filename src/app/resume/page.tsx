@@ -57,7 +57,8 @@ export default function ResumePage() {
 			    85dvh fits one full page with the frame edges still in view. */}
 			<div className="shell hidden pb-24 md:block md:pb-40">
 				<iframe
-					className="h-[85dvh] w-full rounded-3xl border border-surface-hover bg-surface"
+					className="h-[85dvh] w-full rounded-3xl bg-surface"
+					loading="lazy"
 					src={profileLinks.resume}
 					title="Resume - Nicholas Rios"
 				/>
