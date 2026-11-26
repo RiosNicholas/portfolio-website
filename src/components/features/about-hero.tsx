@@ -5,7 +5,6 @@ import {
 } from "~/components/layout/hero-field";
 import { ButtonLink } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
-import { profileLinks } from "~/lib/site-links";
 
 export function AboutHero() {
 	return (
@@ -23,7 +22,7 @@ export function AboutHero() {
 					area, focused on web development and agentic AI.
 				</Reveal>
 				<Reveal className="md:col-span-4 md:flex md:justify-end" delay={0.4}>
-					<ButtonLink external href={profileLinks.resume} variant="pop">
+					<ButtonLink href="/resume" variant="pop">
 						View full resume
 					</ButtonLink>
 				</Reveal>

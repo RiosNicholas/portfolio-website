@@ -3,11 +3,11 @@ import type { MetadataRoute } from "next";
 import { navLinks, siteUrl } from "~/lib/site-links";
 
 /**
- * Derived from `navLinks` so adding a nav link keeps this in sync - nothing
- * here is read from the filesystem.
+ * Derived from `navLinks` plus `/resume`, which is linked from the site but
+ * kept out of the nav. Nothing here is read from the filesystem.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-	return navLinks.map(({ href }) => ({
+	return [...navLinks, { href: "/resume" }].map(({ href }) => ({
 		url: `${siteUrl}${href}`,
 		lastModified: new Date(),
 		changeFrequency: "monthly",
