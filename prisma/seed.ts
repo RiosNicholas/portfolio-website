@@ -40,6 +40,13 @@
  * live DB to apply this and close the drift.
  */
 import { PrismaClient } from "../generated/prisma";
+import { parseLegacyDate } from "../src/lib/legacy-date";
+
+function dateFields(text: string, row: string) {
+	const fields = parseLegacyDate(text);
+	if (!fields) throw new Error(`Unparseable date "${text}" on ${row}`);
+	return fields;
+}
 
 // ─── Case studies (verbatim from src/lib/work-data.ts) ──────────────────────
 
@@ -383,12 +390,13 @@ export async function seedCaseStudies(db: PrismaClient) {
 
 	// Case studies - upsert by slug id.
 	for (const [index, study] of cases.entries()) {
+		const dates = dateFields(study.year, study.id);
 		await db.caseStudy.upsert({
 			where: { id: study.id },
 			create: {
 				id: study.id,
 				num: study.num,
-				year: study.year,
+				...dates,
 				title: study.title,
 				titleEm: study.titleEm,
 				titleSuffix: study.titleSuffix,
@@ -402,7 +410,7 @@ export async function seedCaseStudies(db: PrismaClient) {
 			},
 			update: {
 				num: study.num,
-				year: study.year,
+				...dates,
 				title: study.title,
 				titleEm: study.titleEm,
 				titleSuffix: study.titleSuffix,
@@ -426,7 +434,7 @@ export async function seedCvEntries(db: PrismaClient) {
 		data: [
 			...experience.map((entry, index) => ({
 				category: "EXPERIENCE" as const,
-				years: entry.years,
+				...dateFields(entry.years, entry.title),
 				title: entry.title,
 				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
@@ -434,7 +442,7 @@ export async function seedCvEntries(db: PrismaClient) {
 			})),
 			...education.map((entry, index) => ({
 				category: "EDUCATION" as const,
-				years: entry.years,
+				...dateFields(entry.years, entry.title),
 				title: entry.title,
 				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
@@ -442,7 +450,7 @@ export async function seedCvEntries(db: PrismaClient) {
 			})),
 			...activities.map((entry, index) => ({
 				category: "ACTIVITY" as const,
-				years: entry.years,
+				...dateFields(entry.years, entry.title),
 				title: entry.title,
 				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
