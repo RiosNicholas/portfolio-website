@@ -9,6 +9,12 @@ export type PersonJsonLd = {
 	sameAs: string[];
 	worksFor: { "@type": "Organization"; name: string };
 	address: { "@type": "PostalAddress"; addressLocality: string };
+	subjectOf: {
+		"@type": "DigitalDocument";
+		name: string;
+		url: string;
+		encodingFormat: string;
+	};
 };
 
 /** Rendered as a `<script type="application/ld+json">` in the root layout. */
@@ -21,4 +27,10 @@ export const personJsonLd: PersonJsonLd = {
 	sameAs: [profileLinks.github, profileLinks.linkedin],
 	worksFor: { "@type": "Organization", name: "JPMorganChase" },
 	address: { "@type": "PostalAddress", addressLocality: "Jersey City, NJ" },
+	subjectOf: {
+		"@type": "DigitalDocument",
+		name: "Resume",
+		url: `${siteUrl}${profileLinks.resume}`,
+		encodingFormat: "application/pdf",
+	},
 };
