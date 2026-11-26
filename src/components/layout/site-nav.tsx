@@ -40,7 +40,8 @@ export function SiteNav() {
 						aria-hidden
 						className="size-5 shrink-0 rounded bg-brand transition-transform duration-300 ease-out group-hover:rotate-45"
 					/>
-					Nicholas Rios
+					{/* Name hides on phones so the four page links and theme toggle fit at 360px. */}
+					<span className="sr-only sm:not-sr-only">Nicholas Rios</span>
 				</Link>
 
 				<div className="flex items-center gap-1 sm:gap-3">
