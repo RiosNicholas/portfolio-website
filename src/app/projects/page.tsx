@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { CaseStudy } from "~/components/features/case-study";
+import { CaseStudyIndex } from "~/components/features/case-study-index";
 import { ContactCta } from "~/components/features/contact-cta";
 import { ProjectsHero } from "~/components/features/projects-hero";
 import { getCaseStudies } from "~/server/data/case-studies";
@@ -29,6 +30,7 @@ export default async function ProjectsPage() {
 
 			<section aria-label="Case studies" className="shell pt-24 md:pt-40">
 				<div className="flex flex-col gap-32 md:gap-48">
+					<CaseStudyIndex studies={cases} />
 					{cases.map((study) => (
 						<CaseStudy key={study.id} study={study} />
 					))}
