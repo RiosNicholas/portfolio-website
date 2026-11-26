@@ -16,19 +16,25 @@ import {
 	AdminSectionLabel,
 	AdminSelect,
 } from "~/components/admin/admin-ui";
+import { AdminDateRange } from "~/components/admin/date-range";
+import {
+	type DateFields,
+	type DateForm,
+	formatDateRange,
+	fromDateForm,
+	toDateForm,
+} from "~/lib/dates";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
 type CvCategory = "EXPERIENCE" | "EDUCATION" | "ACTIVITY" | "AWARD";
 
-type CvEntryRow = {
+type CvEntryRow = DateFields & {
 	id: string;
 	category: CvCategory;
-	years: string;
 	title: string;
 	titleAccent: string[];
 	where: string;
-	sortOrder: number;
 };
 
 const categories: { value: CvCategory; label: string }[] = [
@@ -41,21 +47,25 @@ const categories: { value: CvCategory; label: string }[] = [
 type FormState = {
 	id: string | null;
 	category: CvCategory;
-	years: string;
+	dates: DateForm;
 	title: string;
 	titleAccent: string;
 	where: string;
-	sortOrder: string;
 };
 
 const emptyForm: FormState = {
 	id: null,
 	category: "EXPERIENCE",
-	years: "",
+	dates: {
+		startYear: "",
+		startMonth: "",
+		endYear: "",
+		endMonth: "",
+		present: false,
+	},
 	title: "",
 	titleAccent: "",
 	where: "",
-	sortOrder: "0",
 };
 
 export default function AdminCvPage() {
@@ -77,11 +87,10 @@ export default function AdminCvPage() {
 		setForm({
 			id: row.id,
 			category: row.category,
-			years: row.years,
+			dates: toDateForm(row),
 			title: row.title,
 			titleAccent: row.titleAccent.join(", "),
 			where: row.where,
-			sortOrder: String(row.sortOrder),
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -118,25 +127,25 @@ export default function AdminCvPage() {
 
 	function submit() {
 		setError(null);
+		const { startYear, ...dates } = fromDateForm(form.dates);
 		const payload = {
+			...dates,
 			category: form.category,
-			years: form.years.trim(),
 			title: form.title.trim(),
 			titleAccent: form.titleAccent
 				.split(",")
 				.map((s) => s.trim())
 				.filter(Boolean),
 			where: form.where.trim(),
-			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
-		if (!payload.title || !payload.where) {
-			setError("Title and where are required.");
+		if (!payload.title || !payload.where || startYear === null) {
+			setError("Title, where, and start year are required.");
 			return;
 		}
 		if (form.id) {
-			updateMutation.mutate({ id: form.id, ...payload });
+			updateMutation.mutate({ id: form.id, ...payload, startYear });
 		} else {
-			createMutation.mutate(payload);
+			createMutation.mutate({ ...payload, startYear });
 		}
 	}
 
@@ -170,19 +179,10 @@ export default function AdminCvPage() {
 							))}
 						</AdminSelect>
 					</AdminField>
-					<AdminField
-						hint="Mono display range, e.g. Feb '25 - Present"
-						htmlFor="years"
-						label="Years"
-					>
-						<AdminInput
-							id="years"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, years: e.target.value }))
-							}
-							value={form.years}
-						/>
-					</AdminField>
+					<AdminDateRange
+						onChange={(dates) => setForm((f) => ({ ...f, dates }))}
+						value={form.dates}
+					/>
 					<AdminField htmlFor="title" label="Title">
 						<AdminInput
 							id="title"
@@ -213,16 +213,6 @@ export default function AdminCvPage() {
 								setForm((f) => ({ ...f, titleAccent: e.target.value }))
 							}
 							value={form.titleAccent}
-						/>
-					</AdminField>
-					<AdminField htmlFor="sortOrder" label="Sort order">
-						<AdminInput
-							id="sortOrder"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, sortOrder: e.target.value }))
-							}
-							type="number"
-							value={form.sortOrder}
 						/>
 					</AdminField>
 				</div>
@@ -287,7 +277,7 @@ export default function AdminCvPage() {
 												{row.title}
 											</div>
 											<div className="font-mono text-(--ink-3) text-xs">
-												{row.years} · {row.where}
+												{formatDateRange(row)} · {row.where}
 											</div>
 										</AdminListRow>
 									))}

@@ -1,6 +1,23 @@
 "use client";
 
-import { Pencil, Trash2 } from "lucide-react";
+import {
+	closestCenter,
+	DndContext,
+	type DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { GripVertical, Pencil, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
 	AdminBadge,
@@ -17,15 +34,22 @@ import {
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
+import { AdminDateRange } from "~/components/admin/date-range";
+import {
+	type DateFields,
+	type DateForm,
+	formatDateRange,
+	fromDateForm,
+	toDateForm,
+} from "~/lib/dates";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
 type StatForm = { k: string; v: string };
 
-type CaseStudyRow = {
+type CaseStudyRow = DateFields & {
 	id: string;
 	num: string;
-	year: string;
 	title: string;
 	titleEm: string | null;
 	titleSuffix: string | null;
@@ -35,14 +59,13 @@ type CaseStudyRow = {
 	tags: string[];
 	stats: unknown;
 	featured: boolean;
-	sortOrder: number;
 };
 
 type FormState = {
 	id: string; // slug - also acts as create/edit discriminator via `originalId`
 	originalId: string | null;
 	num: string;
-	year: string;
+	date: DateForm;
 	title: string;
 	titleEm: string;
 	titleSuffix: string;
@@ -52,14 +75,19 @@ type FormState = {
 	tags: string;
 	stats: [StatForm, StatForm, StatForm];
 	featured: boolean;
-	sortOrder: string;
 };
 
 const emptyForm: FormState = {
 	id: "",
 	originalId: null,
 	num: "",
-	year: "",
+	date: {
+		startYear: "",
+		startMonth: "",
+		endYear: "",
+		endMonth: "",
+		present: false,
+	},
 	title: "",
 	titleEm: "",
 	titleSuffix: "",
@@ -73,7 +101,6 @@ const emptyForm: FormState = {
 		{ k: "", v: "" },
 	],
 	featured: false,
-	sortOrder: "0",
 };
 
 export default function AdminCaseStudiesPage() {
@@ -88,6 +115,12 @@ export default function AdminCaseStudiesPage() {
 	const [error, setError] = useState<string | null>(null);
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+	);
 
 	const invalidate = () => utils.caseStudy.all.invalidate();
 
@@ -97,7 +130,7 @@ export default function AdminCaseStudiesPage() {
 			id: row.id,
 			originalId: row.id,
 			num: row.num,
-			year: row.year,
+			date: toDateForm(row),
 			title: row.title,
 			titleEm: row.titleEm ?? "",
 			titleSuffix: row.titleSuffix ?? "",
@@ -111,7 +144,6 @@ export default function AdminCaseStudiesPage() {
 				stats[2] ?? { k: "", v: "" },
 			],
 			featured: row.featured,
-			sortOrder: String(row.sortOrder),
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -140,6 +172,10 @@ export default function AdminCaseStudiesPage() {
 		},
 		onError: (e) => setError(e.message),
 	});
+	const reorderMutation = api.caseStudy.reorder.useMutation({
+		onSettled: invalidate,
+		onError: (e) => setError(e.message),
+	});
 
 	const pending =
 		createMutation.isPending ||
@@ -154,12 +190,29 @@ export default function AdminCaseStudiesPage() {
 		});
 	}
 
+	function onDragEnd({ active, over }: DragEndEvent) {
+		if (!cases || !over || active.id === over.id) return;
+		const next = arrayMove(
+			cases,
+			cases.findIndex((c) => c.id === active.id),
+			cases.findIndex((c) => c.id === over.id),
+		);
+		utils.caseStudy.all.setData(undefined, next);
+		reorderMutation.mutate({ ids: next.map((c) => c.id) });
+	}
+
 	function submit() {
 		setError(null);
+		const dates = fromDateForm(form.date);
+		if (dates.startYear === null) {
+			setError("Start year is required.");
+			return;
+		}
 		const payload = {
 			id: form.id.trim(),
 			num: form.num.trim(),
-			year: form.year.trim(),
+			...dates,
+			startYear: dates.startYear,
 			title: form.title,
 			titleEm: form.titleEm.trim() || null,
 			titleSuffix: form.titleSuffix.trim() || null,
@@ -172,7 +225,6 @@ export default function AdminCaseStudiesPage() {
 				.filter(Boolean),
 			stats: form.stats.map((s) => ({ k: s.k.trim(), v: s.v.trim() })),
 			featured: form.featured,
-			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
 		if (!payload.id || !payload.role || !payload.org || !payload.description) {
 			setError("Slug (id), role, org, and description are required.");
@@ -223,24 +275,12 @@ export default function AdminCaseStudiesPage() {
 							value={form.num}
 						/>
 					</AdminField>
-					<AdminField htmlFor="year" label="Year">
-						<AdminInput
-							id="year"
-							onChange={(e) => setForm((f) => ({ ...f, year: e.target.value }))}
-							placeholder="2025 -"
-							value={form.year}
+					<div className="sm:col-span-2">
+						<AdminDateRange
+							onChange={(date) => setForm((f) => ({ ...f, date }))}
+							value={form.date}
 						/>
-					</AdminField>
-					<AdminField htmlFor="sortOrder" label="Sort order">
-						<AdminInput
-							id="sortOrder"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, sortOrder: e.target.value }))
-							}
-							type="number"
-							value={form.sortOrder}
-						/>
-					</AdminField>
+					</div>
 					<AdminField
 						hint="Leading plain text before the accent"
 						htmlFor="title"
@@ -376,47 +416,95 @@ export default function AdminCaseStudiesPage() {
 			)}
 
 			{!isLoading && cases && cases.length > 0 && (
-				<AdminList>
-					{cases.map((row) => (
-						<AdminListRow
-							actions={
-								<>
-									<AdminButton onClick={() => startEdit(row)} size="sm">
-										<Pencil className="size-3.5" />
-										Edit
-									</AdminButton>
-									<AdminButton
-										onClick={() => {
-											if (confirm(`Delete "${row.id}"?`))
-												deleteMutation.mutate({ id: row.id });
-										}}
-										size="sm"
-										variant="danger"
+				<DndContext
+					collisionDetection={closestCenter}
+					onDragEnd={onDragEnd}
+					sensors={sensors}
+				>
+					<SortableContext
+						items={cases.map((row) => row.id)}
+						strategy={verticalListSortingStrategy}
+					>
+						<AdminList>
+							{cases.map((row) => (
+								<SortableCaseRow id={row.id} key={row.id}>
+									<AdminListRow
+										actions={
+											<>
+												<AdminButton onClick={() => startEdit(row)} size="sm">
+													<Pencil className="size-3.5" />
+													Edit
+												</AdminButton>
+												<AdminButton
+													onClick={() => {
+														if (confirm(`Delete "${row.id}"?`))
+															deleteMutation.mutate({ id: row.id });
+													}}
+													size="sm"
+													variant="danger"
+												>
+													<Trash2 className="size-3.5" />
+													Delete
+												</AdminButton>
+											</>
+										}
 									>
-										<Trash2 className="size-3.5" />
-										Delete
-									</AdminButton>
-								</>
-							}
-							key={row.id}
-						>
-							<div className="flex items-center gap-2">
-								<span className="font-display font-semibold text-foreground text-sm">
-									{row.title}
-									{row.titleEm}
-									{row.titleSuffix}
-								</span>
-								{row.featured && (
-									<AdminBadge tone="accent">Featured</AdminBadge>
-								)}
-							</div>
-							<div className="font-mono text-(--ink-3) text-xs">
-								{row.id} · {row.role}
-							</div>
-						</AdminListRow>
-					))}
-				</AdminList>
+										<div className="flex items-center gap-2">
+											<span className="font-display font-semibold text-foreground text-sm">
+												{row.title}
+												{row.titleEm}
+												{row.titleSuffix}
+											</span>
+											{row.featured && (
+												<AdminBadge tone="accent">Featured</AdminBadge>
+											)}
+										</div>
+										<div className="font-mono text-(--ink-3) text-xs">
+											{row.id} · {row.role} · {formatDateRange(row)}
+										</div>
+									</AdminListRow>
+								</SortableCaseRow>
+							))}
+						</AdminList>
+					</SortableContext>
+				</DndContext>
 			)}
+		</div>
+	);
+}
+
+function SortableCaseRow({
+	id,
+	children,
+}: {
+	id: string;
+	children: React.ReactNode;
+}) {
+	const {
+		attributes,
+		listeners,
+		setActivatorNodeRef,
+		setNodeRef,
+		transform,
+		transition,
+	} = useSortable({ id });
+	return (
+		<div
+			className="flex items-stretch gap-2"
+			ref={setNodeRef}
+			style={{ transform: CSS.Transform.toString(transform), transition }}
+		>
+			<button
+				aria-label="Drag to reorder"
+				className="flex w-6 shrink-0 cursor-grab touch-none items-center justify-center text-(--ink-3) hover:text-foreground"
+				ref={setActivatorNodeRef}
+				type="button"
+				{...attributes}
+				{...listeners}
+			>
+				<GripVertical className="size-4" />
+			</button>
+			<div className="min-w-0 flex-1">{children}</div>
 		</div>
 	);
 }
