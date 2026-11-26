@@ -1,5 +1,5 @@
 import { Reveal } from "~/components/ui/reveal";
-import { getCvEntriesByCategory } from "~/server/data/cv-entries";
+import { getCvEntries } from "~/server/data/cv-entries";
 import type { CvEntry } from "../../../generated/prisma";
 
 function CvList({ entries }: { entries: CvEntry[] }) {
@@ -20,12 +20,11 @@ function CvList({ entries }: { entries: CvEntry[] }) {
 const sectionHeading = "m-0 font-semibold text-statement";
 
 export async function AboutBio() {
-	const [experience, education, activities, awards] = await Promise.all([
-		getCvEntriesByCategory("EXPERIENCE"),
-		getCvEntriesByCategory("EDUCATION"),
-		getCvEntriesByCategory("ACTIVITY"),
-		getCvEntriesByCategory("AWARD"),
-	]);
+	const entries = await getCvEntries();
+	const experience = entries.filter((e) => e.category === "EXPERIENCE");
+	const education = entries.filter((e) => e.category === "EDUCATION");
+	const activities = entries.filter((e) => e.category === "ACTIVITY");
+	const awards = entries.filter((e) => e.category === "AWARD");
 
 	return (
 		<section aria-labelledby="summary" className="shell pt-24 md:pt-40">
