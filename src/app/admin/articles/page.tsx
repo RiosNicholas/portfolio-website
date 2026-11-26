@@ -205,11 +205,7 @@ export default function AdminArticlesPage() {
 							value={form.summary}
 						/>
 					</AdminField>
-					<AdminField
-						hint="Comma-separated, e.g. LinkedIn, News, Social"
-						htmlFor="tags"
-						label="Source tags"
-					>
+					<AdminField hint="Comma-separated" htmlFor="tags" label="Source tags">
 						<AdminInput
 							id="tags"
 							onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}

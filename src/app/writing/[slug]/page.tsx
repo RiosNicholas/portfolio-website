@@ -46,6 +46,7 @@ export default async function ArticlePage({ params }: Props) {
 	if (!article) notFound();
 
 	const url = `${siteUrl}/writing/${slug}`;
+	const { "@context": _, ...author } = personJsonLd;
 	const date = new Date(article.publishedAt).toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "short",
@@ -65,7 +66,7 @@ export default async function ArticlePage({ params }: Props) {
 					dateModified: article.updatedAt,
 					url,
 					mainEntityOfPage: url,
-					author: personJsonLd,
+					author,
 				}}
 			/>
 
