@@ -4,42 +4,44 @@ const sections = [
 	{
 		href: "/admin/profile",
 		title: "Profile",
-		description: "About summary, bento grid and page ledes.",
+		description: "Your intro, summary, status, location and page intros.",
 	},
 	{
 		href: "/admin/case-studies",
 		title: "Case studies",
-		description: "Projects page - /projects.",
+		description: "The projects on the Projects page.",
 	},
 	{
 		href: "/admin/endorsements",
 		title: "Endorsements",
-		description: "Home page recommendation cards.",
+		description: "The recommendations on the home page.",
 	},
 	{
 		href: "/admin/cv",
 		title: "Experience, education, activities & awards",
-		description: "About page CV rows.",
+		description:
+			"Experience, education, activities and awards on the About page.",
 	},
 	{
 		href: "/admin/skills",
 		title: "Skills & tools",
-		description: "Home page bento grid skills reel and tools list.",
+		description: "Skills and favorite tools on the home page.",
 	},
 	{
 		href: "/admin/languages",
 		title: "Languages",
-		description: "Home page bento grid languages cell.",
+		description: "Languages on the home page.",
 	},
 	{
 		href: "/admin/articles",
 		title: "Articles",
-		description: "Writing page posts - /writing/<slug>.",
+		description: "Posts on the Writing page.",
 	},
 	{
 		href: "/admin/mentions",
 		title: "Mentions",
-		description: "Writing page external links.",
+		description:
+			"Links to your work on other sites, shown on the Writing page.",
 	},
 ];
 

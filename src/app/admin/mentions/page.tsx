@@ -145,7 +145,7 @@ export default function AdminMentionsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="External links on the Writing page - pieces you wrote elsewhere or that feature you. Leave `published` off to stage one."
+				description="Links on the Writing page to work that lives on other sites, like a post you wrote elsewhere or an interview with you. Turn off Published to hide one."
 				title="Mentions"
 			/>
 

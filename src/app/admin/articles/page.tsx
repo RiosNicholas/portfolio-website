@@ -159,7 +159,7 @@ export default function AdminArticlesPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="Long-form posts on the Writing page, at /writing/<slug>. Leave `published` off to keep a draft."
+				description="Posts you write here for the Writing page. Each one gets its own page on the site. Turn off Published to keep a post as a draft."
 				title="Articles"
 			/>
 

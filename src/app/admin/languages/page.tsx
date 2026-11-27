@@ -142,7 +142,7 @@ export default function AdminLanguagesPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The home page bento grid's Languages cell. `published` controls whether a row shows on the public site."
+				description="The languages on the home page. Drag to change their order. Turn off Published to hide one."
 				title="Languages"
 			/>
 
