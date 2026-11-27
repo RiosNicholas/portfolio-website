@@ -19,6 +19,7 @@ import {
 	AdminTextarea,
 	useFlash,
 } from "~/components/admin/admin-ui";
+import { SortableList, SortableRow } from "~/components/admin/sortable-list";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
@@ -41,7 +42,6 @@ type FormState = {
 	linkedinUrl: string;
 	avatarUrl: string;
 	published: boolean;
-	sortOrder: string;
 };
 
 const emptyForm: FormState = {
@@ -52,7 +52,6 @@ const emptyForm: FormState = {
 	linkedinUrl: "",
 	avatarUrl: "",
 	published: true,
-	sortOrder: "0",
 };
 
 export default function AdminEndorsementsPage() {
@@ -80,7 +79,6 @@ export default function AdminEndorsementsPage() {
 			linkedinUrl: row.linkedinUrl,
 			avatarUrl: row.avatarUrl ?? "",
 			published: row.published,
-			sortOrder: String(row.sortOrder),
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -102,6 +100,11 @@ export default function AdminEndorsementsPage() {
 			setForm(emptyForm);
 			flash("Saved");
 		},
+		onError: (e) => setError(e.message),
+	});
+	const reorderMutation = api.endorsement.reorder.useMutation({
+		onSuccess: () => flash("Order saved"),
+		onSettled: invalidate,
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.endorsement.delete.useMutation({
@@ -127,7 +130,6 @@ export default function AdminEndorsementsPage() {
 			linkedinUrl: form.linkedinUrl.trim(),
 			avatarUrl: form.avatarUrl.trim() || null,
 			published: form.published,
-			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
 		if (
 			!payload.name ||
@@ -141,8 +143,21 @@ export default function AdminEndorsementsPage() {
 		if (form.id) {
 			updateMutation.mutate({ id: form.id, ...payload });
 		} else {
-			createMutation.mutate(payload);
+			// New rows go to the end of the list.
+			createMutation.mutate({
+				...payload,
+				sortOrder: (endorsements?.at(-1)?.sortOrder ?? -1) + 1,
+			});
 		}
+	}
+
+	function reorder(ids: string[]) {
+		utils.endorsement.all.setData(undefined, (prev) =>
+			prev
+				?.map((r) => ({ ...r, sortOrder: ids.indexOf(r.id) }))
+				.sort((a, b) => a.sortOrder - b.sortOrder),
+		);
+		reorderMutation.mutate({ ids });
 	}
 
 	return (
@@ -204,16 +219,6 @@ export default function AdminEndorsementsPage() {
 							value={form.avatarUrl}
 						/>
 					</AdminField>
-					<AdminField htmlFor="sortOrder" label="Sort order">
-						<AdminInput
-							id="sortOrder"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, sortOrder: e.target.value }))
-							}
-							type="number"
-							value={form.sortOrder}
-						/>
-					</AdminField>
 					<div className="flex items-end">
 						<AdminCheckbox
 							checked={form.published}
@@ -248,44 +253,47 @@ export default function AdminEndorsementsPage() {
 			)}
 
 			{!isLoading && endorsements && endorsements.length > 0 && (
-				<AdminList>
-					{endorsements.map((row) => (
-						<AdminListRow
-							actions={
-								<>
-									<AdminButton onClick={() => startEdit(row)} size="sm">
-										<Pencil className="size-3.5" />
-										Edit
-									</AdminButton>
-									<AdminButton
-										onClick={() => {
-											if (confirm(`Delete "${row.name}"?`)) {
-												setError(null);
-												deleteMutation.mutate({ id: row.id });
-											}
-										}}
-										size="sm"
-										variant="danger"
-									>
-										<Trash2 className="size-3.5" />
-										Delete
-									</AdminButton>
-								</>
-							}
-							key={row.id}
-						>
-							<div className="flex items-center gap-2">
-								<span className="font-display font-semibold text-foreground text-sm">
-									{row.name}
-								</span>
-								{!row.published && <AdminBadge>Draft</AdminBadge>}
-							</div>
-							<div className="max-w-md truncate font-mono text-(--ink-3) text-xs">
-								{row.role} - &ldquo;{row.quote}&rdquo;
-							</div>
-						</AdminListRow>
-					))}
-				</AdminList>
+				<SortableList ids={endorsements.map((r) => r.id)} onReorder={reorder}>
+					<AdminList>
+						{endorsements.map((row) => (
+							<SortableRow id={row.id} key={row.id}>
+								<AdminListRow
+									actions={
+										<>
+											<AdminButton onClick={() => startEdit(row)} size="sm">
+												<Pencil className="size-3.5" />
+												Edit
+											</AdminButton>
+											<AdminButton
+												onClick={() => {
+													if (confirm(`Delete "${row.name}"?`)) {
+														setError(null);
+														deleteMutation.mutate({ id: row.id });
+													}
+												}}
+												size="sm"
+												variant="danger"
+											>
+												<Trash2 className="size-3.5" />
+												Delete
+											</AdminButton>
+										</>
+									}
+								>
+									<div className="flex items-center gap-2">
+										<span className="font-display font-semibold text-foreground text-sm">
+											{row.name}
+										</span>
+										{!row.published && <AdminBadge>Draft</AdminBadge>}
+									</div>
+									<div className="max-w-md truncate font-mono text-(--ink-3) text-xs">
+										{row.role} - &ldquo;{row.quote}&rdquo;
+									</div>
+								</AdminListRow>
+							</SortableRow>
+						))}
+					</AdminList>
+				</SortableList>
 			)}
 		</div>
 	);

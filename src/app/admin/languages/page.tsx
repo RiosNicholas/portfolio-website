@@ -18,6 +18,7 @@ import {
 	AdminSaveStatus,
 	useFlash,
 } from "~/components/admin/admin-ui";
+import { SortableList, SortableRow } from "~/components/admin/sortable-list";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
@@ -34,7 +35,6 @@ type FormState = {
 	name: string;
 	level: string;
 	published: boolean;
-	sortOrder: string;
 };
 
 const emptyForm: FormState = {
@@ -42,7 +42,6 @@ const emptyForm: FormState = {
 	name: "",
 	level: "",
 	published: true,
-	sortOrder: "0",
 };
 
 export default function AdminLanguagesPage() {
@@ -67,7 +66,6 @@ export default function AdminLanguagesPage() {
 			name: row.name,
 			level: row.level,
 			published: row.published,
-			sortOrder: String(row.sortOrder),
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -91,6 +89,11 @@ export default function AdminLanguagesPage() {
 		},
 		onError: (e) => setError(e.message),
 	});
+	const reorderMutation = api.language.reorder.useMutation({
+		onSuccess: () => flash("Order saved"),
+		onSettled: invalidate,
+		onError: (e) => setError(e.message),
+	});
 	const deleteMutation = api.language.delete.useMutation({
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.id) setForm(emptyForm);
@@ -111,7 +114,6 @@ export default function AdminLanguagesPage() {
 			name: form.name.trim(),
 			level: form.level.trim(),
 			published: form.published,
-			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
 		if (!payload.name || !payload.level) {
 			setError("Name and level are required.");
@@ -120,8 +122,21 @@ export default function AdminLanguagesPage() {
 		if (form.id) {
 			updateMutation.mutate({ id: form.id, ...payload });
 		} else {
-			createMutation.mutate(payload);
+			// New rows go to the end of the list.
+			createMutation.mutate({
+				...payload,
+				sortOrder: (languages?.at(-1)?.sortOrder ?? -1) + 1,
+			});
 		}
+	}
+
+	function reorder(ids: string[]) {
+		utils.language.all.setData(undefined, (prev) =>
+			prev
+				?.map((r) => ({ ...r, sortOrder: ids.indexOf(r.id) }))
+				.sort((a, b) => a.sortOrder - b.sortOrder),
+		);
+		reorderMutation.mutate({ ids });
 	}
 
 	return (
@@ -152,16 +167,6 @@ export default function AdminLanguagesPage() {
 							}
 							placeholder="Native"
 							value={form.level}
-						/>
-					</AdminField>
-					<AdminField htmlFor="sortOrder" label="Sort order">
-						<AdminInput
-							id="sortOrder"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, sortOrder: e.target.value }))
-							}
-							type="number"
-							value={form.sortOrder}
 						/>
 					</AdminField>
 					<AdminField label="Published">
@@ -198,42 +203,45 @@ export default function AdminLanguagesPage() {
 			)}
 
 			{!isLoading && languages && languages.length > 0 && (
-				<AdminList>
-					{languages.map((row) => (
-						<AdminListRow
-							actions={
-								<>
-									<AdminButton onClick={() => startEdit(row)} size="sm">
-										<Pencil className="size-3.5" />
-										Edit
-									</AdminButton>
-									<AdminButton
-										onClick={() => {
-											if (confirm(`Delete "${row.name}"?`)) {
-												setError(null);
-												deleteMutation.mutate({ id: row.id });
-											}
-										}}
-										size="sm"
-										variant="danger"
-									>
-										<Trash2 className="size-3.5" />
-										Delete
-									</AdminButton>
-								</>
-							}
-							key={row.id}
-						>
-							<span className="font-display font-semibold text-foreground text-sm">
-								{row.name}
-							</span>
-							<span className="ml-2 font-mono text-(--ink-4) text-xs">
-								{row.level}
-							</span>
-							{!row.published && <AdminBadge>Unpublished</AdminBadge>}
-						</AdminListRow>
-					))}
-				</AdminList>
+				<SortableList ids={languages.map((r) => r.id)} onReorder={reorder}>
+					<AdminList>
+						{languages.map((row) => (
+							<SortableRow id={row.id} key={row.id}>
+								<AdminListRow
+									actions={
+										<>
+											<AdminButton onClick={() => startEdit(row)} size="sm">
+												<Pencil className="size-3.5" />
+												Edit
+											</AdminButton>
+											<AdminButton
+												onClick={() => {
+													if (confirm(`Delete "${row.name}"?`)) {
+														setError(null);
+														deleteMutation.mutate({ id: row.id });
+													}
+												}}
+												size="sm"
+												variant="danger"
+											>
+												<Trash2 className="size-3.5" />
+												Delete
+											</AdminButton>
+										</>
+									}
+								>
+									<span className="font-display font-semibold text-foreground text-sm">
+										{row.name}
+									</span>
+									<span className="ml-2 font-mono text-(--ink-4) text-xs">
+										{row.level}
+									</span>
+									{!row.published && <AdminBadge>Unpublished</AdminBadge>}
+								</AdminListRow>
+							</SortableRow>
+						))}
+					</AdminList>
+				</SortableList>
 			)}
 		</div>
 	);
