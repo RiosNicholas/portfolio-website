@@ -57,10 +57,6 @@ export async function AboutBio() {
 					</h2>
 					<div className="flex max-w-prose flex-col gap-4">
 						<p className="m-0">
-							I&apos;m Nicholas - a Software Engineer based in the NYC area,
-							focused on web development and agentic AI.
-						</p>
-						<p className="m-0">
 							I enjoy working at the intersection of design, product, and
 							engineering. I like taking ideas from concept to implementation,
 							building intuitive user experiences, and thinking through the
