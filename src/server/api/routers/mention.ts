@@ -8,6 +8,7 @@ import {
 	mentionInput,
 	mentionUpdateInput,
 } from "~/server/api/schemas/mention";
+import { dedupeTopicTags } from "~/server/api/schemas/topic-tags";
 import { adminProcedure, createTRPCRouter } from "~/server/api/trpc";
 import { fetchPreviewImage, resolveUrl } from "~/server/link-preview";
 
@@ -52,6 +53,17 @@ export const mentionRouter = createTRPCRouter({
 			],
 		}),
 	),
+
+	// Suggestions for the topic tag inputs on both writing admin pages.
+	topicTags: adminProcedure.query(async ({ ctx }) => {
+		const rows = await Promise.all([
+			ctx.db.mention.findMany({ select: { topicTags: true } }),
+			ctx.db.article.findMany({ select: { topicTags: true } }),
+		]);
+		return dedupeTopicTags(rows.flat().flatMap((r) => r.topicTags)).sort(
+			(a, b) => a.localeCompare(b),
+		);
+	}),
 
 	create: adminProcedure
 		.input(mentionInput)

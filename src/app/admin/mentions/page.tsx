@@ -21,6 +21,7 @@ import {
 	useFlash,
 } from "~/components/admin/admin-ui";
 import { months } from "~/components/admin/date-range";
+import { AdminTopicTagInput } from "~/components/admin/topic-tag-input";
 import { formatDateParts } from "~/lib/dates";
 import {
 	embedUrlFor,
@@ -53,7 +54,7 @@ type FormState = {
 	year: string;
 	month: string;
 	day: string;
-	topicTags: string;
+	topicTags: string[];
 	/** The fetched or pasted image shown in the preview. */
 	image: string;
 	/** False keeps the server's image. True sends `image`, or null when empty. */
@@ -69,7 +70,7 @@ const emptyForm: FormState = {
 	year: String(new Date().getFullYear()),
 	month: "",
 	day: "",
-	topicTags: "",
+	topicTags: [],
 	image: "",
 	imageTouched: false,
 	published: true,
@@ -83,13 +84,18 @@ export default function AdminMentionsPage() {
 		isError,
 		error: queryError,
 	} = api.mention.all.useQuery();
+	const { data: tagSuggestions = [] } = api.mention.topicTags.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
 	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
-	const invalidate = () => utils.mention.all.invalidate();
+	const invalidate = () =>
+		Promise.all([
+			utils.mention.all.invalidate(),
+			utils.mention.topicTags.invalidate(),
+		]);
 
 	function startEdit(row: MentionRow) {
 		setForm({
@@ -100,7 +106,7 @@ export default function AdminMentionsPage() {
 			year: String(row.year),
 			month: row.month ? String(row.month) : "",
 			day: row.day ? String(row.day) : "",
-			topicTags: row.topicTags.join(", "),
+			topicTags: row.topicTags,
 			image: row.imageUrl ?? "",
 			imageTouched: false,
 			published: row.published,
@@ -151,10 +157,7 @@ export default function AdminMentionsPage() {
 			year: Number(form.year),
 			month: form.month ? Number(form.month) : null,
 			day: form.day ? Number(form.day) : null,
-			topicTags: form.topicTags
-				.split(",")
-				.map((s) => s.trim())
-				.filter(Boolean),
+			topicTags: form.topicTags,
 			published: form.published,
 		});
 		if (!parsed.success) {
@@ -288,15 +291,13 @@ export default function AdminMentionsPage() {
 					</div>
 					<AdminField
 						className="sm:col-span-2"
-						hint="Comma-separated, e.g. AI, Design Systems"
 						htmlFor="topicTags"
 						label="Topic tags"
 					>
-						<AdminInput
+						<AdminTopicTagInput
 							id="topicTags"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, topicTags: e.target.value }))
-							}
+							onChange={(topicTags) => setForm((f) => ({ ...f, topicTags }))}
+							suggestions={tagSuggestions}
 							value={form.topicTags}
 						/>
 					</AdminField>

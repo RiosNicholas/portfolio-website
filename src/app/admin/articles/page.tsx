@@ -22,6 +22,7 @@ import {
 	AdminTextarea,
 	useFlash,
 } from "~/components/admin/admin-ui";
+import { AdminTopicTagInput } from "~/components/admin/topic-tag-input";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { articleInput } from "~/server/api/schemas/article";
 import { api } from "~/trpc/react";
@@ -42,7 +43,7 @@ type FormState = {
 	slugLocked: boolean;
 	title: string;
 	summary: string;
-	topicTags: string;
+	topicTags: string[];
 	published: boolean;
 	body: string;
 };
@@ -53,7 +54,7 @@ const emptyForm: FormState = {
 	slugLocked: false,
 	title: "",
 	summary: "",
-	topicTags: "",
+	topicTags: [],
 	published: false,
 	body: "",
 };
@@ -81,7 +82,13 @@ export default function AdminArticlesPage() {
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
-	const invalidate = () => utils.article.all.invalidate();
+	const { data: tagSuggestions = [] } = api.mention.topicTags.useQuery();
+
+	const invalidate = () =>
+		Promise.all([
+			utils.article.all.invalidate(),
+			utils.mention.topicTags.invalidate(),
+		]);
 
 	function startEdit(row: ArticleRow) {
 		setForm({
@@ -90,7 +97,7 @@ export default function AdminArticlesPage() {
 			slugLocked: true,
 			title: row.title,
 			summary: row.summary,
-			topicTags: row.topicTags.join(", "),
+			topicTags: row.topicTags,
 			published: row.published,
 			body: row.body,
 		});
@@ -137,10 +144,7 @@ export default function AdminArticlesPage() {
 			title: form.title.trim(),
 			summary: form.summary.trim(),
 			body: form.body,
-			topicTags: form.topicTags
-				.split(",")
-				.map((s) => s.trim())
-				.filter(Boolean),
+			topicTags: form.topicTags,
 			published: form.published,
 		});
 		if (!parsed.success) {
@@ -211,16 +215,11 @@ export default function AdminArticlesPage() {
 							value={form.summary}
 						/>
 					</AdminField>
-					<AdminField
-						hint="Comma-separated, e.g. AI, Design Systems"
-						htmlFor="topicTags"
-						label="Topic tags"
-					>
-						<AdminInput
+					<AdminField htmlFor="topicTags" label="Topic tags">
+						<AdminTopicTagInput
 							id="topicTags"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, topicTags: e.target.value }))
-							}
+							onChange={(topicTags) => setForm((f) => ({ ...f, topicTags }))}
+							suggestions={tagSuggestions}
 							value={form.topicTags}
 						/>
 					</AdminField>
