@@ -284,8 +284,10 @@ export default function AdminArticlesPage() {
 									</AdminButton>
 									<AdminButton
 										onClick={() => {
-											if (confirm(`Delete "${row.title}"?`))
+											if (confirm(`Delete "${row.title}"?`)) {
+												setError(null);
 												deleteMutation.mutate({ id: row.id });
+											}
 										}}
 										size="sm"
 										variant="danger"

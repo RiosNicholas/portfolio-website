@@ -259,8 +259,10 @@ export default function AdminEndorsementsPage() {
 									</AdminButton>
 									<AdminButton
 										onClick={() => {
-											if (confirm(`Delete "${row.name}"?`))
+											if (confirm(`Delete "${row.name}"?`)) {
+												setError(null);
 												deleteMutation.mutate({ id: row.id });
+											}
 										}}
 										size="sm"
 										variant="danger"
