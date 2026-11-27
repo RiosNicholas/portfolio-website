@@ -12,7 +12,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 
 	if (items.length === 0) {
 		return (
-			<p className="m-0 text-ink-muted text-lg md:text-xl">
+			<p className="m-0 text-base text-ink-muted md:text-lg">
 				First pieces are on the way.
 			</p>
 		);
@@ -68,7 +68,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 									})}
 								</time>
 							</p>
-							<h2 className="m-0 mt-3 font-semibold text-2xl tracking-tight md:text-3xl">
+							<h2 className="m-0 mt-3 font-semibold text-xl tracking-tight md:text-2xl">
 								<Link
 									className="inline-flex items-start gap-2 text-ink no-underline hover:text-brand-strong"
 									href={item.href}

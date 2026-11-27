@@ -16,17 +16,12 @@
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 	--font-mono: ui-monospace, "Cascadia Code", monospace;
 
-	--text-display: min(clamp(2rem, 0.75rem + 5vw, 6rem), 10svh);
+	--text-display: min(clamp(2rem, 0.75rem + 4vw, 4.5rem), 10svh);
 	--text-display--line-height: 0.95;
 	--text-display--letter-spacing: -0.045em;
-	/* Temporary aliases for about-bio.tsx. Remove once it uses text-base and text-lg md:text-xl. */
-	--text-body: var(--text-base);
-	--text-body--line-height: var(--text-base--line-height);
-	--text-lead: var(--text-xl);
-	--text-lead--line-height: var(--text-xl--line-height);
 
 	/* Density scale. Card padding is the base unit; bands and sections are multiples of it. */
-	--spacing-card: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+	--spacing-card: clamp(1.25rem, 1rem + 1vw, 2rem);
 	--spacing-band: calc(var(--spacing-card) * 2);
 	--spacing-section: calc(var(--spacing-card) * 3);
 

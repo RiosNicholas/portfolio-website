@@ -7,7 +7,7 @@ export default function NotFound() {
 			id="main-content"
 		>
 			<h1 className="m-0 font-semibold text-display">Page not found</h1>
-			<p className="m-0 max-w-[32rem] text-lg md:text-xl">
+			<p className="m-0 max-w-[32rem] text-base md:text-lg">
 				The page you&apos;re looking for doesn&apos;t exist or has moved.
 			</p>
 			<div>

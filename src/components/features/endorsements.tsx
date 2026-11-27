@@ -13,7 +13,7 @@ export function Endorsements({
 		<section aria-labelledby="recommendations" className="shell pt-section">
 			<Reveal
 				as="h2"
-				className="m-0 font-semibold text-3xl tracking-tight md:text-4xl lg:text-5xl"
+				className="m-0 font-semibold text-2xl tracking-tight md:text-3xl lg:text-4xl"
 				id="recommendations"
 			>
 				Recommendations
@@ -24,7 +24,7 @@ export function Endorsements({
 			    gutter. From lg it is the three-column grid. */}
 			<ul
 				aria-label="Recommendations"
-				className="m-0 -mx-(--gutter) mt-10 flex snap-x snap-mandatory scroll-px-(--gutter) list-none items-start gap-3 overflow-x-auto px-(--gutter) pb-2 [--gutter:clamp(20px,4vw,64px)] [scrollbar-width:none] md:mt-14 lg:mx-0 lg:grid lg:grid-cols-3 lg:items-stretch lg:overflow-visible lg:px-0 lg:pb-0"
+				className="m-0 -mx-(--gutter) mt-8 flex snap-x snap-mandatory scroll-px-(--gutter) list-none items-start gap-3 overflow-x-auto px-(--gutter) pb-2 [--gutter:clamp(20px,4vw,64px)] [scrollbar-width:none] md:mt-10 lg:mx-0 lg:grid lg:grid-cols-3 lg:items-stretch lg:overflow-visible lg:px-0 lg:pb-0"
 			>
 				{endorsements.slice(0, 3).map((e, index) => (
 					<li

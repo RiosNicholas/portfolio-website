@@ -26,7 +26,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 				)}
 				<div className="flex flex-col gap-2 md:flex-row md:items-baseline md:justify-between md:gap-8">
 					<h2
-						className="m-0 font-semibold text-2xl md:text-3xl"
+						className="m-0 font-semibold text-xl md:text-2xl"
 						id={`${study.id}-title`}
 					>
 						{caseTitle(study)}
@@ -42,7 +42,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 					<p className="m-0 max-w-prose text-base">{study.description}</p>
 					{figure && (
 						<p className="m-0 md:text-right">
-							<span className="block font-semibold text-2xl tracking-tight md:text-3xl">
+							<span className="block font-semibold text-xl tracking-tight md:text-2xl">
 								{figure.v}
 							</span>
 							<span className="text-ink-muted text-sm">{figure.k}</span>

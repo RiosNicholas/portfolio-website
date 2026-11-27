@@ -85,16 +85,17 @@ primitives. Don't use them in public pages.
 
 **Type** - one typeface: Schibsted Grotesk (`next/font`, `--font-schibsted`)
 for display, headings and body. Mono is the system stack, rarely used.
-Public pages use Tailwind's native scale, one size per role. Admin keeps
-defaults.
+Public pages use Tailwind's native sizes, one per role, with no custom
+scale. Only `text-display` is custom. Admin keeps defaults.
 
 | Role                        | Classes                                      |
 |-----------------------------|----------------------------------------------|
-| Home H1                     | `text-display` (the one custom fluid token, capped at 10svh) |
-| Inner page H1               | `text-3xl tracking-tight md:text-5xl lg:text-6xl` |
-| Section H2                  | `text-3xl tracking-tight md:text-4xl lg:text-5xl` |
-| Card title and statement    | `text-2xl tracking-tight md:text-3xl`        |
-| Lead                        | `text-lg md:text-xl`                         |
+| Home H1                     | `text-display` (the one fluid size, capped at 10svh) |
+| Inner page H1               | `text-2xl tracking-tight md:text-4xl lg:text-5xl` |
+| Section H2                  | `text-2xl tracking-tight md:text-3xl lg:text-4xl` |
+| Card title and statement    | `text-xl tracking-tight md:text-2xl`         |
+| Sub-heading                 | `text-lg`                                    |
+| Lead                        | `text-base md:text-lg`                       |
 | Body, buttons, nav          | `text-base`                                  |
 | Meta, labels, tags          | `text-sm`                                    |
 
@@ -111,7 +112,7 @@ small `hover:-translate-y-1` on cards.
 `pt-32 md:pt-48` for endorsements and contact). Two-column layouts use a
 12-col grid at `lg` (5 + 7 or 6 + 6). Mobile first, always.
 
-**Density scale** - `card` (`--spacing-card`, 1.5-2.5rem) is the base unit.
+**Density scale** - `card` (`--spacing-card`, 1.25-2rem) is the base unit.
 `band` is 2x card and `section` is 3x card. Use `py-band`, `mt-card`,
 `gap-card` and the like instead of raw values.
 
@@ -168,7 +169,7 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
   is a `pop` "See my experience" linking to About.
 - **At a glance** (`BentoGrid`) - 6-col grid of `bg-surface` cards that
   share one label/value rhythm (muted label on top, value in
-  `text-2xl md:text-3xl` below). Cells: Based in (with a `cobe` globe peeking off
+  `text-xl md:text-2xl` below). Cells: Based in (with a `cobe` globe peeking off
   the corner), Experience (`NumberTicker`), Status, Skills (vertical
   marquee), Favorite tools (pill chips on `surface-raised`), Currently,
   Languages. Skills, tools and languages come from the database, edited via
