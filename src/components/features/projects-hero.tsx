@@ -17,7 +17,7 @@ export function ProjectsHero() {
 			<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-12 md:items-end">
 				<Reveal
 					as="p"
-					className="m-0 max-w-[30em] font-medium text-statement md:col-span-8"
+					className="m-0 max-w-[30em] font-medium text-2xl tracking-tight md:col-span-8 md:text-3xl"
 					delay={0.3}
 				>
 					Apps, sites and experiments I&apos;ve designed and built outside my

@@ -30,7 +30,7 @@ export function SiteNav() {
 		<header className="shell relative z-50">
 			<nav
 				aria-label="Primary"
-				className="flex items-center justify-between gap-4 py-6 text-body"
+				className="flex items-center justify-between gap-4 py-6 text-base"
 			>
 				<Link
 					className="group flex items-center gap-3 font-semibold text-ink no-underline"

@@ -26,7 +26,7 @@ export function MediaFigure({
 				width={media.width}
 			/>
 			{media.caption && (
-				<figcaption className="mt-3 text-body text-ink-muted">
+				<figcaption className="mt-3 text-ink-muted text-sm">
 					{media.caption}
 				</figcaption>
 			)}

@@ -16,21 +16,14 @@
 		sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 	--font-mono: ui-monospace, "Cascadia Code", monospace;
 
-	/* Public-page type scale - five sizes, nothing in between. Admin keeps
-	   Tailwind's default steps. */
 	--text-display: min(clamp(2rem, 0.75rem + 5vw, 6rem), 10svh);
 	--text-display--line-height: 0.95;
 	--text-display--letter-spacing: -0.045em;
-	--text-title: clamp(1.75rem, 1.25rem + 2vw, 3rem);
-	--text-title--line-height: 1;
-	--text-title--letter-spacing: -0.035em;
-	--text-statement: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
-	--text-statement--line-height: 1.2;
-	--text-statement--letter-spacing: -0.02em;
-	--text-lead: 1.25rem;
-	--text-lead--line-height: 1.5;
-	--text-body: 1.0625rem;
-	--text-body--line-height: 1.55;
+	/* Temporary aliases for about-bio.tsx. Remove once it uses text-base and text-lg md:text-xl. */
+	--text-body: var(--text-base);
+	--text-body--line-height: var(--text-base--line-height);
+	--text-lead: var(--text-xl);
+	--text-lead--line-height: var(--text-xl--line-height);
 
 	/* Density scale. Card padding is the base unit; bands and sections are multiples of it. */
 	--spacing-card: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);

@@ -1,11 +1,11 @@
 import { type ClassValue, clsx } from "clsx";
 import { extendTailwindMerge } from "tailwind-merge";
 
-// Teach tailwind-merge the custom type scale in globals.css, otherwise it
-// reads `text-body` as a color and drops a real color class beside it.
+// Custom text sizes in globals.css are display, lead and body. Without them
+// tailwind-merge reads `text-body` as a color and drops a real color class.
 const twMerge = extendTailwindMerge({
 	extend: {
-		theme: { text: ["display", "title", "statement", "lead", "body"] },
+		theme: { text: ["display", "lead", "body"] },
 	},
 });
 

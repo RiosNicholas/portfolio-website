@@ -12,7 +12,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 
 	if (items.length === 0) {
 		return (
-			<p className="m-0 text-ink-muted text-lead">
+			<p className="m-0 text-ink-muted text-lg md:text-xl">
 				First pieces are on the way.
 			</p>
 		);
@@ -48,7 +48,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 							className="rounded-3xl bg-surface p-6 md:p-8"
 							key={`${item.kind}-${item.id}`}
 						>
-							<p className="m-0 flex flex-wrap gap-x-3 text-body text-ink-muted">
+							<p className="m-0 flex flex-wrap gap-x-3 text-ink-muted text-sm">
 								<span className="font-semibold text-ink">
 									{external ? "Mention" : "Article"}
 								</span>
@@ -68,7 +68,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 									})}
 								</time>
 							</p>
-							<h2 className="m-0 mt-3 font-semibold text-statement">
+							<h2 className="m-0 mt-3 font-semibold text-2xl tracking-tight md:text-3xl">
 								<Link
 									className="inline-flex items-start gap-2 text-ink no-underline hover:text-brand-strong"
 									href={item.href}
@@ -96,7 +96,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 								<ul className="m-0 mt-6 flex list-none flex-wrap gap-2 p-0">
 									{item.tags.map((name) => (
 										<li
-											className="rounded-full bg-surface-raised px-3 py-1 text-body text-ink"
+											className="rounded-full bg-surface-raised px-3 py-1 text-ink text-sm"
 											key={name}
 										>
 											{name}
@@ -125,7 +125,7 @@ function FilterChip({
 		<button
 			aria-pressed={active}
 			className={cn(
-				"rounded-full px-4 py-2 font-medium text-body transition-colors duration-200",
+				"rounded-full px-4 py-2 font-medium text-base transition-colors duration-200",
 				active
 					? "bg-brand text-on-brand"
 					: "bg-surface text-ink hover:bg-surface-hover",

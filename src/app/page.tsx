@@ -22,7 +22,7 @@ export default async function HomePage() {
 			<section aria-labelledby="at-a-glance" className="shell pt-section">
 				<Reveal
 					as="h2"
-					className="m-0 font-semibold text-title"
+					className="m-0 font-semibold text-3xl tracking-tight md:text-4xl lg:text-5xl"
 					id="at-a-glance"
 				>
 					At a glance

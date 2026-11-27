@@ -38,7 +38,7 @@ function Avatar({ name, src }: { name: string; src?: string | null }) {
 	return (
 		<span
 			aria-hidden
-			className="grid size-12 shrink-0 place-items-center rounded-full bg-brand-soft font-semibold text-body text-brand-strong"
+			className="grid size-12 shrink-0 place-items-center rounded-full bg-brand-soft font-semibold text-base text-brand-strong"
 		>
 			{getInitials(name)}
 		</span>
@@ -62,11 +62,11 @@ export function TestimonialCard({
 			)}
 		>
 			<blockquote className="m-0">
-				<p className="m-0 text-body">&ldquo;{quote}&rdquo;</p>
+				<p className="m-0 text-base">&ldquo;{quote}&rdquo;</p>
 			</blockquote>
 			<figcaption className="flex items-center gap-4">
 				<Avatar name={name} src={avatarUrl} />
-				<span className="min-w-0 text-body">
+				<span className="min-w-0 text-base">
 					<a
 						className="inline-flex items-center gap-1.5 font-semibold text-ink no-underline transition-colors hover:text-brand-strong"
 						href={profileUrl}
