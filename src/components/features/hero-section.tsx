@@ -34,16 +34,14 @@ export function HeroSection() {
 					<span aria-hidden className="block">
 						<RisingWords text="Software Engineer" />
 					</span>
-					<span aria-hidden className="block">
+					<span aria-hidden className="no-low block">
 						<RisingWords offset={2} text="building" />
 					</span>
-					{/* .word-rise makes this an inline-block; align-top stops it
-					    leaving descender space above the employer line. */}
 					<span
-						className="word-rise block align-top"
+						className="word-rise no-low block"
 						style={{ "--i": 3 } as React.CSSProperties}
 					>
-						<RotatingPhrase phrases={building} still="web applications" />
+						<RotatingPhrase phrases={building} />
 					</span>
 					{/* Closes the sentence. One quiet tone, so it reads as where
 					    the work happens without competing with the amber phrase. */}
@@ -56,13 +54,13 @@ export function HeroSection() {
 					</span>
 				</h1>
 
-				{/* The rotating line already says what Nicholas builds. The
-				    sentence below only appears when motion is reduced and the
-				    line is frozen on its first phrase. */}
+				{/* With reduced motion the headline drops "building" and the
+				    rotating phrase, reading "Software Engineer @JPMorganChase."
+				    This yellow subtitle says what Nicholas builds instead. */}
 				<div className="mt-card flex flex-col gap-card md:flex-row md:items-end md:justify-between">
-					<p className="motion-fallback m-0 max-w-[36rem] text-hero-muted text-lg md:text-xl">
-						I&apos;m Nicholas. I build web applications, component libraries,
-						developer tools, and agentic AI tooling.
+					<p className="motion-fallback m-0 max-w-[36rem] text-lg text-pop md:text-xl">
+						Building web applications, component libraries, developer tools, and
+						agentic AI.
 					</p>
 
 					<Reveal className="shrink-0" delay={0.5}>

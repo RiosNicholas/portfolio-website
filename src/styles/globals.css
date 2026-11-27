@@ -413,11 +413,14 @@
 }
 
 /* Word-by-word entrance for hero headlines. Pure CSS, so the words are in
-   the server HTML and end visible even without script. */
-.word-rise {
-	display: inline-block;
-	animation: word-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-	animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+   the server HTML and end visible even without script. Layered so a `block`
+   utility can override the display. */
+@layer components {
+	.word-rise {
+		display: inline-block;
+		animation: word-rise 900ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		animation-delay: calc(var(--i, 0) * 90ms + 80ms);
+	}
 }
 
 @keyframes word-rise {
