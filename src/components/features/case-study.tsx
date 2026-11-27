@@ -37,7 +37,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 					<span className="block text-ink-muted">{study.org}</span>
 				</p>
 				<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-[minmax(0,1fr)_auto]">
-					<p className="m-0 max-w-[34em] text-lead">{study.description}</p>
+					<p className="m-0 max-w-[34em] text-body">{study.description}</p>
 					{figure && (
 						<p className="m-0 md:text-right">
 							<span className="block font-semibold text-statement">
