@@ -20,7 +20,10 @@ export const caseStudyRouter = createTRPCRouter({
 	create: adminProcedure
 		.input(caseStudyInput)
 		.mutation(async ({ ctx, input }) => {
-			const created = await ctx.db.caseStudy.create({ data: input });
+			const sortOrder = await ctx.db.caseStudy.count();
+			const created = await ctx.db.caseStudy.create({
+				data: { ...input, sortOrder },
+			});
 			revalidateTag("case-studies");
 			return created;
 		}),
@@ -31,6 +34,20 @@ export const caseStudyRouter = createTRPCRouter({
 			const updated = await ctx.db.caseStudy.update({ where: { id }, data });
 			revalidateTag("case-studies");
 			return updated;
+		}),
+
+	reorder: adminProcedure
+		.input(z.object({ ids: z.array(z.string()) }))
+		.mutation(async ({ ctx, input }) => {
+			await ctx.db.$transaction(
+				input.ids.map((id, index) =>
+					ctx.db.caseStudy.update({
+						where: { id },
+						data: { sortOrder: index },
+					}),
+				),
+			);
+			revalidateTag("case-studies");
 		}),
 
 	delete: adminProcedure

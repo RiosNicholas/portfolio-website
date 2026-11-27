@@ -1,12 +1,14 @@
 import { MediaFigure } from "~/components/ui/media-figure";
 import { Reveal } from "~/components/ui/reveal";
 import { caseTitle, keyFigure } from "~/lib/case-study";
+import { formatDateRange } from "~/lib/dates";
 import { projectMedia } from "~/lib/media";
 import type { CaseStudy as CaseStudyData } from "../../../generated/prisma";
 
 export function CaseStudy({ study }: { study: CaseStudyData }) {
 	const media = projectMedia[study.id];
 	const figure = keyFigure(study);
+	const dates = formatDateRange(study);
 
 	return (
 		<article
@@ -30,7 +32,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 					<p className="mt-5 text-body">
 						<span className="block font-medium">{study.role}</span>
 						<span className="block text-ink-muted">{study.org}</span>
-						<span className="block text-ink-muted">{study.year}</span>
+						{dates && <span className="block text-ink-muted">{dates}</span>}
 					</p>
 				</Reveal>
 				<Reveal className="lg:col-span-7" delay={0.08}>

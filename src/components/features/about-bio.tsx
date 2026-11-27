@@ -1,15 +1,19 @@
 import { Reveal } from "~/components/ui/reveal";
+import { formatDateRange } from "~/lib/dates";
 import { getCvEntries } from "~/server/data/cv-entries";
 import type { CvEntry } from "../../../generated/prisma";
 
 function CvList({ entries }: { entries: CvEntry[] }) {
 	return (
 		<ul className="m-0 mt-6 flex list-none flex-col gap-6 p-0">
-			{entries.map(({ id, years, title, where }) => (
-				<li key={id}>
-					<span className="block font-semibold text-lead">{title}</span>
+			{entries.map((entry) => (
+				<li key={entry.id}>
+					<span className="block font-semibold text-lead">{entry.title}</span>
 					<span className="block text-body text-ink-muted">
-						{where} · <span className="tabular-nums">{years}</span>
+						{entry.where} ·{" "}
+						<span className="whitespace-nowrap tabular-nums">
+							{formatDateRange(entry)}
+						</span>
 					</span>
 				</li>
 			))}
