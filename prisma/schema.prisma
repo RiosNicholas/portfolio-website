@@ -142,3 +142,17 @@ model Mention {
 
     @@index([published, publishedAt])
 }
+
+model Profile {
+    id           String   @id @default("profile")
+    summary      String
+    status       String
+    city         String
+    region       String
+    employer     String
+    team         String
+    projectsLede String
+    writingLede  String
+    contactLede  String
+    updatedAt    DateTime @updatedAt
+}

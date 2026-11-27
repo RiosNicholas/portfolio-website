@@ -4,6 +4,10 @@ Nicholas Rios's personal site: who he is, what he's built, and what's been writt
 
 ## Profile
 
+**Profile**:
+The editable prose about him shown across the site: his intro, summary, availability status, location, and the short introduction on each page.
+_Avoid_: Bio, copy, site settings
+
 **CV entry**:
 One dated line of background on the About page, belonging to exactly one CV section.
 _Avoid_: Resume item, timeline item

@@ -12,6 +12,7 @@ import {
 	seedCvEntries,
 	seedEndorsements,
 	seedLanguages,
+	seedProfile,
 	seedSkills,
 } from "../prisma/seed";
 
@@ -37,12 +38,14 @@ async function main() {
 		skillCount,
 		endorsementCount,
 		languageCount,
+		profileCount,
 	] = await Promise.all([
 		db.caseStudy.count(),
 		db.cvEntry.count(),
 		db.skill.count(),
 		db.endorsement.count(),
 		db.language.count(),
+		db.profile.count(),
 	]);
 
 	await seedIfEmpty("Case studies", caseStudyCount, seedCaseStudies);
@@ -50,6 +53,7 @@ async function main() {
 	await seedIfEmpty("Skills", skillCount, seedSkills);
 	await seedIfEmpty("Endorsements", endorsementCount, seedEndorsements);
 	await seedIfEmpty("Languages", languageCount, seedLanguages);
+	await seedIfEmpty("Profile", profileCount, seedProfile);
 
 	await db.$disconnect();
 }
