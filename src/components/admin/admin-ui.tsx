@@ -8,6 +8,7 @@ import type {
 	SelectHTMLAttributes,
 	TextareaHTMLAttributes,
 } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "~/lib/utils";
 
 /** Small set of styled form primitives for `/admin`'s CRUD pages. Not a
@@ -153,6 +154,47 @@ export function AdminButton({
 			type="button"
 			{...props}
 		/>
+	);
+}
+
+const SAVED_MS = 3000;
+
+/** A message that clears itself after `SAVED_MS`. Pair with `AdminSaveStatus`. */
+export function useFlash() {
+	const [message, setMessage] = useState<string | null>(null);
+	const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+	useEffect(() => () => clearTimeout(timer.current), []);
+	return [
+		message,
+		(next: string) => {
+			clearTimeout(timer.current);
+			setMessage(next);
+			timer.current = setTimeout(() => setMessage(null), SAVED_MS);
+		},
+	] as const;
+}
+
+/** Inline result of a form action, announced politely. Error wins over
+ * pending, which wins over the saved message. */
+export function AdminSaveStatus({
+	pending,
+	saved,
+	error,
+}: {
+	pending: boolean;
+	saved: string | null;
+	error: string | null;
+}) {
+	return (
+		<p
+			aria-live="polite"
+			className={cn(
+				"self-center font-mono text-xs",
+				error ? "text-(--destructive)" : "text-(--ink-3)",
+			)}
+		>
+			{error ?? (pending ? "Saving…" : saved)}
+		</p>
 	);
 }
 

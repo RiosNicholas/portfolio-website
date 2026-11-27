@@ -18,7 +18,9 @@ import {
 	AdminListRow,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
 	AdminTextarea,
+	useFlash,
 } from "~/components/admin/admin-ui";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { articleInput } from "~/server/api/schemas/article";
@@ -75,6 +77,7 @@ export default function AdminArticlesPage() {
 	} = api.article.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
@@ -101,6 +104,7 @@ export default function AdminArticlesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Added");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -108,6 +112,7 @@ export default function AdminArticlesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Saved");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -115,6 +120,7 @@ export default function AdminArticlesPage() {
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.id) setForm(emptyForm);
 			invalidate();
+			flash("Deleted");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -245,9 +251,6 @@ export default function AdminArticlesPage() {
 						</div>
 					</AdminField>
 				</div>
-				{error && (
-					<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-				)}
 				<div className="mt-5 flex gap-2">
 					<AdminButton disabled={pending} onClick={submit} variant="primary">
 						{form.id ? "Save changes" : "Add"}
@@ -255,6 +258,7 @@ export default function AdminArticlesPage() {
 					{form.id && (
 						<AdminButton onClick={() => setForm(emptyForm)}>Cancel</AdminButton>
 					)}
+					<AdminSaveStatus error={error} pending={pending} saved={saved} />
 				</div>
 			</AdminCard>
 

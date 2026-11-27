@@ -15,6 +15,8 @@ import {
 	AdminListRow,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
+	useFlash,
 } from "~/components/admin/admin-ui";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
@@ -53,6 +55,7 @@ export default function AdminLanguagesPage() {
 	} = api.language.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
@@ -76,6 +79,7 @@ export default function AdminLanguagesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Added");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -83,6 +87,7 @@ export default function AdminLanguagesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Saved");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -90,6 +95,7 @@ export default function AdminLanguagesPage() {
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.id) setForm(emptyForm);
 			invalidate();
+			flash("Deleted");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -168,9 +174,6 @@ export default function AdminLanguagesPage() {
 						/>
 					</AdminField>
 				</div>
-				{error && (
-					<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-				)}
 				<div className="mt-5 flex gap-2">
 					<AdminButton disabled={pending} onClick={submit} variant="primary">
 						{form.id ? "Save changes" : "Add"}
@@ -178,6 +181,7 @@ export default function AdminLanguagesPage() {
 					{form.id && (
 						<AdminButton onClick={() => setForm(emptyForm)}>Cancel</AdminButton>
 					)}
+					<AdminSaveStatus error={error} pending={pending} saved={saved} />
 				</div>
 			</AdminCard>
 
