@@ -25,7 +25,12 @@ export function HeroSection() {
 			)}
 			labelledBy="hero-title"
 		>
-			<div className={cn(heroPhoto && "lg:col-span-7")}>
+			<div
+				className={cn(
+					"flex flex-col gap-card md:flex-row md:items-end md:justify-between",
+					heroPhoto && "lg:col-span-7",
+				)}
+			>
 				<h1 className="m-0 font-semibold text-display" id="hero-title">
 					<span className="sr-only">
 						Software Engineer building web applications, component libraries,
@@ -54,13 +59,11 @@ export function HeroSection() {
 					</span>
 				</h1>
 
-				<div className="mt-card flex flex-col gap-card md:flex-row md:items-end md:justify-between">
-					<Reveal className="shrink-0" delay={0.5}>
-						<ButtonLink href="/about" variant="pop">
-							See my experience
-						</ButtonLink>
-					</Reveal>
-				</div>
+				<Reveal className="shrink-0" delay={0.5}>
+					<ButtonLink href="/about" variant="pop">
+						See my experience
+					</ButtonLink>
+				</Reveal>
 			</div>
 
 			{heroPhoto && (
