@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import {
 	HeroField,
-	pageHeroClass,
 	RisingWords,
 } from "~/components/layout/hero-field";
 import { ButtonLink } from "~/components/ui/button-link";
@@ -27,7 +26,10 @@ export const metadata: Metadata = {
 export default function ResumePage() {
 	return (
 		<main id="main-content">
-			<HeroField className={pageHeroClass} labelledBy="resume-title">
+			<HeroField
+				className="flex flex-col justify-end pt-14 pb-12 md:pt-24 md:pb-14"
+				labelledBy="resume-title"
+			>
 				<h1 className="m-0 font-semibold text-display" id="resume-title">
 					<RisingWords text="Resume" />
 				</h1>
@@ -54,12 +56,13 @@ export default function ResumePage() {
 			</HeroField>
 
 			{/* Phones skip the frame: iOS Safari embeds show only page 1 of a PDF.
-			    85dvh fits one full page with the frame edges still in view. */}
-			<div className="shell hidden pb-24 md:block md:pb-40">
+			    85dvh fits one full page with the frame edges still in view.
+			    #view=Fit makes the PDF viewer fit the whole page to the frame. */}
+			<div className="shell hidden py-12 md:block md:py-16">
 				<iframe
 					className="h-[85dvh] w-full rounded-3xl bg-surface"
 					loading="lazy"
-					src={profileLinks.resume}
+					src={`${profileLinks.resume}#view=Fit`}
 					title="Resume - Nicholas Rios"
 				/>
 			</div>
