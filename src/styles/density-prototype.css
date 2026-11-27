@@ -1,0 +1,74 @@
+/* PROTOTYPE - throwaway. Density variants for "What density target should the
+   public pages hit?". Switched by ?variant= via PrototypeSwitcher, which sets
+   html[data-density]. Never merge to main.
+
+   A  current
+   B  one step down: every size from xl up drops one Tailwind step, display
+      caps at 4.5rem, spacing tokens ~80%, bento and About spacing at 80%,
+      skills card loses its fixed min height and spans 2 rows at lg
+   C  two steps down: sizes from xl up drop two steps, display caps at
+      3.75rem, spacing tokens ~60%, bento and About spacing at 70%, skills
+      card capped short */
+
+html[data-density="b"] {
+	--text-xl: 1.125rem;
+	--text-xl--line-height: calc(1.75 / 1.125);
+	--text-2xl: 1.25rem;
+	--text-2xl--line-height: calc(1.75 / 1.25);
+	--text-3xl: 1.5rem;
+	--text-3xl--line-height: calc(2 / 1.5);
+	--text-4xl: 1.875rem;
+	--text-4xl--line-height: calc(2.25 / 1.875);
+	--text-5xl: 2.25rem;
+	--text-5xl--line-height: calc(2.5 / 2.25);
+	--text-display: min(clamp(2rem, 0.75rem + 4vw, 4.5rem), 10svh);
+	--spacing-card: clamp(1.25rem, 1rem + 1vw, 2rem);
+}
+
+html[data-density="c"] {
+	--text-xl: 1rem;
+	--text-xl--line-height: 1.5;
+	--text-2xl: 1.125rem;
+	--text-2xl--line-height: calc(1.75 / 1.125);
+	--text-3xl: 1.25rem;
+	--text-3xl--line-height: calc(1.75 / 1.25);
+	--text-4xl: 1.5rem;
+	--text-4xl--line-height: calc(2 / 1.5);
+	--text-5xl: 1.875rem;
+	--text-5xl--line-height: calc(2.25 / 1.875);
+	--text-display: min(clamp(1.75rem, 0.75rem + 3.5vw, 3.75rem), 10svh);
+	--spacing-card: clamp(1rem, 0.75rem + 0.75vw, 1.5rem);
+}
+
+/* Scale every p-/gap/mt/h- utility inside the bento and the About body. */
+html[data-density="b"] #at-a-glance + div,
+html[data-density="b"] section[aria-labelledby="summary"] {
+	--spacing: 0.2rem;
+}
+html[data-density="c"] #at-a-glance + div,
+html[data-density="c"] section[aria-labelledby="summary"] {
+	--spacing: 0.175rem;
+}
+
+/* Skills card: drop the fixed 22rem floor and the tall row spans. */
+html:is([data-density="b"], [data-density="c"]) .md\:min-h-\[22rem\] {
+	min-height: 0;
+}
+@media (width >= 48rem) {
+	html[data-density="b"] #at-a-glance + div {
+		grid-auto-rows: minmax(9rem, auto);
+	}
+	html[data-density="c"] #at-a-glance + div {
+		grid-auto-rows: minmax(7.5rem, auto);
+	}
+}
+@media (width >= 64rem) {
+	html:is([data-density="b"], [data-density="c"]) .lg\:row-span-3 {
+		grid-row: span 2 / span 2;
+	}
+}
+@media (width < 48rem) {
+	html[data-density="c"] [aria-label="Skills"] {
+		height: 8rem;
+	}
+}

@@ -1,9 +1,11 @@
 import "~/styles/globals.css";
+import "~/styles/density-prototype.css";
 
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata } from "next";
 import { Schibsted_Grotesk } from "next/font/google";
+import { Suspense } from "react";
 import { JsonLd } from "~/components/layout/json-ld";
 import { SiteFooter } from "~/components/layout/site-footer";
 import { SiteNav } from "~/components/layout/site-nav";
@@ -11,6 +13,7 @@ import { SkipToContent } from "~/components/layout/skip-to-content";
 import { ThemeInitScript } from "~/components/layout/theme-init-script";
 import { CustomCursor } from "~/components/ui/custom-cursor";
 import { MotionProvider } from "~/components/ui/motion-provider";
+import { PrototypeSwitcher } from "~/components/ui/prototype-switcher";
 import { profileLinks, siteUrl } from "~/lib/site-links";
 import { personJsonLd } from "~/lib/structured-data";
 import { themeDefaults } from "~/lib/theme";
@@ -82,6 +85,9 @@ export default function RootLayout({
 					<SiteNav />
 					{children}
 					<SiteFooter />
+					<Suspense>
+						<PrototypeSwitcher />
+					</Suspense>
 				</MotionProvider>
 				<Analytics />
 				<SpeedInsights />
