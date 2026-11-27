@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { topicTags } from "~/server/api/schemas/topic-tags";
+
 /** Shared between `article.ts` (server mutation input) and the
  * `/admin/articles` form (client-side validation). */
 export const articleInput = z.object({
@@ -9,7 +11,7 @@ export const articleInput = z.object({
 	title: z.string().min(1),
 	summary: z.string().min(1),
 	body: z.string().min(1),
-	tags: z.array(z.string()).default([]),
+	topicTags,
 	published: z.boolean().default(false),
 });
 

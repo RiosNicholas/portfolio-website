@@ -34,6 +34,16 @@ const MONTHS = [
 const formatDate = (year: number, month: number | null) =>
 	month ? `${MONTHS[month - 1]} ${year}` : `${year}`;
 
+/** "2025", "Mar 2025" or "Mar 4, 2025". */
+export const formatDateParts = (
+	year: number,
+	month: number | null,
+	day: number | null,
+) =>
+	month && day
+		? `${MONTHS[month - 1]} ${day}, ${year}`
+		: formatDate(year, month);
+
 export function formatDateRange(d: DateFields): string {
 	if (d.startYear === null) return "";
 	const start = formatDate(d.startYear, d.startMonth);

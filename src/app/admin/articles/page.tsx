@@ -32,7 +32,7 @@ type ArticleRow = {
 	title: string;
 	summary: string;
 	body: string;
-	tags: string[];
+	topicTags: string[];
 	published: boolean;
 };
 
@@ -42,7 +42,7 @@ type FormState = {
 	slugLocked: boolean;
 	title: string;
 	summary: string;
-	tags: string;
+	topicTags: string;
 	published: boolean;
 	body: string;
 };
@@ -53,7 +53,7 @@ const emptyForm: FormState = {
 	slugLocked: false,
 	title: "",
 	summary: "",
-	tags: "",
+	topicTags: "",
 	published: false,
 	body: "",
 };
@@ -90,7 +90,7 @@ export default function AdminArticlesPage() {
 			slugLocked: true,
 			title: row.title,
 			summary: row.summary,
-			tags: row.tags.join(", "),
+			topicTags: row.topicTags.join(", "),
 			published: row.published,
 			body: row.body,
 		});
@@ -137,7 +137,7 @@ export default function AdminArticlesPage() {
 			title: form.title.trim(),
 			summary: form.summary.trim(),
 			body: form.body,
-			tags: form.tags
+			topicTags: form.topicTags
 				.split(",")
 				.map((s) => s.trim())
 				.filter(Boolean),
@@ -211,11 +211,17 @@ export default function AdminArticlesPage() {
 							value={form.summary}
 						/>
 					</AdminField>
-					<AdminField hint="Comma-separated" htmlFor="tags" label="Source tags">
+					<AdminField
+						hint="Comma-separated, e.g. AI, Design Systems"
+						htmlFor="topicTags"
+						label="Topic tags"
+					>
 						<AdminInput
-							id="tags"
-							onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
-							value={form.tags}
+							id="topicTags"
+							onChange={(e) =>
+								setForm((f) => ({ ...f, topicTags: e.target.value }))
+							}
+							value={form.topicTags}
 						/>
 					</AdminField>
 					<div className="flex items-end">
