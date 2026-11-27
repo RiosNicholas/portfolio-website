@@ -176,10 +176,12 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
   static cards: quote first, then avatar, name (links to LinkedIn) and
   role. A three-column grid at `lg`; below that, a swipeable snap row with
   the next card peeking in.
-- **Case studies** (`CaseStudy`) - on `/projects`, one per row: optional
-  large screenshot, then a 5 + 7 split with title/role/org/year on the left
-  and the description, one key stat and a muted "Built with …" line on the
-  right.
+- **Case studies** (`CaseStudy` + `CaseStudyIndex`) - on `/projects`, a
+  3 + 9 split at `lg`. The index is a sticky rail of titles and dates that
+  highlights the study in view; below `lg` it's a wrapping row of pills
+  above the list. Each study is a `bg-surface` card: optional screenshot,
+  title with dates on the right, role and org, then the description beside
+  one key stat, and the tags as pill chips on `surface-raised`.
 - **Buttons** (`ui/button-link.tsx`) - the site's one button, `rounded-full`
   and `h-12`. Variants: `primary` (brand), `secondary` (surface), `pop`
   (amber, hero only), `on-hero` (translucent white). External links get an
