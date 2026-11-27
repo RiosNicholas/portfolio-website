@@ -90,7 +90,8 @@ defaults.
 
 | Role                        | Classes                                      |
 |-----------------------------|----------------------------------------------|
-| Page H1                     | `text-display` (the one custom fluid token, capped at 10svh) |
+| Home H1                     | `text-display` (the one custom fluid token, capped at 10svh) |
+| Inner page H1               | `text-3xl tracking-tight md:text-5xl lg:text-6xl` |
 | Section H2                  | `text-3xl tracking-tight md:text-4xl lg:text-5xl` |
 | Card title and statement    | `text-2xl tracking-tight md:text-3xl`        |
 | Lead                        | `text-lg md:text-xl`                         |
@@ -158,9 +159,9 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
   full-width band every page opens on. A canvas draws a drifting ASCII wave
   (` .·:-=+*#%@`) in `--hero-glyph`, with an amber lens that follows the
   pointer. 30fps from a pre-rendered glyph atlas, paused off-screen; one
-  still frame under reduced motion. Inner pages share `pageHeroClass` so
-  every hero is the same height. Inner bands are capped at `min(22rem, 45svh)`
-  on `md+` and hug their content on phones.
+  still frame under reduced motion. Inner pages share `pageHeroClass`: the band
+  hugs its content, with a smaller H1 and a lead-sized muted subtitle, so only
+  the home hero takes the big display type.
 - **Home hero** (`HeroSection`) - one sentence across four lines:
   *Software Engineer / building / [rotating phrase] / @JPMorganChase.* The
   phrase is amber, the employer line is `hero-subtle`, and the only button
