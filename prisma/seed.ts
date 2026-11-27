@@ -258,19 +258,17 @@ const activities: SeedCvEntry[] = [
 
 // ─── Skills & tools ────────────────────────────────────────────────────────
 
-type SeedSkill = { label: string; accent?: string };
-
-const skills: SeedSkill[] = [
+const skills: { label: string }[] = [
 	// Leads the list per the Aug 2026 skills-reorder task - no existing skill
 	// label matched "UI development" closely enough to rename in place (the
 	// list already led with UI-adjacent skills), so this is a new literal
 	// entry rather than a reordering of the 14 below it. One-field revert via
 	// /admin/skills if a different label was intended.
 	{ label: "UI development" },
-	{ label: "React · Next.js", accent: "Next.js" },
+	{ label: "React · Next.js" },
 	{ label: "TypeScript" },
 	{ label: "Design systems" },
-	{ label: "Tailwind · shadcn/ui", accent: "shadcn/ui" },
+	{ label: "Tailwind · shadcn/ui" },
 	{ label: "Framer Motion" },
 	{ label: "Workflow systems" },
 	{ label: "Product tooling" },
@@ -283,8 +281,8 @@ const skills: SeedSkill[] = [
 	// instead of alongside Prisma/tRPC/Postgres, keeping them visually
 	// de-emphasized relative to what this project's stack actually runs on.
 	// Revert path for any of these: /admin/skills.
-	{ label: "Postgres · Supabase", accent: "Supabase" },
-	{ label: "Prisma · tRPC", accent: "tRPC" },
+	{ label: "Postgres · Supabase" },
+	{ label: "Prisma · tRPC" },
 	{ label: "Platform engineering" },
 	{ label: "Observability" },
 	{ label: "CI / CD" },
@@ -296,9 +294,9 @@ const skills: SeedSkill[] = [
 	// path: /admin/skills.
 	{ label: "Photography" },
 	{ label: "Photo editing" },
-	{ label: "Pandas · NumPy", accent: "NumPy" },
+	{ label: "Pandas · NumPy" },
 	{ label: "Matplotlib" },
-	{ label: "SQLite · Cassandra", accent: "Cassandra" },
+	{ label: "SQLite · Cassandra" },
 ];
 
 const favoriteTools: string[] = [
@@ -466,7 +464,6 @@ export async function seedSkills(db: PrismaClient) {
 			...skills.map((skill, index) => ({
 				kind: "SKILL" as const,
 				label: skill.label,
-				accent: skill.accent,
 				sortOrder: index,
 			})),
 			...favoriteTools.map((label, index) => ({
