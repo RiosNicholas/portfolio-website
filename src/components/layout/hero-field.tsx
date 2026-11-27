@@ -2,12 +2,12 @@ import { AsciiField } from "~/components/ui/ascii-field";
 import { cn } from "~/lib/utils";
 
 /**
- * Shared height for the inner-page heroes (Work, About) so every page opens
- * on the same band regardless of how much copy it holds. Content sits at the
- * bottom of the band. Phones get no minimum: the band hugs its content.
+ * Shared height for the inner-page heroes (Projects, About, Writing). 22rem fits
+ * the tallest inner hero (About) so all match; 45svh keeps it under half a short
+ * screen. Phones get no minimum: the band hugs its content.
  */
 export const pageHeroClass =
-	"flex flex-col justify-end pt-14 pb-12 md:min-h-[32rem] md:pt-36 md:pb-20";
+	"flex flex-col justify-end py-band md:min-h-[min(22rem,45svh)]";
 
 /** Full-width cobalt band with a live ASCII field that every page opens on. */
 export function HeroField({

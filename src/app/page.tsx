@@ -19,7 +19,7 @@ export default async function HomePage() {
 		<main id="main-content">
 			<HeroSection />
 
-			<section aria-labelledby="at-a-glance" className="shell pt-24 md:pt-40">
+			<section aria-labelledby="at-a-glance" className="shell pt-section">
 				<Reveal
 					as="h2"
 					className="m-0 font-semibold text-title"

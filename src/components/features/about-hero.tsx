@@ -12,7 +12,7 @@ export function AboutHero() {
 			<h1 className="m-0 font-semibold text-display" id="about-title">
 				<RisingWords text="About me" />
 			</h1>
-			<div className="mt-6 grid grid-cols-1 gap-8 md:mt-14 md:grid-cols-12 md:items-end md:gap-10">
+			<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-12 md:items-end">
 				<Reveal
 					as="p"
 					className="m-0 max-w-[30em] font-medium text-statement md:col-span-8"

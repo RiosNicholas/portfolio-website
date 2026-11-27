@@ -10,7 +10,7 @@ export function Endorsements({
 	if (endorsements.length === 0) return null;
 
 	return (
-		<section aria-labelledby="recommendations" className="shell pt-32 md:pt-48">
+		<section aria-labelledby="recommendations" className="shell pt-section">
 			<Reveal
 				as="h2"
 				className="m-0 font-semibold text-title"

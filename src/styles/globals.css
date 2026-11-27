@@ -18,10 +18,10 @@
 
 	/* Public-page type scale - five sizes, nothing in between. Admin keeps
 	   Tailwind's default steps. */
-	--text-display: clamp(2rem, 0.6rem + 6.6vw, 7.5rem);
+	--text-display: min(clamp(2rem, 0.75rem + 5vw, 6rem), 10svh);
 	--text-display--line-height: 0.95;
 	--text-display--letter-spacing: -0.045em;
-	--text-title: clamp(2rem, 1.2rem + 3vw, 4rem);
+	--text-title: clamp(1.75rem, 1.25rem + 2vw, 3rem);
 	--text-title--line-height: 1;
 	--text-title--letter-spacing: -0.035em;
 	--text-statement: clamp(1.5rem, 1.1rem + 1.2vw, 2.25rem);
@@ -31,6 +31,11 @@
 	--text-lead--line-height: 1.5;
 	--text-body: 1.0625rem;
 	--text-body--line-height: 1.55;
+
+	/* Density scale. Card padding is the base unit; bands and sections are multiples of it. */
+	--spacing-card: clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
+	--spacing-band: calc(var(--spacing-card) * 2);
+	--spacing-section: calc(var(--spacing-card) * 3);
 
 	/* Marquee (magicui pattern). Neither Tailwind nor tw-animate-css ships a
 	   marquee keyframe, and `ui/marquee.tsx` needs `animation-play-state` to
