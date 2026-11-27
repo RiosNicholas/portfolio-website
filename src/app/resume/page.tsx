@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 
-import { HeroField, RisingWords } from "~/components/layout/hero-field";
+import {
+	HeroField,
+	pageHeroClass,
+	RisingWords,
+} from "~/components/layout/hero-field";
 import { ButtonLink } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
 import { profileLinks } from "~/lib/site-links";
@@ -23,17 +27,17 @@ export const metadata: Metadata = {
 export default function ResumePage() {
 	return (
 		<main id="main-content">
-			<HeroField
-				className="flex flex-col justify-end py-band"
-				labelledBy="resume-title"
-			>
-				<h1 className="m-0 font-semibold text-display" id="resume-title">
+			<HeroField className={pageHeroClass} labelledBy="resume-title">
+				<h1
+					className="m-0 font-semibold text-3xl tracking-tight md:text-5xl lg:text-6xl"
+					id="resume-title"
+				>
 					<RisingWords text="Resume" />
 				</h1>
 				<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-12 md:items-end">
 					<Reveal
 						as="p"
-						className="m-0 max-w-[30em] font-medium text-2xl tracking-tight md:col-span-8 md:text-3xl"
+						className="m-0 max-w-[36rem] text-hero-muted text-lg md:col-span-8 md:text-xl"
 						delay={0.3}
 					>
 						Experience, skills and education, in one PDF.
