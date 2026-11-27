@@ -139,7 +139,7 @@ export default function AdminSkillsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The home page grid's Skills list and Favorite tools chips."
+				description="Your skills and favorite tools on the home page. Drag to change their order."
 				title="Skills & tools"
 			/>
 

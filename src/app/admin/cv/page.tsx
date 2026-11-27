@@ -150,7 +150,7 @@ export default function AdminCvPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The About page's Experience, Education, Activities, and Awards & certifications rows."
+				description="Your experience, education, activities, awards and certifications on the About page."
 				title="CV entries"
 			/>
 

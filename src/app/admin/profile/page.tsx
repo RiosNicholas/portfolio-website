@@ -51,7 +51,7 @@ export default function AdminProfilePage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="Site copy for the About summary, the home bento grid and the Projects, Writing and Contact sections."
+				description="Text used around the site: your intro and summary on the About page, your status, location and job on the home page, and the short intros on the Projects, Writing and contact sections."
 				title="Profile"
 			/>
 

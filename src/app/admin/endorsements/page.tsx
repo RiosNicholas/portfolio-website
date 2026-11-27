@@ -163,7 +163,7 @@ export default function AdminEndorsementsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="Home page recommendation cards. Paste in real LinkedIn recommendations - leave `published` off to stage one before it goes live."
+				description="The recommendations on the home page. Paste them in from LinkedIn and drag to change their order. Turn off Published to hide one until it's ready."
 				title="Endorsements"
 			/>
 

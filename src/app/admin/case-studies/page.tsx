@@ -227,7 +227,7 @@ export default function AdminCaseStudiesPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="/projects case studies. `id` is the slug used as /projects#<id> - keep it stable once a case study is live."
+				description="The projects on the Projects page. Drag to change their order. The ID is part of each project's link, so don't change it once a project is live."
 				title="Case studies"
 			/>
 
