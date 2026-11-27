@@ -10,7 +10,6 @@ export const cvEntryInput = z
 	.object({
 		category: z.nativeEnum(CvCategory),
 		title: z.string().min(1),
-		titleAccent: z.array(z.string()).default([]),
 		where: z.string().min(1),
 	})
 	.extend(dateFieldsSchema.shape);

@@ -189,7 +189,6 @@ const cases: SeedCaseStudy[] = [
 type SeedCvEntry = {
 	years: string;
 	title: string;
-	titleAccent?: string[];
 	where: string;
 };
 
@@ -225,7 +224,6 @@ const education: SeedCvEntry[] = [
 	{
 		years: "Sep '21 - Dec '24",
 		title: "B.A. Computer Science, Minor in Data Science",
-		titleAccent: ["Computer Science"],
 		where: "Rutgers University · Magna Cum Laude",
 	},
 	{
@@ -436,7 +434,6 @@ export async function seedCvEntries(db: PrismaClient) {
 				category: "EXPERIENCE" as const,
 				...dateFields(entry.years, entry.title),
 				title: entry.title,
-				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
 				sortOrder: index,
 			})),
@@ -444,7 +441,6 @@ export async function seedCvEntries(db: PrismaClient) {
 				category: "EDUCATION" as const,
 				...dateFields(entry.years, entry.title),
 				title: entry.title,
-				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
 				sortOrder: index,
 			})),
@@ -452,7 +448,6 @@ export async function seedCvEntries(db: PrismaClient) {
 				category: "ACTIVITY" as const,
 				...dateFields(entry.years, entry.title),
 				title: entry.title,
-				titleAccent: entry.titleAccent ?? [],
 				where: entry.where,
 				sortOrder: index,
 			})),
