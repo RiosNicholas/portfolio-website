@@ -47,9 +47,13 @@ A piece he writes and publishes from admin, read on its own page on this site.
 _Avoid_: Post, blog
 
 **Mention**:
-A link to something published elsewhere that he wrote or that features him, such as a LinkedIn post or a news story.
+Something published elsewhere that he wrote or that features him, such as a LinkedIn post or a news story. It is shown as an embed when its source allows it, otherwise as a link with a title.
 _Avoid_: Press item, external post
 
-**Source tag**:
-The label on an Article or Mention saying where or what kind of thing it is (LinkedIn, news, social).
-_Avoid_: Topic, category
+**Source**:
+Where a Mention is published (LinkedIn, X, YouTube, a news site). It is recognized from the Mention's URL, not typed.
+_Avoid_: Outlet, source tag, platform
+
+**Topic tag**:
+A free label for what an Article or Mention is about (design systems, AI), used to filter the Writing page.
+_Avoid_: Source tag, category
