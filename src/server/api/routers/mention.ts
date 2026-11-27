@@ -57,8 +57,14 @@ export const mentionRouter = createTRPCRouter({
 	// Suggestions for the topic tag inputs on both writing admin pages.
 	topicTags: adminProcedure.query(async ({ ctx }) => {
 		const rows = await Promise.all([
-			ctx.db.mention.findMany({ select: { topicTags: true } }),
-			ctx.db.article.findMany({ select: { topicTags: true } }),
+			ctx.db.mention.findMany({
+				select: { topicTags: true },
+				orderBy: { createdAt: "asc" },
+			}),
+			ctx.db.article.findMany({
+				select: { topicTags: true },
+				orderBy: { createdAt: "asc" },
+			}),
 		]);
 		return dedupeTopicTags(rows.flat().flatMap((r) => r.topicTags)).sort(
 			(a, b) => a.localeCompare(b),

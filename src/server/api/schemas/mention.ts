@@ -3,7 +3,7 @@ import { titleRequired } from "~/lib/sources";
 import { month, year } from "~/server/api/schemas/dates";
 import { topicTags } from "~/server/api/schemas/topic-tags";
 
-const MAX_DAY = 31;
+export const MAX_DAY = 31;
 
 const mentionFields = z.object({
 	url: z

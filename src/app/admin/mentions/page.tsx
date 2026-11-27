@@ -30,7 +30,7 @@ import {
 	titleRequired,
 } from "~/lib/sources";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
-import { mentionInput } from "~/server/api/schemas/mention";
+import { MAX_DAY, mentionInput } from "~/server/api/schemas/mention";
 import { api } from "~/trpc/react";
 
 type MentionRow = {
@@ -204,7 +204,13 @@ export default function AdminMentionsPage() {
 						<AdminInput
 							id="url"
 							inputMode="url"
-							onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
+							onChange={(e) =>
+								setForm((f) => ({
+									...f,
+									url: e.target.value,
+									image: f.imageTouched ? f.image : "",
+								}))
+							}
 							placeholder="https://..."
 							value={form.url}
 						/>
@@ -279,7 +285,7 @@ export default function AdminMentionsPage() {
 								disabled={!form.month}
 								id="day"
 								inputMode="numeric"
-								max={31}
+								max={MAX_DAY}
 								min={1}
 								onChange={(e) =>
 									setForm((f) => ({ ...f, day: e.target.value }))
