@@ -14,6 +14,8 @@ export type DateForm = {
 	present: boolean;
 };
 
+const MONTHS_PER_YEAR = 12;
+
 const MONTHS = [
 	"Jan",
 	"Feb",
@@ -42,7 +44,7 @@ export function formatDateRange(d: DateFields): string {
 
 // Month index from year 0; a year-only date counts as January.
 const monthIndex = (year: number | null, month: number | null) =>
-	(year ?? 0) * 12 + (month ?? 1) - 1;
+	(year ?? 0) * MONTHS_PER_YEAR + (month ?? 1) - 1;
 
 export function sortByDate<T extends DateFields>(rows: T[]): T[] {
 	return [...rows].sort((a, b) => {
@@ -80,7 +82,7 @@ export function yearsOfExperience(
 				? today + 1
 				: e.endYear === null
 					? start + 1
-					: monthIndex(e.endYear, e.endMonth ?? 12) + 1;
+					: monthIndex(e.endYear, e.endMonth ?? MONTHS_PER_YEAR) + 1;
 			return { start, end };
 		})
 		.sort((a, b) => a.start - b.start);
@@ -93,7 +95,7 @@ export function yearsOfExperience(
 		covered = Math.max(covered, end);
 	}
 
-	const years = Math.floor(months / 12);
+	const years = Math.floor(months / MONTHS_PER_YEAR);
 	return years < 1 ? "<1" : String(years);
 }
 

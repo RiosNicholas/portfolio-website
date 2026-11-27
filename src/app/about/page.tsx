@@ -3,14 +3,10 @@ import type { Metadata } from "next";
 import { AboutBio } from "~/components/features/about-bio";
 import { AboutHero } from "~/components/features/about-hero";
 import { ContactCta } from "~/components/features/contact-cta";
-import { yearsOfExperience } from "~/lib/dates";
-import { getCvEntries } from "~/server/data/cv-entries";
+import { getYearsOfExperience } from "~/server/data/cv-entries";
 
 export async function generateMetadata(): Promise<Metadata> {
-	const entries = await getCvEntries();
-	const years = yearsOfExperience(
-		entries.filter((e) => e.category === "EXPERIENCE"),
-	);
+	const years = await getYearsOfExperience();
 	const tenure =
 		years === "<1"
 			? "under a year"
