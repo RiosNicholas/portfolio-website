@@ -2,9 +2,8 @@ import { z } from "zod";
 
 const text = (max: number) => z.string().trim().min(1).max(max);
 
-/** Shared between `profile.ts` (server mutation input) and the
- * `/admin/profile` form (client-side validation). */
 export const profileInput = z.object({
+	intro: text(280),
 	summary: text(4000),
 	status: text(160),
 	city: text(60),

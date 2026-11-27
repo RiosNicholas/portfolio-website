@@ -10,39 +10,37 @@ import {
 	AdminPageHeader,
 	AdminTextarea,
 } from "~/components/admin/admin-ui";
-import type { ProfileInput } from "~/server/api/schemas/profile";
+import { type ProfileInput, profileInput } from "~/server/api/schemas/profile";
 import { api } from "~/trpc/react";
 
 type ProfileField = {
 	key: keyof ProfileInput;
 	label: string;
-	max: number;
 	hint?: string;
 	multiline?: boolean;
 };
 
 const fields: ProfileField[] = [
+	{ key: "intro", label: "Intro" },
 	{
 		key: "summary",
 		label: "Summary",
-		max: 4000,
 		multiline: true,
 		hint: "Markdown. Separate paragraphs with a blank line.",
 	},
 	{
 		key: "status",
 		label: "Status",
-		max: 160,
 		multiline: true,
 		hint: "Markdown. **Bold** text shows as emphasis.",
 	},
-	{ key: "city", label: "City", max: 60 },
-	{ key: "region", label: "Region", max: 60 },
-	{ key: "employer", label: "Employer", max: 80 },
-	{ key: "team", label: "Team", max: 120 },
-	{ key: "projectsLede", label: "Projects lede", max: 280 },
-	{ key: "writingLede", label: "Writing lede", max: 280 },
-	{ key: "contactLede", label: "Contact lede", max: 280 },
+	{ key: "city", label: "City" },
+	{ key: "region", label: "Region" },
+	{ key: "employer", label: "Employer" },
+	{ key: "team", label: "Team" },
+	{ key: "projectsLede", label: "Projects lede" },
+	{ key: "writingLede", label: "Writing lede" },
+	{ key: "contactLede", label: "Contact lede" },
 ];
 
 export default function AdminProfilePage() {
@@ -102,14 +100,14 @@ function ProfileForm({ initial }: { initial: ProfileInput }) {
 							{f.multiline ? (
 								<AdminTextarea
 									id={f.key}
-									maxLength={f.max}
+									maxLength={profileInput.shape[f.key].maxLength ?? undefined}
 									onChange={onChange}
 									value={form[f.key]}
 								/>
 							) : (
 								<AdminInput
 									id={f.key}
-									maxLength={f.max}
+									maxLength={profileInput.shape[f.key].maxLength ?? undefined}
 									onChange={onChange}
 									value={form[f.key]}
 								/>

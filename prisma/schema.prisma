@@ -145,6 +145,7 @@ model Mention {
 
 model Profile {
     id           String   @id @default("profile")
+    intro        String
     summary      String
     status       String
     city         String

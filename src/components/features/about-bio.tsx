@@ -1,6 +1,8 @@
+import Markdown from "react-markdown";
 import { Reveal } from "~/components/ui/reveal";
 import { formatDateRange } from "~/lib/dates";
 import { getCvEntries } from "~/server/data/cv-entries";
+import { getProfile } from "~/server/data/profile";
 import type { CvEntry } from "../../../generated/prisma";
 
 function CvRows({ entries }: { entries: CvEntry[] }) {
@@ -39,7 +41,7 @@ function CvRows({ entries }: { entries: CvEntry[] }) {
 const sectionHeading = "m-0 mb-4 font-semibold text-lg";
 
 export async function AboutBio() {
-	const entries = await getCvEntries();
+	const [entries, profile] = await Promise.all([getCvEntries(), getProfile()]);
 	const byCategory = (category: CvEntry["category"]) =>
 		entries.filter((e) => e.category === category);
 	const secondary = [
@@ -56,22 +58,13 @@ export async function AboutBio() {
 						Summary
 					</h2>
 					<div className="flex max-w-prose flex-col gap-4">
-						<p className="m-0">
-							I enjoy working at the intersection of design, product, and
-							engineering. I like taking ideas from concept to implementation,
-							building intuitive user experiences, and thinking through the
-							architecture needed to make products scalable and maintainable.
-						</p>
-						<p className="m-0">
-							I'm currently in Risk Technology at JPMorganChase, where I work on
-							frontend architecture, shared libraries, and developer tooling
-							used across my organization, alongside agentic AI tools that are
-							shaping how our engineering teams build and ship software.
-						</p>
-						<p className="m-0">
-							Outside of engineering, I enjoy street photography and
-							occasionally publish my work.
-						</p>
+						<Markdown
+							components={{
+								p: ({ node, ...props }) => <p className="m-0" {...props} />,
+							}}
+						>
+							{profile.summary}
+						</Markdown>
 					</div>
 				</Reveal>
 
