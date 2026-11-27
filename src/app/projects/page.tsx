@@ -29,11 +29,13 @@ export default async function ProjectsPage() {
 			<ProjectsHero />
 
 			<section aria-label="Case studies" className="shell pt-24 md:pt-40">
-				<div className="flex flex-col gap-32 md:gap-48">
+				<div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-10">
 					<CaseStudyIndex studies={cases} />
-					{cases.map((study) => (
-						<CaseStudy key={study.id} study={study} />
-					))}
+					<div className="flex flex-col gap-6 md:gap-8 lg:col-span-9">
+						{cases.map((study) => (
+							<CaseStudy key={study.id} study={study} />
+						))}
+					</div>
 				</div>
 			</section>
 
