@@ -2,6 +2,11 @@ import Link from "next/link";
 
 const sections = [
 	{
+		href: "/admin/profile",
+		title: "Profile",
+		description: "About summary, bento grid and page ledes.",
+	},
+	{
 		href: "/admin/case-studies",
 		title: "Case studies",
 		description: "Projects page - /projects.",

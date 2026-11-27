@@ -519,6 +519,32 @@ export async function seedLanguages(db: PrismaClient) {
 	console.log(`Seeded ${languages.length} languages.`);
 }
 
+// Profile - singleton row, same copy as the add_profile migration.
+export async function seedProfile(db: PrismaClient) {
+	const profile = {
+		intro:
+			"I'm Nicholas - a Software Engineer based in the NYC area, focused on web development and agentic AI.",
+		summary:
+			"I enjoy working at the intersection of design, product, and engineering. I like taking ideas from concept to implementation, building intuitive user experiences, and thinking through the architecture needed to make products scalable and maintainable.\n\nI'm currently in Risk Technology at JPMorganChase, where I work on frontend architecture, shared libraries, and developer tooling used across my organization, alongside agentic AI tools that are shaping how our engineering teams build and ship software.\n\nOutside of engineering, I enjoy street photography and occasionally publish my work.",
+		status: "Open to **full-time** +\u00a0**freelance** opportunities",
+		city: "Jersey City",
+		region: "New Jersey",
+		employer: "JPMorgan Chase",
+		team: "Credit Risk Technology (Core UI Platform)",
+		projectsLede:
+			"Apps, sites and experiments I've designed and built outside my day job.",
+		writingLede: "Articles I've written, and places my work has been featured.",
+		contactLede:
+			"I'm open to full-time and contract work. Connect on LinkedIn or send me an email, whichever you prefer.",
+	};
+	await db.profile.upsert({
+		where: { id: "profile" },
+		create: { id: "profile", ...profile },
+		update: profile,
+	});
+	console.log("Seeded profile.");
+}
+
 async function main() {
 	const db = new PrismaClient();
 	await seedCaseStudies(db);
@@ -526,6 +552,7 @@ async function main() {
 	await seedSkills(db);
 	await seedEndorsements(db);
 	await seedLanguages(db);
+	await seedProfile(db);
 	await db.$disconnect();
 }
 

@@ -5,8 +5,10 @@ import {
 } from "~/components/layout/hero-field";
 import { ButtonLink } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
+import { getProfile } from "~/server/data/profile";
 
-export function AboutHero() {
+export async function AboutHero() {
+	const profile = await getProfile();
 	return (
 		<HeroField className={pageHeroClass} labelledBy="about-title">
 			<h1
@@ -21,8 +23,7 @@ export function AboutHero() {
 					className="m-0 max-w-[36rem] text-base text-hero-muted md:col-span-8 md:text-lg"
 					delay={0.3}
 				>
-					I&apos;m Nicholas - a Software Engineer based in the NYC area, focused
-					on web development and agentic AI.
+					{profile.intro}
 				</Reveal>
 				<Reveal className="md:col-span-4 md:flex md:justify-end" delay={0.4}>
 					<ButtonLink href="/resume" variant="pop">

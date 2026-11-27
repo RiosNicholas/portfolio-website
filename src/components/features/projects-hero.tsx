@@ -6,9 +6,11 @@ import {
 import { ButtonLink } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
 import { profileLinks } from "~/lib/site-links";
+import { getProfile } from "~/server/data/profile";
 
 /** Same pattern as the About hero: title, one statement, one link out. */
-export function ProjectsHero() {
+export async function ProjectsHero() {
+	const profile = await getProfile();
 	return (
 		<HeroField className={pageHeroClass} labelledBy="projects-title">
 			<h1
@@ -23,8 +25,7 @@ export function ProjectsHero() {
 					className="m-0 max-w-[36rem] text-base text-hero-muted md:col-span-8 md:text-lg"
 					delay={0.3}
 				>
-					Apps, sites and experiments I&apos;ve designed and built outside my
-					day job.
+					{profile.projectsLede}
 				</Reveal>
 				<Reveal className="md:col-span-4 md:flex md:justify-end" delay={0.4}>
 					<ButtonLink external href={profileLinks.github} variant="pop">

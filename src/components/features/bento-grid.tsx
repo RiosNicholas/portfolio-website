@@ -7,7 +7,7 @@ import { NumberTicker } from "~/components/ui/number-ticker";
 import { Reveal } from "~/components/ui/reveal";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { cn } from "~/lib/utils";
-import type { Language, Skill } from "../../../generated/prisma";
+import type { Language, Profile, Skill } from "../../../generated/prisma";
 
 // Every cell is a size container, so phone-only sizes can follow the
 // card's width (cqw) instead of guessing from the viewport.
@@ -31,7 +31,7 @@ function CellSub({ children }: { children: React.ReactNode }) {
 	return <div className="text-base text-ink-muted">{children}</div>;
 }
 
-function YearsCell() {
+function YearsCell({ years }: { years: string }) {
 	return (
 		<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
 			<CellLabel>Experience</CellLabel>
@@ -39,7 +39,7 @@ function YearsCell() {
 				{/* Phones: the number scales with the card so "3 yrs" spans its
 				    width. */}
 				<div className="font-semibold text-display text-ink max-md:text-[80cqw] max-md:leading-none">
-					<NumberTicker value={3} />
+					{years === "<1" ? years : <NumberTicker value={Number(years)} />}
 					<sup className="ml-1 align-super font-medium text-ink-muted text-xl tracking-tight md:text-2xl">
 						yrs
 					</sup>
@@ -117,10 +117,14 @@ export function BentoGrid({
 	skills,
 	tools,
 	languages,
+	profile,
+	years,
 }: {
 	skills: Skill[];
 	tools: Skill[];
 	languages: Language[];
+	profile: Pick<Profile, "status" | "city" | "region" | "employer" | "team">;
+	years: string;
 }) {
 	return (
 		// Grid layout reference - the source order below (Based, Experience,
@@ -156,11 +160,11 @@ export function BentoGrid({
 					<CellLabel>Based in</CellLabel>
 					<div>
 						<div className="font-semibold text-ink text-xl tracking-tight md:text-2xl">
-							Jersey
-							<br />
-							City
+							{profile.city}
 						</div>
-						<div className="mt-2 text-base text-ink-muted">New Jersey</div>
+						<div className="mt-2 text-base text-ink-muted">
+							{profile.region}
+						</div>
 					</div>
 				</div>
 				<Globe
@@ -170,7 +174,7 @@ export function BentoGrid({
 			</div>
 
 			{/* Years */}
-			<YearsCell />
+			<YearsCell years={years} />
 
 			{/* Status - half width on phones, beside Experience */}
 			<div className={cn(CELL_CLASS, "col-span-1 md:col-span-2")}>
@@ -180,12 +184,18 @@ export function BentoGrid({
 				{/* Phones: "opportunities" is about 6em wide, so 16cqw keeps it on
 				    one line in any card width, capped at the text-xl size. */}
 				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-xl tracking-tight max-md:text-[length:min(16cqw,var(--text-xl))] md:text-2xl">
-					Open to{" "}
-					<strong className="whitespace-nowrap font-semibold text-ink">
-						full-time
-					</strong>{" "}
-					+&nbsp;<strong className="font-semibold text-ink">freelance</strong>{" "}
-					opportunities
+					{profile.status.split(/\*\*(.+?)\*\*/).map((part, i) =>
+						i % 2 ? (
+							<strong
+								className="whitespace-nowrap font-semibold text-ink"
+								key={i}
+							>
+								{part}
+							</strong>
+						) : (
+							part
+						),
+					)}
 				</p>
 			</div>
 
@@ -218,13 +228,9 @@ export function BentoGrid({
 				<CellLabel>Currently</CellLabel>
 				<div>
 					<div className="font-semibold text-ink text-xl tracking-tight md:text-2xl">
-						JPMorgan
-						<br />
-						Chase
+						{profile.employer}
 					</div>
-					<div className="mt-2 text-base text-ink-muted">
-						Credit Risk Technology (Core UI Platform)
-					</div>
+					<div className="mt-2 text-base text-ink-muted">{profile.team}</div>
 				</div>
 			</div>
 

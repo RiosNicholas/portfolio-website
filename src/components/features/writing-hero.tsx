@@ -4,8 +4,10 @@ import {
 	RisingWords,
 } from "~/components/layout/hero-field";
 import { Reveal } from "~/components/ui/reveal";
+import { getProfile } from "~/server/data/profile";
 
-export function WritingHero() {
+export async function WritingHero() {
+	const profile = await getProfile();
 	return (
 		<HeroField className={pageHeroClass} labelledBy="writing-title">
 			<h1
@@ -20,7 +22,7 @@ export function WritingHero() {
 					className="m-0 max-w-[36rem] text-base text-hero-muted md:col-span-8 md:text-lg"
 					delay={0.3}
 				>
-					Articles I&apos;ve written, and places my work has been featured.
+					{profile.writingLede}
 				</Reveal>
 			</div>
 		</HeroField>

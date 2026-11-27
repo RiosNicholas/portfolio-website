@@ -4,8 +4,10 @@ import { ButtonLink, textLinkClass } from "~/components/ui/button-link";
 import { Reveal } from "~/components/ui/reveal";
 import { contactEmail, profileLinks } from "~/lib/site-links";
 import { cn } from "~/lib/utils";
+import { getProfile } from "~/server/data/profile";
 
-export function ContactCta() {
+export async function ContactCta() {
+	const profile = await getProfile();
 	return (
 		<section
 			aria-labelledby="contact-heading"
@@ -25,8 +27,7 @@ export function ContactCta() {
 					className="m-0 max-w-[32rem] text-base md:text-lg lg:col-span-6"
 					delay={0.08}
 				>
-					I&apos;m open to full-time and contract work. Connect on LinkedIn or
-					send me an email, whichever you prefer.
+					{profile.contactLede}
 				</Reveal>
 				<Reveal
 					className="flex flex-col gap-5 lg:col-span-6 lg:items-end"

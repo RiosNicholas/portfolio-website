@@ -65,6 +65,38 @@ export function sortByDate<T extends DateFields>(rows: T[]): T[] {
 	});
 }
 
+// Whole years covered by the union of the ranges, so overlapping roles count once.
+export function yearsOfExperience(
+	entries: DateFields[],
+	now = new Date(),
+): string {
+	const today = monthIndex(now.getFullYear(), now.getMonth() + 1);
+	const ranges = entries
+		.filter((e) => e.startYear !== null)
+		.map((e) => {
+			const start = monthIndex(e.startYear, e.startMonth);
+			// End is exclusive. A year-only end counts through December.
+			const end = e.present
+				? today + 1
+				: e.endYear === null
+					? start + 1
+					: monthIndex(e.endYear, e.endMonth ?? 12) + 1;
+			return { start, end };
+		})
+		.sort((a, b) => a.start - b.start);
+
+	let months = 0;
+	let covered = 0;
+	for (const { start, end } of ranges) {
+		const from = Math.max(start, covered);
+		if (end > from) months += end - from;
+		covered = Math.max(covered, end);
+	}
+
+	const years = Math.floor(months / 12);
+	return years < 1 ? "<1" : String(years);
+}
+
 const toInput = (n: number | null) => (n === null ? "" : String(n));
 const toNumber = (s: string) => (s.trim() === "" ? null : Number(s));
 
