@@ -85,19 +85,19 @@ primitives. Don't use them in public pages.
 
 **Type** - one typeface: Schibsted Grotesk (`next/font`, `--font-schibsted`)
 for display, headings and body. Mono is the system stack, rarely used.
-Public pages use a five-step scale and nothing in between (admin keeps
-Tailwind's defaults):
+Public pages use Tailwind's native scale, one size per role. Admin keeps
+defaults.
 
-| Utility          | Size                               | Used for                          |
-|------------------|------------------------------------|-----------------------------------|
-| `text-display`   | `min(clamp(2rem, …, 6rem), 10svh)`, lh 0.95 | page hero headlines, Experience number |
-| `text-title`     | `clamp(1.75rem, …, 3rem)`, lh 1    | section headings, case study titles |
-| `text-statement` | `clamp(1.5rem, …, 2.25rem)`, lh 1.2| hero subcopy, bento values, About headings |
-| `text-lead`      | 1.25rem, lh 1.5                    | intro paragraphs, case descriptions |
-| `text-body`      | 1.0625rem, lh 1.55                 | everything else                   |
+| Role                        | Classes                                      |
+|-----------------------------|----------------------------------------------|
+| Page H1                     | `text-display` (the one custom fluid token, capped at 10svh) |
+| Section H2                  | `text-3xl tracking-tight md:text-4xl lg:text-5xl` |
+| Card title and statement    | `text-2xl tracking-tight md:text-3xl`        |
+| Lead                        | `text-lg md:text-xl`                         |
+| Body, buttons, nav          | `text-base`                                  |
+| Meta, labels, tags          | `text-sm`                                    |
 
-Headlines are `font-semibold` with tight negative tracking baked into the
-scale.
+Headlines are `font-semibold`; headings add `tracking-tight`.
 
 **Radii** - cards and media are `rounded-3xl`; buttons, chips and avatars
 are `rounded-full`. The `--r-*` vars are legacy.
@@ -167,7 +167,7 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
   is a `pop` "See my experience" linking to About.
 - **At a glance** (`BentoGrid`) - 6-col grid of `bg-surface` cards that
   share one label/value rhythm (muted label on top, value in
-  `text-statement` below). Cells: Based in (with a `cobe` globe peeking off
+  `text-2xl md:text-3xl` below). Cells: Based in (with a `cobe` globe peeking off
   the corner), Experience (`NumberTicker`), Status, Skills (vertical
   marquee), Favorite tools (pill chips on `surface-raised`), Currently,
   Languages. Skills, tools and languages come from the database, edited via
@@ -209,7 +209,7 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
 - Don't use amber outside the hero, and don't add a third accent color.
 - Don't hard-code colors or reach for Tailwind palette classes in
   components - use the semantic utilities.
-- Don't add type sizes outside the five-step scale on public pages.
+- Don't add type sizes outside the type scale in the section above on public pages.
 - Don't add gradients or drop shadows. The only gradient is the fade mask
   on the skills marquee.
 - Don't add a profile photo. The site stays about the work.

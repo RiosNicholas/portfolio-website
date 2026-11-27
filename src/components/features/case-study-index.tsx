@@ -33,7 +33,7 @@ export function CaseStudyIndex({ studies }: { studies: CaseStudyData[] }) {
 					<li key={study.id}>
 						<a
 							aria-current={active === study.id ? "location" : undefined}
-							className="block rounded-full bg-surface px-4 py-2 font-medium text-body text-ink no-underline transition-colors duration-200 hover:bg-surface-hover aria-[current=location]:bg-brand-soft aria-[current=location]:text-brand-strong lg:rounded-3xl lg:bg-transparent lg:px-5 lg:py-3"
+							className="block rounded-full bg-surface px-4 py-2 font-medium text-base text-ink no-underline transition-colors duration-200 hover:bg-surface-hover aria-[current=location]:bg-brand-soft aria-[current=location]:text-brand-strong lg:rounded-3xl lg:bg-transparent lg:px-5 lg:py-3"
 							href={`#${study.id}`}
 						>
 							{caseTitle(study)}

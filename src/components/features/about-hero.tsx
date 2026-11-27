@@ -15,7 +15,7 @@ export function AboutHero() {
 			<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-12 md:items-end">
 				<Reveal
 					as="p"
-					className="m-0 max-w-[30em] font-medium text-statement md:col-span-8"
+					className="m-0 max-w-[30em] font-medium text-2xl tracking-tight md:col-span-8 md:text-3xl"
 					delay={0.3}
 				>
 					I&apos;m Nicholas - a Platform Software Engineer based in the NYC

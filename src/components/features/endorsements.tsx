@@ -13,7 +13,7 @@ export function Endorsements({
 		<section aria-labelledby="recommendations" className="shell pt-section">
 			<Reveal
 				as="h2"
-				className="m-0 font-semibold text-title"
+				className="m-0 font-semibold text-3xl tracking-tight md:text-4xl lg:text-5xl"
 				id="recommendations"
 			>
 				Recommendations

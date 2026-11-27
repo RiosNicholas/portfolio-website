@@ -35,15 +35,14 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 						<p className="m-0 shrink-0 text-ink-muted text-sm">{dates}</p>
 					)}
 				</div>
-				<p className="mt-4 mb-0 text-sm">
-					<span className="font-medium">{study.role}</span>
-					<span className="block text-ink-muted">{study.org}</span>
+				<p className="mt-4 mb-0 text-ink-muted text-sm">
+					{study.role} · {study.org}
 				</p>
-				<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-[minmax(0,1fr)_auto]">
-					<p className="m-0 max-w-[34em] text-base">{study.description}</p>
+				<div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1fr)_auto]">
+					<p className="m-0 max-w-prose text-base">{study.description}</p>
 					{figure && (
 						<p className="m-0 md:text-right">
-							<span className="block font-semibold text-xl md:text-2xl">
+							<span className="block font-semibold text-2xl tracking-tight md:text-3xl">
 								{figure.v}
 							</span>
 							<span className="text-ink-muted text-sm">{figure.k}</span>
@@ -52,7 +51,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 				</div>
 				<ul
 					aria-label="Built with"
-					className="mt-card mb-0 flex list-none flex-wrap gap-2 p-0"
+					className="mt-4 mb-0 flex list-none flex-wrap gap-2 p-0"
 				>
 					{study.tags.map((tag) => (
 						<li

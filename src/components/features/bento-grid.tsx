@@ -21,14 +21,14 @@ const JERSEY_CITY_MARKERS: Marker[] = [
 
 function CellLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex items-center gap-2 font-medium text-body text-ink-muted">
+		<div className="flex items-center gap-2 font-medium text-base text-ink-muted">
 			{children}
 		</div>
 	);
 }
 
 function CellSub({ children }: { children: React.ReactNode }) {
-	return <div className="text-body text-ink-muted">{children}</div>;
+	return <div className="text-base text-ink-muted">{children}</div>;
 }
 
 function YearsCell() {
@@ -40,7 +40,7 @@ function YearsCell() {
 				    width. */}
 				<div className="font-semibold text-display text-ink max-md:text-[80cqw] max-md:leading-none">
 					<NumberTicker value={3} />
-					<sup className="ml-1 align-super font-medium text-ink-muted text-statement">
+					<sup className="ml-1 align-super font-medium text-2xl text-ink-muted tracking-tight md:text-3xl">
 						yrs
 					</sup>
 				</div>
@@ -61,7 +61,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 		>
 			<div className="flex items-baseline justify-between px-5 pt-5 pb-2 md:px-7 md:pt-7">
 				<CellLabel>Skills</CellLabel>
-				<span className="text-body text-ink-muted">{skills.length} / ∞</span>
+				<span className="text-base text-ink-muted">{skills.length} / ∞</span>
 			</div>
 			<Marquee
 				aria-label="Skills"
@@ -77,7 +77,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 			>
 				{skills.map((skill) => (
 					<div
-						className="flex items-center gap-3 whitespace-nowrap px-5 py-1 font-semibold text-ink text-statement md:px-7"
+						className="flex items-center gap-3 whitespace-nowrap px-5 py-1 font-semibold text-2xl text-ink tracking-tight md:px-7 md:text-3xl"
 						key={skill.id}
 					>
 						{skill.label}
@@ -100,10 +100,10 @@ function LanguagesCell({ languages }: { languages: Language[] }) {
 						className="flex items-baseline justify-between gap-4 sm:block"
 						key={language.name}
 					>
-						<div className="font-semibold text-ink text-lead">
+						<div className="font-semibold text-ink text-lg md:text-xl">
 							{language.name}
 						</div>
-						<div className="text-body text-ink-muted sm:mt-1">
+						<div className="text-base text-ink-muted sm:mt-1">
 							{language.level}
 						</div>
 					</div>
@@ -155,12 +155,12 @@ export function BentoGrid({
 				<div className="relative z-10 flex h-full flex-col justify-between gap-5 md:justify-start md:pb-28 lg:justify-between lg:pb-0">
 					<CellLabel>Based in</CellLabel>
 					<div>
-						<div className="font-semibold text-ink text-statement">
+						<div className="font-semibold text-2xl text-ink tracking-tight md:text-3xl">
 							Jersey
 							<br />
 							City
 						</div>
-						<div className="mt-2 text-body text-ink-muted">New Jersey</div>
+						<div className="mt-2 text-base text-ink-muted">New Jersey</div>
 					</div>
 				</div>
 				<Globe
@@ -178,8 +178,8 @@ export function BentoGrid({
 				{/* One sentence; the two terms a recruiter scans for carry the
 				    ink, the connecting words stay muted. */}
 				{/* Phones: "opportunities" is about 6em wide, so 16cqw keeps it on
-				    one line in any card width, capped at the statement size. */}
-				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-statement max-md:text-[length:min(16cqw,var(--text-statement))]">
+				    one line in any card width, capped at the text-2xl size. */}
+				<p className="m-0 max-w-[16ch] font-medium text-2xl text-ink-muted tracking-tight max-md:text-[length:min(16cqw,var(--text-2xl))] md:text-3xl">
 					Open to{" "}
 					<strong className="whitespace-nowrap font-semibold text-ink">
 						full-time
@@ -203,7 +203,7 @@ export function BentoGrid({
 				<div className="my-4 flex flex-wrap gap-1.5">
 					{tools.map((tool) => (
 						<span
-							className="rounded-full bg-surface-raised px-3 py-1 font-medium text-body text-ink"
+							className="rounded-full bg-surface-raised px-3 py-1 font-medium text-ink text-sm"
 							key={tool.id}
 						>
 							{tool.label}
@@ -217,12 +217,12 @@ export function BentoGrid({
 			<div className={cn(CELL_CLASS, "col-span-2 lg:col-span-3")}>
 				<CellLabel>Currently</CellLabel>
 				<div>
-					<div className="font-semibold text-ink text-statement">
+					<div className="font-semibold text-2xl text-ink tracking-tight md:text-3xl">
 						JPMorgan
 						<br />
 						Chase
 					</div>
-					<div className="mt-2 text-body text-ink-muted">
+					<div className="mt-2 text-base text-ink-muted">
 						Credit Risk Technology (Core UI Platform)
 					</div>
 				</div>

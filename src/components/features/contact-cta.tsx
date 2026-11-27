@@ -14,7 +14,7 @@ export function ContactCta() {
 		>
 			<Reveal
 				as="h2"
-				className="m-0 font-semibold text-title"
+				className="m-0 font-semibold text-3xl tracking-tight md:text-4xl lg:text-5xl"
 				id="contact-heading"
 			>
 				Let&apos;s build something good.
@@ -22,7 +22,7 @@ export function ContactCta() {
 			<div className="mt-10 grid grid-cols-1 gap-10 md:mt-14 lg:grid-cols-12 lg:items-end">
 				<Reveal
 					as="p"
-					className="m-0 max-w-[32rem] text-lead lg:col-span-6"
+					className="m-0 max-w-[32rem] text-lg md:text-xl lg:col-span-6"
 					delay={0.08}
 				>
 					I&apos;m open to full-time and contract work. Connect on LinkedIn or
@@ -41,7 +41,7 @@ export function ContactCta() {
 							Email me
 						</ButtonLink>
 					</div>
-					<a className={cn(textLinkClass, "text-body")} href="/resume">
+					<a className={cn(textLinkClass, "text-base")} href="/resume">
 						View full resume
 					</a>
 				</Reveal>

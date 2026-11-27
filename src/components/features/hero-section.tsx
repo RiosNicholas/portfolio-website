@@ -60,7 +60,7 @@ export function HeroSection() {
 				    sentence below only appears when motion is reduced and the
 				    line is frozen on its first phrase. */}
 				<div className="mt-card flex flex-col gap-card md:flex-row md:items-end md:justify-between">
-					<p className="motion-fallback m-0 max-w-[36rem] text-hero-muted text-lead">
+					<p className="motion-fallback m-0 max-w-[36rem] text-hero-muted text-lg md:text-xl">
 						I&apos;m Nicholas. I build web applications, component libraries,
 						developer tools, and agentic AI tooling.
 					</p>

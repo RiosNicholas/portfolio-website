@@ -75,8 +75,10 @@ export default async function ArticlePage({ params }: Props) {
 					<Link className={cn(textLinkClass, "w-fit")} href="/writing">
 						Back to writing
 					</Link>
-					<h1 className="m-0 font-semibold text-title">{article.title}</h1>
-					<p className="m-0 flex flex-wrap gap-x-3 gap-y-2 text-body text-ink-muted">
+					<h1 className="m-0 font-semibold text-3xl tracking-tight md:text-4xl lg:text-5xl">
+						{article.title}
+					</h1>
+					<p className="m-0 flex flex-wrap gap-x-3 gap-y-2 text-ink-muted text-sm">
 						<time dateTime={article.publishedAt}>{date}</time>
 						{article.tags.map((name) => (
 							<span key={name}>{name}</span>
