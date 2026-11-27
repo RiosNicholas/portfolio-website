@@ -36,6 +36,20 @@ export const endorsementRouter = createTRPCRouter({
 			return updated;
 		}),
 
+	reorder: adminProcedure
+		.input(z.object({ ids: z.array(z.string()) }))
+		.mutation(async ({ ctx, input }) => {
+			await ctx.db.$transaction(
+				input.ids.map((id, index) =>
+					ctx.db.endorsement.update({
+						where: { id },
+						data: { sortOrder: index },
+					}),
+				),
+			);
+			revalidateTag("endorsements");
+		}),
+
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {

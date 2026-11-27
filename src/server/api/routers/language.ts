@@ -30,6 +30,17 @@ export const languageRouter = createTRPCRouter({
 			return updated;
 		}),
 
+	reorder: adminProcedure
+		.input(z.object({ ids: z.array(z.string()) }))
+		.mutation(async ({ ctx, input }) => {
+			await ctx.db.$transaction(
+				input.ids.map((id, index) =>
+					ctx.db.language.update({ where: { id }, data: { sortOrder: index } }),
+				),
+			);
+			revalidateTag("languages");
+		}),
+
 	delete: adminProcedure
 		.input(z.object({ id: z.string() }))
 		.mutation(async ({ ctx, input }) => {

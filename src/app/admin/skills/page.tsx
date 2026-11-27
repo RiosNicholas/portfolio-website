@@ -28,14 +28,12 @@ type FormState = {
 	id: string | null;
 	kind: SkillKind;
 	label: string;
-	accent: string;
 };
 
 const emptyForm: FormState = {
 	id: null,
 	kind: "SKILL",
 	label: "",
-	accent: "",
 };
 
 export default function AdminSkillsPage() {
@@ -59,7 +57,6 @@ export default function AdminSkillsPage() {
 			id: row.id,
 			kind: row.kind,
 			label: row.label,
-			accent: row.accent ?? "",
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -107,7 +104,6 @@ export default function AdminSkillsPage() {
 		const payload = {
 			kind: form.kind,
 			label: form.label.trim(),
-			accent: form.accent.trim() || null,
 		};
 		if (!payload.label) {
 			setError("Label is required.");
@@ -143,7 +139,7 @@ export default function AdminSkillsPage() {
 	return (
 		<div>
 			<AdminPageHeader
-				description="The home page grid's Skills list and Favorite tools chips. The `accent` field is kept but not shown on the public site."
+				description="The home page grid's Skills list and Favorite tools chips."
 				title="Skills & tools"
 			/>
 
@@ -172,19 +168,6 @@ export default function AdminSkillsPage() {
 							}
 							placeholder="React · Next.js"
 							value={form.label}
-						/>
-					</AdminField>
-					<AdminField
-						hint="Optional - substring of the label to accent, e.g. Next.js"
-						htmlFor="accent"
-						label="Accent"
-					>
-						<AdminInput
-							id="accent"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, accent: e.target.value }))
-							}
-							value={form.accent}
 						/>
 					</AdminField>
 				</div>
@@ -237,7 +220,6 @@ type SkillRow = {
 	id: string;
 	kind: SkillKind;
 	label: string;
-	accent: string | null;
 	sortOrder: number;
 };
 
@@ -286,11 +268,6 @@ function SkillGroup({
 								<span className="font-display font-semibold text-foreground text-sm">
 									{row.label}
 								</span>
-								{row.accent && (
-									<span className="ml-2 font-mono text-(--ink-4) text-xs">
-										accent: {row.accent}
-									</span>
-								)}
 							</AdminListRow>
 						</SortableRow>
 					))}

@@ -80,7 +80,7 @@ export function SortableRow({
 		>
 			<button
 				aria-label="Drag to reorder"
-				className="flex w-6 shrink-0 cursor-grab touch-none items-center justify-center text-(--ink-3) hover:text-foreground"
+				className="flex w-8 shrink-0 cursor-grab touch-none items-center justify-center text-(--ink-3) hover:text-foreground"
 				ref={setActivatorNodeRef}
 				type="button"
 				{...attributes}
