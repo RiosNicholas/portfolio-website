@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { ContactCta } from "~/components/features/contact-cta";
 import { WritingFeed } from "~/components/features/writing-feed";
 import { WritingHero } from "~/components/features/writing-hero";
+import { WritingPrototype } from "~/components/features/writing-prototype";
 import { getWritingFeed } from "~/server/data/writing";
 
 const description =
@@ -20,15 +21,25 @@ export const metadata: Metadata = {
 	},
 };
 
-export default async function WritingPage() {
-	const items = await getWritingFeed();
+export default async function WritingPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ variant?: string }>;
+}) {
+	const { variant } = await searchParams;
+	// PROTOTYPE: ?variant= only works outside production.
+	const prototype = process.env.NODE_ENV !== "production" ? variant : undefined;
 
 	return (
 		<main id="main-content">
 			<WritingHero />
 
 			<section aria-label="Writing feed" className="shell pt-section">
-				<WritingFeed items={items} />
+				{prototype ? (
+					<WritingPrototype variant={prototype} />
+				) : (
+					<WritingFeed items={await getWritingFeed()} />
+				)}
 			</section>
 
 			<ContactCta />

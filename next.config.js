@@ -10,6 +10,13 @@ const config = {
 	async redirects() {
 		return [{ source: "/work", destination: "/projects", permanent: true }];
 	},
+	// PROTOTYPE: preview image host for the sample link Mention.
+	images: {
+		remotePatterns: [
+			{ protocol: "https", hostname: "opengraph.githubassets.com" },
+			{ protocol: "https", hostname: "i.ytimg.com" },
+		],
+	},
 	// Friendly save name for the resume; the URL stays lowercase and hyphenated.
 	async headers() {
 		return [
