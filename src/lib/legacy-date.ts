@@ -31,7 +31,7 @@ function parsePart(text: string) {
 
 // Parses strings like "Feb '25 - Present", "Oct '23", "2024" or "2025 -".
 export function parseLegacyDate(text: string): DateFields | null {
-	const [startText = "", endText, extra] = text.trim().split(/\s*[-–]\s*/);
+	const [startText = "", endText, extra] = text.trim().split(/\s*[-–—]\s*/);
 	const start = parsePart(startText);
 	if (!start || extra !== undefined) return null;
 	const base = { startYear: start.year, startMonth: start.month };
