@@ -205,13 +205,16 @@ export function AsciiField({ className }: { className?: string }) {
 			attributeFilter: ["data-theme"],
 		});
 
+		// Mobile URL bars change only the height; rebuilding would clear the canvas and flash.
+		const onResize = () => {
+			if (canvas.getBoundingClientRect().width === width) return;
+			resize();
+			if (!enabled) draw(0);
+		};
+		window.addEventListener("resize", onResize);
+
 		if (!enabled) {
 			draw(0);
-			const onResize = () => {
-				resize();
-				draw(0);
-			};
-			window.addEventListener("resize", onResize);
 			return () => {
 				themeObserver.disconnect();
 				window.removeEventListener("resize", onResize);
@@ -242,24 +245,37 @@ export function AsciiField({ className }: { className?: string }) {
 			pointer.tx = -1e4;
 			pointer.ty = -1e4;
 		};
+		const onDown = (event: PointerEvent) => {
+			onPointer(event);
+			pointer.x = pointer.tx;
+			pointer.y = pointer.ty;
+		};
+		const onUp = (event: PointerEvent) => {
+			if (event.pointerType === "touch") onLeave();
+		};
 
 		const visibility = new IntersectionObserver(([entry]) => {
 			visible = entry?.isIntersecting ?? true;
 		});
 		visibility.observe(canvas);
 
-		window.addEventListener("resize", resize);
 		window.addEventListener("pointermove", onPointer, { passive: true });
 		document.documentElement.addEventListener("pointerleave", onLeave);
+		window.addEventListener("pointerdown", onDown, { passive: true });
+		window.addEventListener("pointerup", onUp);
+		window.addEventListener("pointercancel", onUp);
 		frame = requestAnimationFrame(loop);
 
 		return () => {
 			cancelAnimationFrame(frame);
 			visibility.disconnect();
 			themeObserver.disconnect();
-			window.removeEventListener("resize", resize);
+			window.removeEventListener("resize", onResize);
 			window.removeEventListener("pointermove", onPointer);
 			document.documentElement.removeEventListener("pointerleave", onLeave);
+			window.removeEventListener("pointerdown", onDown);
+			window.removeEventListener("pointerup", onUp);
+			window.removeEventListener("pointercancel", onUp);
 		};
 	}, [enabled]);
 
