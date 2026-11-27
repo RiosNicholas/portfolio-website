@@ -56,7 +56,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 		<div
 			className={cn(
 				CELL_CLASS,
-				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:p-0 lg:col-span-3",
+				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:p-0 lg:col-span-3 lg:row-span-3",
 			)}
 		>
 			<div className="flex items-baseline justify-between px-4 pt-4 pb-2 md:px-6 md:pt-6">
@@ -90,7 +90,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 
 function LanguagesCell({ languages }: { languages: Language[] }) {
 	return (
-		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-6")}>
+		<div className={cn(CELL_CLASS, "col-span-2 md:col-span-4 lg:col-span-3")}>
 			<CellLabel>Languages</CellLabel>
 			{/* Phones: one row per language (name, then level), so a long
 			    name like Portuguese never truncates. sm and up: three columns. */}
@@ -146,8 +146,8 @@ export function BentoGrid({
 		// lg (≥1024px):
 		//   row1  [Based 2      ][Experience 2 ][Status 2     ]
 		//   row2  [Skills 3,    ][Favorite tools 3            ]
-		//   row3  [ row-span-2  ][Currently 3                 ]
-		//   row4  [Languages 6                                ]
+		//   row3  [ row-span-3  ][Currently 3                 ]
+		//   row4  [ ...         ][Languages 3                 ]
 		<Reveal className="mt-8 grid auto-rows-min grid-cols-2 gap-3 md:mt-10 md:auto-rows-[minmax(9rem,auto)] md:grid-cols-6">
 			{/* Location. A large globe centered on the card's bottom-right
 			    corner, so only its top-left quarter (North America) pokes in.
