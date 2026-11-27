@@ -13,8 +13,16 @@ const FINAL_HOLD_MS = 3600;
  * The hero's live line: reads as one sentence across a full loop
  * ("web applications," … "and agentic AI tooling") and then starts over.
  * Screen readers get the full sentence from the heading's sr-only text.
+ * With reduced motion it shows `still` instead, a complete phrase that
+ * doesn't end on a comma.
  */
-export function RotatingPhrase({ phrases }: { phrases: string[] }) {
+export function RotatingPhrase({
+	phrases,
+	still,
+}: {
+	phrases: string[];
+	still: string;
+}) {
 	const enabled = useAnimationsEnabled();
 	const [index, setIndex] = useState(0);
 
@@ -28,8 +36,18 @@ export function RotatingPhrase({ phrases }: { phrases: string[] }) {
 		return () => window.clearTimeout(id);
 	}, [enabled, index, phrases.length]);
 
-	// The hero hides this line under reduced motion and shows a subtitle instead.
-	if (!enabled) return null;
+	// Reduced motion: a plain, fixed phrase. Without this, the switch from
+	// the first phrase to `still` after hydration plays one exit animation.
+	if (!enabled) {
+		return (
+			<span
+				aria-hidden
+				className="relative block whitespace-nowrap pb-[0.08em] text-pop"
+			>
+				{still}
+			</span>
+		);
+	}
 
 	const phrase = phrases[index];
 

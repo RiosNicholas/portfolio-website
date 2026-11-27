@@ -34,14 +34,14 @@ export function HeroSection() {
 					<span aria-hidden className="block">
 						<RisingWords text="Software Engineer" />
 					</span>
-					<span aria-hidden className="no-low block">
+					<span aria-hidden className="block">
 						<RisingWords offset={2} text="building" />
 					</span>
 					<span
-						className="word-rise no-low block"
+						className="word-rise block"
 						style={{ "--i": 3 } as React.CSSProperties}
 					>
-						<RotatingPhrase phrases={building} />
+						<RotatingPhrase phrases={building} still="web applications" />
 					</span>
 					{/* Closes the sentence. One quiet tone, so it reads as where
 					    the work happens without competing with the amber phrase. */}
@@ -54,15 +54,7 @@ export function HeroSection() {
 					</span>
 				</h1>
 
-				{/* With reduced motion the headline drops "building" and the
-				    rotating phrase, reading "Software Engineer @JPMorganChase."
-				    This yellow subtitle says what Nicholas builds instead. */}
 				<div className="mt-card flex flex-col gap-card md:flex-row md:items-end md:justify-between">
-					<p className="motion-fallback m-0 max-w-[36rem] text-lg text-pop md:text-xl">
-						Building web applications, component libraries, developer tools, and
-						agentic AI.
-					</p>
-
 					<Reveal className="shrink-0" delay={0.5}>
 						<ButtonLink href="/about" variant="pop">
 							See my experience
