@@ -32,7 +32,7 @@ const fields: ProfileField[] = [
 		key: "status",
 		label: "Status",
 		multiline: true,
-		hint: "Markdown. **Bold** text shows as emphasis.",
+		hint: "Wrap words in **double asterisks** to emphasize them. No other formatting.",
 	},
 	{ key: "city", label: "City" },
 	{ key: "region", label: "Region" },
