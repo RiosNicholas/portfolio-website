@@ -189,7 +189,7 @@ export function AdminSaveStatus({
 		<p
 			aria-live="polite"
 			className={cn(
-				"self-center font-mono text-xs",
+				"min-w-0 self-center font-mono text-xs",
 				error ? "text-(--destructive)" : "text-(--ink-3)",
 			)}
 		>
