@@ -12,7 +12,7 @@ import type { Language, Skill } from "../../../generated/prisma";
 // Every cell is a size container, so phone-only sizes can follow the
 // card's width (cqw) instead of guessing from the viewport.
 const CELL_CLASS =
-	"@container relative flex flex-col justify-between gap-5 overflow-hidden rounded-3xl bg-surface p-5 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-7";
+	"@container relative flex flex-col justify-between gap-5 overflow-hidden rounded-3xl bg-surface p-4 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-6";
 
 // Jersey City, the Based cell's marker.
 const JERSEY_CITY_MARKERS: Marker[] = [
@@ -40,7 +40,7 @@ function YearsCell() {
 				    width. */}
 				<div className="font-semibold text-display text-ink max-md:text-[80cqw] max-md:leading-none">
 					<NumberTicker value={3} />
-					<sup className="ml-1 align-super font-medium text-2xl text-ink-muted tracking-tight md:text-3xl">
+					<sup className="ml-1 align-super font-medium text-ink-muted text-xl tracking-tight md:text-2xl">
 						yrs
 					</sup>
 				</div>
@@ -56,10 +56,10 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 		<div
 			className={cn(
 				CELL_CLASS,
-				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:min-h-[22rem] md:p-0 lg:col-span-3 lg:row-span-3",
+				"col-span-2 justify-start p-0 md:col-span-4 md:row-span-2 md:p-0 lg:col-span-3 lg:row-span-3",
 			)}
 		>
-			<div className="flex items-baseline justify-between px-5 pt-5 pb-2 md:px-7 md:pt-7">
+			<div className="flex items-baseline justify-between px-4 pt-4 pb-2 md:px-6 md:pt-6">
 				<CellLabel>Skills</CellLabel>
 				<span className="text-base text-ink-muted">{skills.length} / ∞</span>
 			</div>
@@ -67,7 +67,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 				aria-label="Skills"
 				ariaHideDuplicates
 				className={cn(
-					"relative h-64 p-0 [--duration:28s] [--gap:0px] md:absolute md:inset-x-0 md:top-18 md:bottom-0 md:h-auto",
+					"relative h-48 p-0 [--duration:28s] [--gap:0px] md:absolute md:inset-x-0 md:top-14 md:bottom-0 md:h-auto",
 					enabled &&
 						"mask-[linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent)]",
 				)}
@@ -77,7 +77,7 @@ function SkillsCell({ skills }: { skills: Skill[] }) {
 			>
 				{skills.map((skill) => (
 					<div
-						className="flex items-center gap-3 whitespace-nowrap px-5 py-1 font-semibold text-2xl text-ink tracking-tight md:px-7 md:text-3xl"
+						className="flex items-center gap-3 whitespace-nowrap px-4 py-1 font-semibold text-ink text-xl tracking-tight md:px-6 md:text-2xl"
 						key={skill.id}
 					>
 						{skill.label}
@@ -100,7 +100,7 @@ function LanguagesCell({ languages }: { languages: Language[] }) {
 						className="flex items-baseline justify-between gap-4 sm:block"
 						key={language.name}
 					>
-						<div className="font-semibold text-ink text-lg md:text-xl">
+						<div className="font-semibold text-base text-ink md:text-lg">
 							{language.name}
 						</div>
 						<div className="text-base text-ink-muted sm:mt-1">
@@ -144,7 +144,7 @@ export function BentoGrid({
 		//   row2  [Skills 3,    ][Favorite tools 3            ]
 		//   row3  [ row-span-3  ][Currently 3                 ]
 		//   row4  [ ...         ][Languages 3                 ]
-		<Reveal className="mt-10 grid auto-rows-min grid-cols-2 gap-3 md:mt-14 md:auto-rows-[minmax(11rem,auto)] md:grid-cols-6">
+		<Reveal className="mt-8 grid auto-rows-min grid-cols-2 gap-3 md:mt-10 md:auto-rows-[minmax(9rem,auto)] md:grid-cols-6">
 			{/* Location. A large globe centered on the card's bottom-right
 			    corner, so only its top-left quarter (North America) pokes in.
 			    --globe sets its size and the insets are half of it, so the
@@ -155,7 +155,7 @@ export function BentoGrid({
 				<div className="relative z-10 flex h-full flex-col justify-between gap-5 md:justify-start md:pb-28 lg:justify-between lg:pb-0">
 					<CellLabel>Based in</CellLabel>
 					<div>
-						<div className="font-semibold text-2xl text-ink tracking-tight md:text-3xl">
+						<div className="font-semibold text-ink text-xl tracking-tight md:text-2xl">
 							Jersey
 							<br />
 							City
@@ -178,8 +178,8 @@ export function BentoGrid({
 				{/* One sentence; the two terms a recruiter scans for carry the
 				    ink, the connecting words stay muted. */}
 				{/* Phones: "opportunities" is about 6em wide, so 16cqw keeps it on
-				    one line in any card width, capped at the text-2xl size. */}
-				<p className="m-0 max-w-[16ch] font-medium text-2xl text-ink-muted tracking-tight max-md:text-[length:min(16cqw,var(--text-2xl))] md:text-3xl">
+				    one line in any card width, capped at the text-xl size. */}
+				<p className="m-0 max-w-[16ch] font-medium text-ink-muted text-xl tracking-tight max-md:text-[length:min(16cqw,var(--text-xl))] md:text-2xl">
 					Open to{" "}
 					<strong className="whitespace-nowrap font-semibold text-ink">
 						full-time
@@ -217,7 +217,7 @@ export function BentoGrid({
 			<div className={cn(CELL_CLASS, "col-span-2 lg:col-span-3")}>
 				<CellLabel>Currently</CellLabel>
 				<div>
-					<div className="font-semibold text-2xl text-ink tracking-tight md:text-3xl">
+					<div className="font-semibold text-ink text-xl tracking-tight md:text-2xl">
 						JPMorgan
 						<br />
 						Chase

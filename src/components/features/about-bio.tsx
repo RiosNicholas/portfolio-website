@@ -36,7 +36,7 @@ function CvRows({ entries }: { entries: CvEntry[] }) {
 	);
 }
 
-const sectionHeading = "m-0 mb-4 font-semibold text-lead";
+const sectionHeading = "m-0 mb-4 font-semibold text-lg";
 
 export async function AboutBio() {
 	const entries = await getCvEntries();
@@ -50,7 +50,7 @@ export async function AboutBio() {
 
 	return (
 		<section aria-labelledby="summary" className="shell pt-10 md:pt-14">
-			<div className="flex max-w-5xl flex-col gap-14">
+			<div className="flex max-w-5xl flex-col gap-12">
 				<Reveal>
 					<h2 className={sectionHeading} id="summary">
 						Summary
@@ -80,7 +80,7 @@ export async function AboutBio() {
 					<CvRows entries={byCategory("EXPERIENCE")} />
 				</Reveal>
 
-				<Reveal className="grid grid-cols-1 gap-14 md:grid-cols-2 md:gap-10 lg:grid-cols-3">
+				<Reveal className="grid grid-cols-1 gap-12 md:grid-cols-2 md:gap-10 lg:grid-cols-3">
 					{secondary.map((group) => (
 						<div key={group.heading}>
 							<h2 className={sectionHeading}>{group.heading}</h2>

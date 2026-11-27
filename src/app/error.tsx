@@ -21,7 +21,7 @@ export default function RouteError({
 			id="main-content"
 		>
 			<h1 className="m-0 font-semibold text-display">Something broke</h1>
-			<p className="m-0 max-w-[32rem] text-lg md:text-xl">
+			<p className="m-0 max-w-[32rem] text-base md:text-lg">
 				This page hit an unexpected error. You can try again, or head back home.
 			</p>
 			<div className="flex flex-wrap items-center gap-x-8 gap-y-4">
