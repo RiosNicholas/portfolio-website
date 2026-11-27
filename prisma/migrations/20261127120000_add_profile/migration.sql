@@ -32,7 +32,7 @@ VALUES (
 I''m currently in Risk Technology at JPMorganChase, where I work on frontend architecture, shared libraries, and developer tooling used across my organization, alongside agentic AI tools that are shaping how our engineering teams build and ship software.
 
 Outside of engineering, I enjoy street photography and occasionally publish my work.',
-    'Open to **full-time** + **freelance** opportunities',
+    'Open to **full-time** + **freelance** opportunities',
     'Jersey City',
     'New Jersey',
     'JPMorgan Chase',
