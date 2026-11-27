@@ -1,19 +1,5 @@
 import { unstable_cache } from "next/cache";
 import { db } from "~/server/db";
-import { Prisma } from "../../../generated/prisma";
-
-// Preview builds share the production database but skip migrations (see
-// `vercel-build`), so until this lands these tables only exist in production.
-// Treat a missing table as no content instead of failing the build.
-async function orEmpty<T>(query: Promise<T>, empty: T): Promise<T> {
-	try {
-		return await query;
-	} catch (e) {
-		if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === "P2021")
-			return empty;
-		throw e;
-	}
-}
 
 // unstable_cache stores results as JSON, so dates leave these functions as
 // ISO strings rather than Date objects that would silently turn into strings
@@ -36,22 +22,19 @@ export type WritingItem = {
 export const getWritingFeed = unstable_cache(
 	async (): Promise<WritingItem[]> => {
 		const [articles, mentions] = await Promise.all([
-			orEmpty(
-				db.article.findMany({
-					where: { published: true },
-					select: {
-						id: true,
-						slug: true,
-						title: true,
-						summary: true,
-						tags: true,
-						publishedAt: true,
-						createdAt: true,
-					},
-				}),
-				[],
-			),
-			orEmpty(db.mention.findMany({ where: { published: true } }), []),
+			db.article.findMany({
+				where: { published: true },
+				select: {
+					id: true,
+					slug: true,
+					title: true,
+					summary: true,
+					tags: true,
+					publishedAt: true,
+					createdAt: true,
+				},
+			}),
+			db.mention.findMany({ where: { published: true } }),
 		]);
 
 		return [
@@ -84,10 +67,9 @@ export const getWritingFeed = unstable_cache(
 
 export const getArticleBySlug = unstable_cache(
 	async (slug: string) => {
-		const article = await orEmpty(
-			db.article.findFirst({ where: { slug, published: true } }),
-			null,
-		);
+		const article = await db.article.findFirst({
+			where: { slug, published: true },
+		});
 		if (!article) return null;
 		return {
 			...article,
@@ -104,13 +86,10 @@ export const getArticleBySlug = unstable_cache(
 export const getPublishedArticleSlugs = unstable_cache(
 	async () =>
 		(
-			await orEmpty(
-				db.article.findMany({
-					where: { published: true },
-					select: { slug: true, updatedAt: true },
-				}),
-				[],
-			)
+			await db.article.findMany({
+				where: { published: true },
+				select: { slug: true, updatedAt: true },
+			})
 		).map((a) => ({ slug: a.slug, updatedAt: a.updatedAt.toISOString() })),
 	["articles:slugs:v1"],
 	{ tags: ["articles"] },

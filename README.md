@@ -223,11 +223,12 @@ the production hash from a *different* password than the local dev one
 plaintext). `package.json`'s `vercel-build` script runs migrations, then
 seeds any content table that's still empty (per-table, so a
 partially-seeded DB never gets clobbered - see `scripts/seed-if-empty.ts`),
-before building. It only does that when `VERCEL_ENV` is `production`, since
-Preview and Production share one database and a preview build must not
-migrate or seed it. `next build` always runs. Vercel picks up a
-`vercel-build` script over `build` automatically, no dashboard override
-needed.
+before building. It only seeds in production. The build logic lives in
+`scripts/vercel-build.sh`. Preview deployments get their own Neon branch,
+so a preview build migrates that branch via `DATABASE_URL_UNPOOLED`, but
+only when its host differs from `DIRECT_URL` (which is production). It never
+seeds previews. `next build` always runs. Vercel picks up a `vercel-build`
+script over `build` automatically, no dashboard override needed.
 
 `src/lib/site-links.ts`'s `siteUrl` constant (`https://nrios.dev`)
 feeds `metadataBase`, canonical URLs, `robots.ts`, and `sitemap.ts` - it's a
