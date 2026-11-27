@@ -16,10 +16,10 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 			className="scroll-mt-12"
 			id={study.id}
 		>
-			<Reveal className="rounded-3xl bg-surface p-6 sm:p-8 lg:p-12">
+			<Reveal className="rounded-3xl bg-surface p-card">
 				{media && (
 					<MediaFigure
-						className="mb-8 md:mb-10"
+						className="mb-card"
 						media={media}
 						sizes="(min-width: 1024px) 75vw, 100vw"
 					/>
@@ -36,7 +36,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 					<span className="font-medium">{study.role}</span>
 					<span className="block text-ink-muted">{study.org}</span>
 				</p>
-				<div className="mt-8 grid grid-cols-1 gap-8 md:mt-10 md:grid-cols-[minmax(0,1fr)_auto] md:gap-12">
+				<div className="mt-card grid grid-cols-1 gap-card md:grid-cols-[minmax(0,1fr)_auto]">
 					<p className="m-0 max-w-[34em] text-lead">{study.description}</p>
 					{figure && (
 						<p className="m-0 md:text-right">
@@ -49,7 +49,7 @@ export function CaseStudy({ study }: { study: CaseStudyData }) {
 				</div>
 				<ul
 					aria-label="Built with"
-					className="mt-8 mb-0 flex list-none flex-wrap gap-2 p-0 md:mt-10"
+					className="mt-card mb-0 flex list-none flex-wrap gap-2 p-0"
 				>
 					{study.tags.map((tag) => (
 						<li

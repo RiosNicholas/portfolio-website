@@ -27,7 +27,7 @@ export default async function WritingPage() {
 		<main id="main-content">
 			<WritingHero />
 
-			<section aria-label="Writing feed" className="shell pt-24 md:pt-40">
+			<section aria-label="Writing feed" className="shell pt-section">
 				<WritingFeed items={items} />
 			</section>
 

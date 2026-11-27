@@ -20,16 +20,13 @@ export function HeroSection() {
 	return (
 		<HeroField
 			className={cn(
-				"grid grid-cols-1 content-end gap-12 pt-14 pb-12 md:min-h-[72svh] md:pt-32 md:pb-20",
-				heroPhoto && "lg:grid-cols-12 lg:items-end lg:gap-10",
+				"grid grid-cols-1 content-end gap-card py-band",
+				heroPhoto && "lg:grid-cols-12 lg:items-end lg:gap-card",
 			)}
 			labelledBy="hero-title"
 		>
 			<div className={cn(heroPhoto && "lg:col-span-7")}>
-				<h1
-					className="m-0 font-semibold text-display lg:text-[clamp(6.5rem,8vw,9rem)]"
-					id="hero-title"
-				>
+				<h1 className="m-0 font-semibold text-display" id="hero-title">
 					<span className="sr-only">
 						Software Engineer building web applications, component libraries,
 						developer tools, and agentic AI tooling at JPMorganChase.
@@ -62,7 +59,7 @@ export function HeroSection() {
 				{/* The rotating line already says what Nicholas builds. The
 				    sentence below only appears when motion is reduced and the
 				    line is frozen on its first phrase. */}
-				<div className="mt-8 flex flex-col gap-8 md:mt-16 md:flex-row md:items-end md:justify-between md:gap-10">
+				<div className="mt-card flex flex-col gap-card md:flex-row md:items-end md:justify-between">
 					<p className="motion-fallback m-0 max-w-[36rem] text-hero-muted text-lead">
 						I&apos;m Nicholas. I build web applications, component libraries,
 						developer tools, and agentic AI tooling.

@@ -31,7 +31,7 @@ export async function AboutBio() {
 	const awards = entries.filter((e) => e.category === "AWARD");
 
 	return (
-		<section aria-labelledby="summary" className="shell pt-24 md:pt-40">
+		<section aria-labelledby="summary" className="shell pt-section">
 			<div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-24">
 				<Reveal className="lg:col-span-5">
 					<h2 className={sectionHeading} id="summary">

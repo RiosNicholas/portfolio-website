@@ -9,7 +9,7 @@ export function ContactCta() {
 	return (
 		<section
 			aria-labelledby="contact-heading"
-			className="shell pt-32 md:pt-48"
+			className="shell pt-section"
 			id="contact"
 		>
 			<Reveal

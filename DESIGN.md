@@ -90,8 +90,8 @@ Tailwind's defaults):
 
 | Utility          | Size                               | Used for                          |
 |------------------|------------------------------------|-----------------------------------|
-| `text-display`   | `clamp(2rem, …, 7.5rem)`, lh 0.95  | page hero headlines, Experience number |
-| `text-title`     | `clamp(2rem, …, 4rem)`, lh 1       | section headings, case study titles |
+| `text-display`   | `min(clamp(2rem, …, 6rem), 10svh)`, lh 0.95 | page hero headlines, Experience number |
+| `text-title`     | `clamp(1.75rem, …, 3rem)`, lh 1    | section headings, case study titles |
 | `text-statement` | `clamp(1.5rem, …, 2.25rem)`, lh 1.2| hero subcopy, bento values, About headings |
 | `text-lead`      | 1.25rem, lh 1.5                    | intro paragraphs, case descriptions |
 | `text-body`      | 1.0625rem, lh 1.55                 | everything else                   |
@@ -109,6 +109,10 @@ small `hover:-translate-y-1` on cards.
 `clamp(20px, 4vw, 64px)`. Sections are spaced with `pt-24 md:pt-40` (or
 `pt-32 md:pt-48` for endorsements and contact). Two-column layouts use a
 12-col grid at `lg` (5 + 7 or 6 + 6). Mobile first, always.
+
+**Density scale** - `card` (`--spacing-card`, 1.5-2.5rem) is the base unit.
+`band` is 2x card and `section` is 3x card. Use `py-band`, `mt-card`,
+`gap-card` and the like instead of raw values.
 
 **Sizing to a card** - when something on phones has to fill its card, size
 it with container query units (`cqw`) off a `@container` parent, not with
@@ -155,7 +159,8 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
   (` .·:-=+*#%@`) in `--hero-glyph`, with an amber lens that follows the
   pointer. 30fps from a pre-rendered glyph atlas, paused off-screen; one
   still frame under reduced motion. Inner pages share `pageHeroClass` so
-  every hero is the same height.
+  every hero is the same height. Inner bands are capped at `min(22rem, 45svh)`
+  on `md+` and hug their content on phones.
 - **Home hero** (`HeroSection`) - one sentence across four lines:
   *Software Engineer / building / [rotating phrase] / @JPMorganChase.* The
   phrase is amber, the employer line is `hero-subtle`, and the only button
