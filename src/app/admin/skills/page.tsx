@@ -13,9 +13,12 @@ import {
 	AdminListRow,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
 	AdminSectionLabel,
 	AdminSelect,
+	useFlash,
 } from "~/components/admin/admin-ui";
+import { SortableList, SortableRow } from "~/components/admin/sortable-list";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
 import { api } from "~/trpc/react";
 
@@ -26,7 +29,6 @@ type FormState = {
 	kind: SkillKind;
 	label: string;
 	accent: string;
-	sortOrder: string;
 };
 
 const emptyForm: FormState = {
@@ -34,7 +36,6 @@ const emptyForm: FormState = {
 	kind: "SKILL",
 	label: "",
 	accent: "",
-	sortOrder: "0",
 };
 
 export default function AdminSkillsPage() {
@@ -47,6 +48,7 @@ export default function AdminSkillsPage() {
 	} = api.skill.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
@@ -58,7 +60,6 @@ export default function AdminSkillsPage() {
 			kind: row.kind,
 			label: row.label,
 			accent: row.accent ?? "",
-			sortOrder: String(row.sortOrder),
 		});
 		formRef.current?.scrollIntoView({
 			behavior: animationsEnabled ? "smooth" : "auto",
@@ -70,6 +71,7 @@ export default function AdminSkillsPage() {
 		onSuccess: async () => {
 			await invalidate();
 			setForm(emptyForm);
+			flash("Added");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -77,13 +79,20 @@ export default function AdminSkillsPage() {
 		onSuccess: async () => {
 			await invalidate();
 			setForm(emptyForm);
+			flash("Saved");
 		},
+		onError: (e) => setError(e.message),
+	});
+	const reorderMutation = api.skill.reorder.useMutation({
+		onSuccess: () => flash("Order saved"),
+		onSettled: invalidate,
 		onError: (e) => setError(e.message),
 	});
 	const deleteMutation = api.skill.delete.useMutation({
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.id) setForm(emptyForm);
 			invalidate();
+			flash("Deleted");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -99,7 +108,6 @@ export default function AdminSkillsPage() {
 			kind: form.kind,
 			label: form.label.trim(),
 			accent: form.accent.trim() || null,
-			sortOrder: Number.parseInt(form.sortOrder, 10) || 0,
 		};
 		if (!payload.label) {
 			setError("Label is required.");
@@ -108,8 +116,25 @@ export default function AdminSkillsPage() {
 		if (form.id) {
 			updateMutation.mutate({ id: form.id, ...payload });
 		} else {
-			createMutation.mutate(payload);
+			// New rows go to the end of their list.
+			const last = skills?.filter((s) => s.kind === form.kind).at(-1);
+			createMutation.mutate({
+				...payload,
+				sortOrder: (last?.sortOrder ?? -1) + 1,
+			});
 		}
+	}
+
+	// Only the dragged kind's ids are renumbered; the other kind keeps its order.
+	function reorder(ids: string[]) {
+		utils.skill.all.setData(undefined, (prev) =>
+			prev
+				?.map((s) =>
+					ids.includes(s.id) ? { ...s, sortOrder: ids.indexOf(s.id) } : s,
+				)
+				.sort((a, b) => a.sortOrder - b.sortOrder),
+		);
+		reorderMutation.mutate({ ids });
 	}
 
 	const skillRows = skills?.filter((s) => s.kind === "SKILL") ?? [];
@@ -139,16 +164,6 @@ export default function AdminSkillsPage() {
 							<option value="TOOL">Tool</option>
 						</AdminSelect>
 					</AdminField>
-					<AdminField htmlFor="sortOrder" label="Sort order">
-						<AdminInput
-							id="sortOrder"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, sortOrder: e.target.value }))
-							}
-							type="number"
-							value={form.sortOrder}
-						/>
-					</AdminField>
 					<AdminField htmlFor="label" label="Label">
 						<AdminInput
 							id="label"
@@ -173,9 +188,6 @@ export default function AdminSkillsPage() {
 						/>
 					</AdminField>
 				</div>
-				{error && (
-					<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-				)}
 				<div className="mt-5 flex gap-2">
 					<AdminButton disabled={pending} onClick={submit} variant="primary">
 						{form.id ? "Save changes" : "Add"}
@@ -183,6 +195,7 @@ export default function AdminSkillsPage() {
 					{form.id && (
 						<AdminButton onClick={() => setForm(emptyForm)}>Cancel</AdminButton>
 					)}
+					<AdminSaveStatus error={error} pending={pending} saved={saved} />
 				</div>
 			</AdminCard>
 
@@ -204,12 +217,14 @@ export default function AdminSkillsPage() {
 						label="Skills"
 						onDelete={(id) => deleteMutation.mutate({ id })}
 						onEdit={startEdit}
+						onReorder={reorder}
 						rows={skillRows}
 					/>
 					<SkillGroup
 						label="Tools"
 						onDelete={(id) => deleteMutation.mutate({ id })}
 						onEdit={startEdit}
+						onReorder={reorder}
 						rows={toolRows}
 					/>
 				</div>
@@ -231,51 +246,56 @@ function SkillGroup({
 	rows,
 	onEdit,
 	onDelete,
+	onReorder,
 }: {
 	label: string;
 	rows: SkillRow[];
 	onEdit: (row: SkillRow) => void;
 	onDelete: (id: string) => void;
+	onReorder: (ids: string[]) => void;
 }) {
 	return (
 		<div>
 			<AdminSectionLabel>
 				{label} ({rows.length})
 			</AdminSectionLabel>
-			<AdminList>
-				{rows.map((row) => (
-					<AdminListRow
-						actions={
-							<>
-								<AdminButton onClick={() => onEdit(row)} size="sm">
-									<Pencil className="size-3.5" />
-									Edit
-								</AdminButton>
-								<AdminButton
-									onClick={() => {
-										if (confirm(`Delete "${row.label}"?`)) onDelete(row.id);
-									}}
-									size="sm"
-									variant="danger"
-								>
-									<Trash2 className="size-3.5" />
-									Delete
-								</AdminButton>
-							</>
-						}
-						key={row.id}
-					>
-						<span className="font-display font-semibold text-foreground text-sm">
-							{row.label}
-						</span>
-						{row.accent && (
-							<span className="ml-2 font-mono text-(--ink-4) text-xs">
-								accent: {row.accent}
-							</span>
-						)}
-					</AdminListRow>
-				))}
-			</AdminList>
+			<SortableList ids={rows.map((row) => row.id)} onReorder={onReorder}>
+				<AdminList>
+					{rows.map((row) => (
+						<SortableRow id={row.id} key={row.id}>
+							<AdminListRow
+								actions={
+									<>
+										<AdminButton onClick={() => onEdit(row)} size="sm">
+											<Pencil className="size-3.5" />
+											Edit
+										</AdminButton>
+										<AdminButton
+											onClick={() => {
+												if (confirm(`Delete "${row.label}"?`)) onDelete(row.id);
+											}}
+											size="sm"
+											variant="danger"
+										>
+											<Trash2 className="size-3.5" />
+											Delete
+										</AdminButton>
+									</>
+								}
+							>
+								<span className="font-display font-semibold text-foreground text-sm">
+									{row.label}
+								</span>
+								{row.accent && (
+									<span className="ml-2 font-mono text-(--ink-4) text-xs">
+										accent: {row.accent}
+									</span>
+								)}
+							</AdminListRow>
+						</SortableRow>
+					))}
+				</AdminList>
+			</SortableList>
 		</div>
 	);
 }
