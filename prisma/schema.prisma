@@ -81,7 +81,6 @@ model CvEntry {
     endMonth    Int?
     present     Boolean    @default(false)
     title       String
-    titleAccent String[]
     where       String
     sortOrder   Int        @default(0)
     createdAt   DateTime   @default(now())

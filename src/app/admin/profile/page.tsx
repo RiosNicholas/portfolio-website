@@ -8,7 +8,9 @@ import {
 	AdminInput,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
 	AdminTextarea,
+	useFlash,
 } from "~/components/admin/admin-ui";
 import { type ProfileInput, profileInput } from "~/server/api/schemas/profile";
 import { api } from "~/trpc/react";
@@ -68,9 +70,13 @@ function ProfileForm({ initial }: { initial: ProfileInput }) {
 	const utils = api.useUtils();
 	const [form, setForm] = useState(initial);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 
 	const update = api.profile.update.useMutation({
-		onSuccess: () => utils.profile.get.invalidate(),
+		onSuccess: () => {
+			utils.profile.get.invalidate();
+			flash("Saved");
+		},
 		onError: (e) => setError(e.message),
 	});
 
@@ -116,9 +122,6 @@ function ProfileForm({ initial }: { initial: ProfileInput }) {
 					);
 				})}
 			</div>
-			{error && (
-				<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-			)}
 			<div className="mt-5 flex gap-2">
 				<AdminButton
 					disabled={update.isPending}
@@ -127,6 +130,11 @@ function ProfileForm({ initial }: { initial: ProfileInput }) {
 				>
 					Save changes
 				</AdminButton>
+				<AdminSaveStatus
+					error={error}
+					pending={update.isPending}
+					saved={saved}
+				/>
 			</div>
 		</AdminCard>
 	);

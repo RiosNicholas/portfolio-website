@@ -13,8 +13,10 @@ import {
 	AdminListRow,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
 	AdminSectionLabel,
 	AdminSelect,
+	useFlash,
 } from "~/components/admin/admin-ui";
 import { AdminDateRange } from "~/components/admin/date-range";
 import {
@@ -33,7 +35,6 @@ type CvEntryRow = DateFields & {
 	id: string;
 	category: CvCategory;
 	title: string;
-	titleAccent: string[];
 	where: string;
 };
 
@@ -49,7 +50,6 @@ type FormState = {
 	category: CvCategory;
 	dates: DateForm;
 	title: string;
-	titleAccent: string;
 	where: string;
 };
 
@@ -64,7 +64,6 @@ const emptyForm: FormState = {
 		present: false,
 	},
 	title: "",
-	titleAccent: "",
 	where: "",
 };
 
@@ -78,6 +77,7 @@ export default function AdminCvPage() {
 	} = api.cvEntry.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
@@ -89,7 +89,6 @@ export default function AdminCvPage() {
 			category: row.category,
 			dates: toDateForm(row),
 			title: row.title,
-			titleAccent: row.titleAccent.join(", "),
 			where: row.where,
 		});
 		formRef.current?.scrollIntoView({
@@ -102,6 +101,7 @@ export default function AdminCvPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Added");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -109,6 +109,7 @@ export default function AdminCvPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Saved");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -116,6 +117,7 @@ export default function AdminCvPage() {
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.id) setForm(emptyForm);
 			invalidate();
+			flash("Deleted");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -132,10 +134,6 @@ export default function AdminCvPage() {
 			...dates,
 			category: form.category,
 			title: form.title.trim(),
-			titleAccent: form.titleAccent
-				.split(",")
-				.map((s) => s.trim())
-				.filter(Boolean),
 			where: form.where.trim(),
 		};
 		if (!payload.title || !payload.where || startYear === null) {
@@ -202,23 +200,7 @@ export default function AdminCvPage() {
 							value={form.where}
 						/>
 					</AdminField>
-					<AdminField
-						hint="Comma-separated word(s) within the title to accent"
-						htmlFor="titleAccent"
-						label="Title accent"
-					>
-						<AdminInput
-							id="titleAccent"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, titleAccent: e.target.value }))
-							}
-							value={form.titleAccent}
-						/>
-					</AdminField>
 				</div>
-				{error && (
-					<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-				)}
 				<div className="mt-5 flex gap-2">
 					<AdminButton disabled={pending} onClick={submit} variant="primary">
 						{form.id ? "Save changes" : "Add"}
@@ -226,6 +208,7 @@ export default function AdminCvPage() {
 					{form.id && (
 						<AdminButton onClick={() => setForm(emptyForm)}>Cancel</AdminButton>
 					)}
+					<AdminSaveStatus error={error} pending={pending} saved={saved} />
 				</div>
 			</AdminCard>
 
@@ -260,8 +243,10 @@ export default function AdminCvPage() {
 													</AdminButton>
 													<AdminButton
 														onClick={() => {
-															if (confirm(`Delete "${row.title}"?`))
+															if (confirm(`Delete "${row.title}"?`)) {
+																setError(null);
 																deleteMutation.mutate({ id: row.id });
+															}
 														}}
 														size="sm"
 														variant="danger"
