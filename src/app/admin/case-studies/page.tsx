@@ -1,23 +1,6 @@
 "use client";
 
-import {
-	closestCenter,
-	DndContext,
-	type DragEndEvent,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core";
-import {
-	arrayMove,
-	SortableContext,
-	sortableKeyboardCoordinates,
-	useSortable,
-	verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { useRef, useState } from "react";
 import {
 	AdminBadge,
@@ -32,9 +15,12 @@ import {
 	AdminListRow,
 	AdminLoading,
 	AdminPageHeader,
+	AdminSaveStatus,
 	AdminTextarea,
+	useFlash,
 } from "~/components/admin/admin-ui";
 import { AdminDateRange } from "~/components/admin/date-range";
+import { SortableList, SortableRow } from "~/components/admin/sortable-list";
 import {
 	type DateFields,
 	type DateForm,
@@ -113,14 +99,9 @@ export default function AdminCaseStudiesPage() {
 	} = api.caseStudy.all.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
+	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
-	const sensors = useSensors(
-		useSensor(PointerSensor),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		}),
-	);
 
 	const invalidate = () => utils.caseStudy.all.invalidate();
 
@@ -155,6 +136,7 @@ export default function AdminCaseStudiesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Added");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -162,6 +144,7 @@ export default function AdminCaseStudiesPage() {
 		onSuccess: () => {
 			invalidate();
 			setForm(emptyForm);
+			flash("Saved");
 		},
 		onError: (e) => setError(e.message),
 	});
@@ -169,10 +152,12 @@ export default function AdminCaseStudiesPage() {
 		onSuccess: (_data, variables) => {
 			if (variables.id === form.originalId) setForm(emptyForm);
 			invalidate();
+			flash("Deleted");
 		},
 		onError: (e) => setError(e.message),
 	});
 	const reorderMutation = api.caseStudy.reorder.useMutation({
+		onSuccess: () => flash("Order saved"),
 		onSettled: invalidate,
 		onError: (e) => setError(e.message),
 	});
@@ -190,15 +175,13 @@ export default function AdminCaseStudiesPage() {
 		});
 	}
 
-	function onDragEnd({ active, over }: DragEndEvent) {
-		if (!cases || !over || active.id === over.id) return;
-		const next = arrayMove(
-			cases,
-			cases.findIndex((c) => c.id === active.id),
-			cases.findIndex((c) => c.id === over.id),
+	function reorder(ids: string[]) {
+		utils.caseStudy.all.setData(
+			undefined,
+			(prev) =>
+				prev && [...prev].sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id)),
 		);
-		utils.caseStudy.all.setData(undefined, next);
-		reorderMutation.mutate({ ids: next.map((c) => c.id) });
+		reorderMutation.mutate({ ids });
 	}
 
 	function submit() {
@@ -392,9 +375,6 @@ export default function AdminCaseStudiesPage() {
 						/>
 					</div>
 				</div>
-				{error && (
-					<p className="mt-3 font-mono text-(--destructive) text-xs">{error}</p>
-				)}
 				<div className="mt-5 flex gap-2">
 					<AdminButton disabled={pending} onClick={submit} variant="primary">
 						{form.originalId ? "Save changes" : "Add"}
@@ -402,6 +382,7 @@ export default function AdminCaseStudiesPage() {
 					{form.originalId && (
 						<AdminButton onClick={() => setForm(emptyForm)}>Cancel</AdminButton>
 					)}
+					<AdminSaveStatus error={error} pending={pending} saved={saved} />
 				</div>
 			</AdminCard>
 
@@ -416,95 +397,50 @@ export default function AdminCaseStudiesPage() {
 			)}
 
 			{!isLoading && cases && cases.length > 0 && (
-				<DndContext
-					collisionDetection={closestCenter}
-					onDragEnd={onDragEnd}
-					sensors={sensors}
-				>
-					<SortableContext
-						items={cases.map((row) => row.id)}
-						strategy={verticalListSortingStrategy}
-					>
-						<AdminList>
-							{cases.map((row) => (
-								<SortableCaseRow id={row.id} key={row.id}>
-									<AdminListRow
-										actions={
-											<>
-												<AdminButton onClick={() => startEdit(row)} size="sm">
-													<Pencil className="size-3.5" />
-													Edit
-												</AdminButton>
-												<AdminButton
-													onClick={() => {
-														if (confirm(`Delete "${row.id}"?`))
-															deleteMutation.mutate({ id: row.id });
-													}}
-													size="sm"
-													variant="danger"
-												>
-													<Trash2 className="size-3.5" />
-													Delete
-												</AdminButton>
-											</>
-										}
-									>
-										<div className="flex items-center gap-2">
-											<span className="font-display font-semibold text-foreground text-sm">
-												{row.title}
-												{row.titleEm}
-												{row.titleSuffix}
-											</span>
-											{row.featured && (
-												<AdminBadge tone="accent">Featured</AdminBadge>
-											)}
-										</div>
-										<div className="font-mono text-(--ink-3) text-xs">
-											{row.id} · {row.role} · {formatDateRange(row)}
-										</div>
-									</AdminListRow>
-								</SortableCaseRow>
-							))}
-						</AdminList>
-					</SortableContext>
-				</DndContext>
+				<SortableList ids={cases.map((row) => row.id)} onReorder={reorder}>
+					<AdminList>
+						{cases.map((row) => (
+							<SortableRow id={row.id} key={row.id}>
+								<AdminListRow
+									actions={
+										<>
+											<AdminButton onClick={() => startEdit(row)} size="sm">
+												<Pencil className="size-3.5" />
+												Edit
+											</AdminButton>
+											<AdminButton
+												onClick={() => {
+													if (confirm(`Delete "${row.id}"?`))
+														deleteMutation.mutate({ id: row.id });
+												}}
+												size="sm"
+												variant="danger"
+											>
+												<Trash2 className="size-3.5" />
+												Delete
+											</AdminButton>
+										</>
+									}
+								>
+									<div className="flex items-center gap-2">
+										<span className="font-display font-semibold text-foreground text-sm">
+											{row.title}
+											{row.titleEm}
+											{row.titleSuffix}
+										</span>
+										{row.featured && (
+											<AdminBadge tone="accent">Featured</AdminBadge>
+										)}
+									</div>
+									<div className="font-mono text-(--ink-3) text-xs">
+										{row.id} · {row.role} · {formatDateRange(row)}
+									</div>
+								</AdminListRow>
+							</SortableRow>
+						))}
+					</AdminList>
+				</SortableList>
 			)}
-		</div>
-	);
-}
-
-function SortableCaseRow({
-	id,
-	children,
-}: {
-	id: string;
-	children: React.ReactNode;
-}) {
-	const {
-		attributes,
-		listeners,
-		setActivatorNodeRef,
-		setNodeRef,
-		transform,
-		transition,
-	} = useSortable({ id });
-	return (
-		<div
-			className="flex items-stretch gap-2"
-			ref={setNodeRef}
-			style={{ transform: CSS.Transform.toString(transform), transition }}
-		>
-			<button
-				aria-label="Drag to reorder"
-				className="flex w-6 shrink-0 cursor-grab touch-none items-center justify-center text-(--ink-3) hover:text-foreground"
-				ref={setActivatorNodeRef}
-				type="button"
-				{...attributes}
-				{...listeners}
-			>
-				<GripVertical className="size-4" />
-			</button>
-			<div className="min-w-0 flex-1">{children}</div>
 		</div>
 	);
 }
