@@ -1,7 +1,8 @@
 /**
- * One-off: fills the structured date columns from the legacy `years` / `year`
- * strings on rows that haven't been backfilled yet. Safe to re-run - rows with
- * `startYear` already set are skipped. Run via `npx tsx prisma/backfill-dates.ts`.
+ * Fills the structured date columns from the legacy `years` / `year` strings on
+ * rows that haven't been backfilled yet. Runs on every deploy (see
+ * scripts/vercel-build.sh) and is idempotent - rows with `startYear` already set
+ * are skipped.
  */
 import { PrismaClient } from "../generated/prisma";
 import { parseLegacyDate } from "../src/lib/legacy-date";
