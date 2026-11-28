@@ -18,8 +18,10 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 		);
 	}
 
-	const tags = [...new Set(items.flatMap((item) => item.tags))].sort();
-	const visible = tag ? items.filter((item) => item.tags.includes(tag)) : items;
+	const tags = [...new Set(items.flatMap((item) => item.topicTags))].sort();
+	const visible = tag
+		? items.filter((item) => item.topicTags.includes(tag))
+		: items;
 
 	return (
 		<>
@@ -55,18 +57,11 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 								{external && (
 									<>
 										<span aria-hidden>·</span>
-										<span>{item.outlet}</span>
+										<span>{item.source?.name}</span>
 									</>
 								)}
 								<span aria-hidden>·</span>
-								<time dateTime={item.publishedAt}>
-									{new Date(item.publishedAt).toLocaleDateString("en-US", {
-										year: "numeric",
-										month: "short",
-										day: "numeric",
-										timeZone: "UTC",
-									})}
-								</time>
+								<time dateTime={item.dateTime}>{item.dateLabel}</time>
 							</p>
 							<h2 className="m-0 mt-3 font-semibold text-xl tracking-tight md:text-2xl">
 								<Link
@@ -75,7 +70,7 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 									rel={external ? "noopener noreferrer" : undefined}
 									target={external ? "_blank" : undefined}
 								>
-									{item.title}
+									{item.title ?? item.source?.name}
 									{external && (
 										<>
 											<ArrowUpRight
@@ -92,9 +87,9 @@ export function WritingFeed({ items }: { items: WritingItem[] }) {
 									{item.summary}
 								</p>
 							)}
-							{item.tags.length > 0 && (
+							{item.topicTags.length > 0 && (
 								<ul className="m-0 mt-6 flex list-none flex-wrap gap-2 p-0">
-									{item.tags.map((name) => (
+									{item.topicTags.map((name) => (
 										<li
 											className="rounded-full bg-surface-raised px-3 py-1 text-ink text-sm"
 											key={name}

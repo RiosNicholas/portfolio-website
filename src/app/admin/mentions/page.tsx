@@ -1,6 +1,7 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import {
 	AdminBadge,
@@ -16,19 +17,32 @@ import {
 	AdminLoading,
 	AdminPageHeader,
 	AdminSaveStatus,
+	AdminSelect,
 	useFlash,
 } from "~/components/admin/admin-ui";
+import { months } from "~/components/admin/date-range";
+import { AdminTopicTagInput } from "~/components/admin/topic-tag-input";
+import { formatDateParts } from "~/lib/dates";
+import {
+	embedUrlFor,
+	isShortLink,
+	sourceFor,
+	titleRequired,
+} from "~/lib/sources";
 import { useAnimationsEnabled } from "~/lib/use-animations-enabled";
-import { mentionInput } from "~/server/api/schemas/mention";
+import { MAX_DAY, mentionInput } from "~/server/api/schemas/mention";
 import { api } from "~/trpc/react";
 
 type MentionRow = {
 	id: string;
 	url: string;
-	title: string;
-	outlet: string;
-	publishedAt: Date;
-	tags: string[];
+	title: string | null;
+	sourceName: string | null;
+	imageUrl: string | null;
+	year: number;
+	month: number | null;
+	day: number | null;
+	topicTags: string[];
 	published: boolean;
 };
 
@@ -36,9 +50,15 @@ type FormState = {
 	id: string | null;
 	url: string;
 	title: string;
-	outlet: string;
-	publishedAt: string;
-	tags: string;
+	sourceName: string;
+	year: string;
+	month: string;
+	day: string;
+	topicTags: string[];
+	/** The fetched or pasted image shown in the preview. */
+	image: string;
+	/** False keeps the server's image. True sends `image`, or null when empty. */
+	imageTouched: boolean;
 	published: boolean;
 };
 
@@ -46,13 +66,15 @@ const emptyForm: FormState = {
 	id: null,
 	url: "",
 	title: "",
-	outlet: "",
-	publishedAt: "",
-	tags: "",
+	sourceName: "",
+	year: String(new Date().getFullYear()),
+	month: "",
+	day: "",
+	topicTags: [],
+	image: "",
+	imageTouched: false,
 	published: true,
 };
-
-const toDateInput = (date: Date) => date.toISOString().split("T")[0] ?? "";
 
 export default function AdminMentionsPage() {
 	const utils = api.useUtils();
@@ -62,22 +84,31 @@ export default function AdminMentionsPage() {
 		isError,
 		error: queryError,
 	} = api.mention.all.useQuery();
+	const { data: tagSuggestions = [] } = api.mention.topicTags.useQuery();
 	const [form, setForm] = useState<FormState>(emptyForm);
 	const [error, setError] = useState<string | null>(null);
 	const [saved, flash] = useFlash();
 	const formRef = useRef<HTMLDivElement>(null);
 	const animationsEnabled = useAnimationsEnabled();
 
-	const invalidate = () => utils.mention.all.invalidate();
+	const invalidate = () =>
+		Promise.all([
+			utils.mention.all.invalidate(),
+			utils.mention.topicTags.invalidate(),
+		]);
 
 	function startEdit(row: MentionRow) {
 		setForm({
 			id: row.id,
 			url: row.url,
-			title: row.title,
-			outlet: row.outlet,
-			publishedAt: toDateInput(row.publishedAt),
-			tags: row.tags.join(", "),
+			title: row.title ?? "",
+			sourceName: row.sourceName ?? "",
+			year: String(row.year),
+			month: row.month ? String(row.month) : "",
+			day: row.day ? String(row.day) : "",
+			topicTags: row.topicTags,
+			image: row.imageUrl ?? "",
+			imageTouched: false,
 			published: row.published,
 		});
 		formRef.current?.scrollIntoView({
@@ -119,14 +150,14 @@ export default function AdminMentionsPage() {
 	function submit() {
 		setError(null);
 		const parsed = mentionInput.safeParse({
-			url: form.url.trim(),
-			title: form.title.trim(),
-			outlet: form.outlet.trim(),
-			publishedAt: new Date(form.publishedAt),
-			tags: form.tags
-				.split(",")
-				.map((s) => s.trim())
-				.filter(Boolean),
+			url: form.url,
+			title: form.title.trim() || null,
+			sourceName: form.sourceName.trim() || null,
+			imageUrl: form.imageTouched ? form.image.trim() || null : undefined,
+			year: Number(form.year),
+			month: form.month ? Number(form.month) : null,
+			day: form.day ? Number(form.day) : null,
+			topicTags: form.topicTags,
 			published: form.published,
 		});
 		if (!parsed.success) {
@@ -142,6 +173,16 @@ export default function AdminMentionsPage() {
 		}
 	}
 
+	const url = form.url.trim();
+	const source = sourceFor(url);
+	const embeds = embedUrlFor(url) !== null;
+	const needsTitle = titleRequired(url);
+	const sourceHint = !source
+		? "The Source is recognized from the link."
+		: isShortLink(url)
+			? `${source.name} short link, resolved when you save`
+			: `${source.name} - ${embeds ? "shown as an embed" : "shown as a link"}`;
+
 	return (
 		<div>
 			<AdminPageHeader
@@ -151,10 +192,38 @@ export default function AdminMentionsPage() {
 
 			<AdminCard className="mb-8" ref={formRef}>
 				<h2 className="m-0 mb-4 font-display font-semibold text-foreground text-lg">
-					{form.id ? `Edit mention - ${form.title}` : "Add mention"}
+					{form.id ? `Edit mention - ${form.title || form.url}` : "Add mention"}
 				</h2>
 				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-					<AdminField htmlFor="title" label="Title">
+					<AdminField
+						className="sm:col-span-2"
+						hint={sourceHint}
+						htmlFor="url"
+						label="URL"
+					>
+						<AdminInput
+							id="url"
+							inputMode="url"
+							onChange={(e) =>
+								setForm((f) => ({
+									...f,
+									url: e.target.value,
+									image: f.imageTouched ? f.image : "",
+								}))
+							}
+							placeholder="https://..."
+							value={form.url}
+						/>
+					</AdminField>
+					<AdminField
+						hint={
+							needsTitle
+								? undefined
+								: "The embed shows the post, so a title is optional"
+						}
+						htmlFor="title"
+						label={needsTitle ? "Title" : "Title (optional)"}
+					>
 						<AdminInput
 							id="title"
 							onChange={(e) =>
@@ -163,45 +232,133 @@ export default function AdminMentionsPage() {
 							value={form.title}
 						/>
 					</AdminField>
-					<AdminField htmlFor="outlet" label="Outlet">
-						<AdminInput
-							id="outlet"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, outlet: e.target.value }))
-							}
-							placeholder="LinkedIn, Forbes, ..."
-							value={form.outlet}
-						/>
-					</AdminField>
-					<AdminField className="sm:col-span-2" htmlFor="url" label="URL">
-						<AdminInput
-							id="url"
-							onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
-							placeholder="https://..."
-							value={form.url}
-						/>
-					</AdminField>
-					<AdminField htmlFor="publishedAt" label="Published date">
-						<AdminInput
-							id="publishedAt"
-							onChange={(e) =>
-								setForm((f) => ({ ...f, publishedAt: e.target.value }))
-							}
-							type="date"
-							value={form.publishedAt}
-						/>
-					</AdminField>
+					{source && !source.known && (
+						<AdminField
+							hint="Shown instead of the domain"
+							htmlFor="sourceName"
+							label="Source name (optional)"
+						>
+							<AdminInput
+								id="sourceName"
+								onChange={(e) =>
+									setForm((f) => ({ ...f, sourceName: e.target.value }))
+								}
+								placeholder={source.name}
+								value={form.sourceName}
+							/>
+						</AdminField>
+					)}
+					<div className="grid grid-cols-3 gap-4 sm:col-span-2">
+						<AdminField htmlFor="year" label="Year">
+							<AdminInput
+								id="year"
+								inputMode="numeric"
+								onChange={(e) =>
+									setForm((f) => ({ ...f, year: e.target.value }))
+								}
+								type="number"
+								value={form.year}
+							/>
+						</AdminField>
+						<AdminField htmlFor="month" label="Month">
+							<AdminSelect
+								id="month"
+								onChange={(e) =>
+									setForm((f) => ({
+										...f,
+										month: e.target.value,
+										day: e.target.value ? f.day : "",
+									}))
+								}
+								value={form.month}
+							>
+								<option value="">No month</option>
+								{months.map((name, i) => (
+									<option key={name} value={i + 1}>
+										{name}
+									</option>
+								))}
+							</AdminSelect>
+						</AdminField>
+						<AdminField htmlFor="day" label="Day">
+							<AdminInput
+								disabled={!form.month}
+								id="day"
+								inputMode="numeric"
+								max={MAX_DAY}
+								min={1}
+								onChange={(e) =>
+									setForm((f) => ({ ...f, day: e.target.value }))
+								}
+								type="number"
+								value={form.day}
+							/>
+						</AdminField>
+					</div>
 					<AdminField
-						hint="Comma-separated, e.g. LinkedIn, News, Social"
-						htmlFor="tags"
-						label="Source tags"
+						className="sm:col-span-2"
+						htmlFor="topicTags"
+						label="Topic tags"
 					>
-						<AdminInput
-							id="tags"
-							onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
-							value={form.tags}
+						<AdminTopicTagInput
+							id="topicTags"
+							onChange={(topicTags) => setForm((f) => ({ ...f, topicTags }))}
+							suggestions={tagSuggestions}
+							value={form.topicTags}
 						/>
 					</AdminField>
+					{source && !embeds && (
+						<AdminField className="sm:col-span-2" label="Preview image">
+							{form.image && URL.canParse(form.image) ? (
+								// 1.91:1 is the Open Graph image ratio
+								<div className="relative aspect-[1.91/1] w-full max-w-sm overflow-hidden rounded-(--r-md) border border-border">
+									<Image
+										alt=""
+										className="object-cover"
+										fill
+										sizes="24rem"
+										src={form.image}
+										unoptimized
+									/>
+								</div>
+							) : (
+								<p className="font-mono text-(--ink-3) text-xs">
+									{form.imageTouched
+										? "No image. The Writing page shows a text card."
+										: "Fetched from the page when you save."}
+								</p>
+							)}
+							{form.imageTouched && (
+								<AdminInput
+									className="mt-2"
+									id="image"
+									inputMode="url"
+									onChange={(e) =>
+										setForm((f) => ({ ...f, image: e.target.value }))
+									}
+									placeholder="https://... (empty for no image)"
+									value={form.image}
+								/>
+							)}
+							<div className="mt-2 flex gap-2">
+								<AdminButton
+									onClick={() => setForm((f) => ({ ...f, imageTouched: true }))}
+									size="sm"
+								>
+									Replace
+								</AdminButton>
+								<AdminButton
+									onClick={() =>
+										setForm((f) => ({ ...f, image: "", imageTouched: true }))
+									}
+									size="sm"
+									variant="danger"
+								>
+									Clear
+								</AdminButton>
+							</div>
+						</AdminField>
+					)}
 					<div className="flex items-end">
 						<AdminCheckbox
 							checked={form.published}
@@ -243,7 +400,7 @@ export default function AdminMentionsPage() {
 									</AdminButton>
 									<AdminButton
 										onClick={() => {
-											if (confirm(`Delete "${row.title}"?`)) {
+											if (confirm(`Delete "${row.title ?? row.url}"?`)) {
 												setError(null);
 												deleteMutation.mutate({ id: row.id });
 											}
@@ -260,12 +417,13 @@ export default function AdminMentionsPage() {
 						>
 							<div className="flex items-center gap-2">
 								<span className="font-display font-semibold text-foreground text-sm">
-									{row.title}
+									{row.title ?? sourceFor(row.url, row.sourceName)?.name}
 								</span>
 								{!row.published && <AdminBadge>Draft</AdminBadge>}
 							</div>
 							<div className="font-mono text-(--ink-3) text-xs">
-								{row.outlet} · {toDateInput(row.publishedAt)}
+								{sourceFor(row.url, row.sourceName)?.name} ·{" "}
+								{formatDateParts(row.year, row.month, row.day)}
 							</div>
 						</AdminListRow>
 					))}

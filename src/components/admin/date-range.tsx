@@ -8,7 +8,7 @@ import {
 } from "~/components/admin/admin-ui";
 import type { DateForm } from "~/lib/dates";
 
-const months = [
+export const months = [
 	"January",
 	"February",
 	"March",

@@ -118,7 +118,7 @@ model Article {
     title       String
     summary     String
     body        String // Markdown, rendered on the server
-    tags        String[] // source tags, free text
+    topicTags   String[]
     published   Boolean   @default(false)
     publishedAt DateTime? // set the first time the article is published
     createdAt   DateTime  @default(now())
@@ -128,17 +128,20 @@ model Article {
 }
 
 model Mention {
-    id          String   @id @default(cuid())
-    url         String
-    title       String
-    outlet      String
-    publishedAt DateTime
-    tags        String[]
-    published   Boolean  @default(true)
-    createdAt   DateTime @default(now())
-    updatedAt   DateTime @updatedAt
+    id         String   @id @default(cuid())
+    url        String
+    title      String? // optional when the Source embeds (src/lib/sources.ts)
+    sourceName String? // label for an unknown domain; known Sources use their own name
+    imageUrl   String? // hotlinked preview for a link Mention, fetched on save or set in admin
+    year       Int
+    month      Int?
+    day        Int?
+    topicTags  String[]
+    published  Boolean  @default(true)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 
-    @@index([published, publishedAt])
+    @@index([published])
 }
 
 model Profile {

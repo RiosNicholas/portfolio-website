@@ -1,4 +1,6 @@
 import { unstable_cache } from "next/cache";
+import { formatDateParts } from "~/lib/dates";
+import { embedUrlFor, type SourceMatch, sourceFor } from "~/lib/sources";
 import { db } from "~/server/db";
 
 // unstable_cache stores results as JSON, so dates leave these functions as
@@ -8,15 +10,43 @@ import { db } from "~/server/db";
 export type WritingItem = {
 	kind: "article" | "mention";
 	id: string;
-	title: string;
+	/** Always set for an Article. Optional for a Mention whose Source embeds. */
+	title: string | null;
 	/** `/writing/<slug>` for an Article, the external URL for a Mention. */
 	href: string;
 	/** Null for an Article. */
-	outlet: string | null;
+	source: SourceMatch | null;
+	/** The iframe src when a Mention's Source embeds it. */
+	embedUrl: string | null;
+	/** Hotlinked preview for a link Mention. Null shows a text card. */
+	imageUrl: string | null;
 	summary: string | null;
-	tags: string[];
-	publishedAt: string;
+	topicTags: string[];
+	year: number;
+	month: number | null;
+	day: number | null;
+	/** "2025", "Mar 2025" or "Mar 4, 2025". */
+	dateLabel: string;
+	/** The same precision for `<time dateTime>`: "2025", "2025-03" or "2025-03-04". */
+	dateTime: string;
 };
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+const dateParts = (year: number, month: number | null, day: number | null) => ({
+	year,
+	month,
+	day,
+	dateLabel: formatDateParts(year, month, day),
+	dateTime: month
+		? `${year}-${pad(month)}${day ? `-${pad(day)}` : ""}`
+		: `${year}`,
+});
+
+// YYYYMMDD. A missing month or day counts as the first, so a year-only date
+// sorts as the start of that year.
+const sortKey = (item: WritingItem) =>
+	item.year * 10000 + (item.month ?? 1) * 100 + (item.day ?? 1);
 
 /** Published Articles and Mentions merged into one feed, newest first. */
 export const getWritingFeed = unstable_cache(
@@ -29,7 +59,7 @@ export const getWritingFeed = unstable_cache(
 					slug: true,
 					title: true,
 					summary: true,
-					tags: true,
+					topicTags: true,
 					publishedAt: true,
 					createdAt: true,
 				},
@@ -38,30 +68,41 @@ export const getWritingFeed = unstable_cache(
 		]);
 
 		return [
-			...articles.map((a) => ({
-				kind: "article" as const,
-				id: a.id,
-				title: a.title,
-				href: `/writing/${a.slug}`,
-				outlet: null,
-				summary: a.summary,
-				tags: a.tags,
+			...articles.map((a) => {
 				// Always set once published (see the article router).
-				publishedAt: (a.publishedAt ?? a.createdAt).toISOString(),
-			})),
+				const date = a.publishedAt ?? a.createdAt;
+				return {
+					kind: "article" as const,
+					id: a.id,
+					title: a.title,
+					href: `/writing/${a.slug}`,
+					source: null,
+					embedUrl: null,
+					imageUrl: null,
+					summary: a.summary,
+					topicTags: a.topicTags,
+					...dateParts(
+						date.getUTCFullYear(),
+						date.getUTCMonth() + 1,
+						date.getUTCDate(),
+					),
+				};
+			}),
 			...mentions.map((m) => ({
 				kind: "mention" as const,
 				id: m.id,
 				title: m.title,
 				href: m.url,
-				outlet: m.outlet,
+				source: sourceFor(m.url, m.sourceName),
+				embedUrl: embedUrlFor(m.url),
+				imageUrl: m.imageUrl,
 				summary: null,
-				tags: m.tags,
-				publishedAt: m.publishedAt.toISOString(),
+				topicTags: m.topicTags,
+				...dateParts(m.year, m.month, m.day),
 			})),
-		].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt));
+		].sort((a, b) => sortKey(b) - sortKey(a));
 	},
-	["writing:feed:v1"],
+	["writing:feed:v2"],
 	{ tags: ["articles", "mentions"] },
 );
 
@@ -78,7 +119,7 @@ export const getArticleBySlug = unstable_cache(
 			updatedAt: article.updatedAt.toISOString(),
 		};
 	},
-	["articles:by-slug:v1"],
+	["articles:by-slug:v2"],
 	{ tags: ["articles"] },
 );
 

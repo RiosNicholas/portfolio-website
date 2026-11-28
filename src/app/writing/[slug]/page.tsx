@@ -80,7 +80,7 @@ export default async function ArticlePage({ params }: Props) {
 					</h1>
 					<p className="m-0 flex flex-wrap gap-x-3 gap-y-2 text-ink-muted text-sm">
 						<time dateTime={article.publishedAt}>{date}</time>
-						{article.tags.map((name) => (
+						{article.topicTags.map((name) => (
 							<span key={name}>{name}</span>
 						))}
 					</p>
