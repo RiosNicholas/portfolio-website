@@ -79,7 +79,7 @@ function CardBody({ item }: { item: WritingItem }) {
 		return (
 			<>
 				{item.title && (
-					<h2 className="m-0 font-semibold text-xl tracking-tight md:text-2xl">
+					<h2 className="m-0 font-semibold text-xl tracking-tight [overflow-wrap:anywhere] md:text-2xl">
 						{item.title}
 					</h2>
 				)}
@@ -112,7 +112,7 @@ function CardBody({ item }: { item: WritingItem }) {
 function TitleLink({ item }: { item: WritingItem }) {
 	const external = item.kind === "mention";
 	return (
-		<h2 className="m-0 min-w-0 font-semibold text-xl tracking-tight md:text-2xl">
+		<h2 className="m-0 min-w-0 font-semibold text-xl tracking-tight [overflow-wrap:anywhere] md:text-2xl">
 			<Link
 				className="inline-flex items-start gap-2 text-ink no-underline hover:text-brand-strong"
 				href={item.href}
@@ -193,6 +193,7 @@ function YouTubeFacade({
 				allow="autoplay; encrypted-media; picture-in-picture"
 				allowFullScreen
 				className="aspect-video w-full rounded-2xl"
+				ref={(frame) => frame?.focus()}
 				src={`${embedUrl}?autoplay=1`}
 				title={title}
 			/>
@@ -211,7 +212,7 @@ function YouTubeFacade({
 			/>
 			<div className="absolute inset-0 flex items-center justify-center">
 				<button
-					className={cn(buttonVariants({ variant: "primary" }), "gap-2")}
+					className={buttonVariants()}
 					onClick={() => setLoaded(true)}
 					type="button"
 				>
