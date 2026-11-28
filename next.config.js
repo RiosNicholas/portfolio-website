@@ -6,12 +6,10 @@ import "./src/env.js";
 
 /** @type {import("next").NextConfig} */
 const config = {
-	// Link Mention previews are hotlinked from any site (#63), so no host
-	// list can cover them. Long cache so each image is fetched and resized
-	// rarely, and keeps showing for a while if the site drops it.
+	// YouTube facade thumbnails. Mention previews come from any site, so they
+	// render unoptimized instead of opening the resizer to every host (#63).
 	images: {
-		remotePatterns: [{ protocol: "https", hostname: "**" }],
-		minimumCacheTTL: 2678400, // 31 days, in seconds
+		remotePatterns: [{ protocol: "https", hostname: "i.ytimg.com" }],
 	},
 	// The Work page became Projects; keep old links and /work#<id> anchors alive.
 	async redirects() {

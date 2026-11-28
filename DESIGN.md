@@ -212,8 +212,8 @@ Plain CSS animations are throttled via `:root[data-motion="low"] *` and the
 - Don't hard-code colors or reach for Tailwind palette classes in
   components - use the semantic utilities.
 - Don't add type sizes outside the type scale in the section above on public pages.
-- Don't add gradients or drop shadows. The only gradient is the fade mask
-  on the skills marquee.
+- Don't add gradients or drop shadows. The only gradients are the fade masks
+  on the skills marquee and on capped LinkedIn embeds in the Writing feed.
 - Don't add a profile photo. The site stays about the work.
 - Don't add stand-in images. `src/lib/media.ts` stays empty until there's a
   real photo or screenshot.

@@ -151,6 +151,7 @@ function Preview({ item }: { item: WritingItem }) {
 				fill
 				sizes="5rem"
 				src={item.imageUrl}
+				unoptimized
 			/>
 		</div>
 	);
